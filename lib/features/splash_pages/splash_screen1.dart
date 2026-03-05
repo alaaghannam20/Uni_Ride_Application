@@ -37,7 +37,7 @@ class _SplashScreen1State extends State<SplashScreen1> {
     }
 
     if (!seenOnboarding) {
-      Navigator.pushReplacementNamed(context, Routes.splash2);
+      Navigator.pushReplacementNamed(context, Routes.onboarding1);
       return;
     }
     Navigator.pushReplacementNamed(context, Routes.signUp);

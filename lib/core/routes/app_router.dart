@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 
 import 'package:uni_ride_application/features/splash_pages/splash_screen1.dart';
-import 'package:uni_ride_application/features/splash_pages/splash_screen2.dart';
+import 'package:uni_ride_application/features/onboarding_page/presentation/screens/splash_screen2.dart';
 
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding1_screen.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding2_screen.dart';
