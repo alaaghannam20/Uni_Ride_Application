@@ -3,14 +3,14 @@ import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 
-class SplashScreen1 extends StatefulWidget {
-  const SplashScreen1({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<SplashScreen1> createState() => _SplashScreen1State();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreen1State extends State<SplashScreen1> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -21,7 +21,6 @@ class _SplashScreen1State extends State<SplashScreen1> {
     await Future.delayed(const Duration(seconds: 3));
 
     final seenOnboarding = AppPrefs.getSeenOnboarding();
-    final seenSplash2 = AppPrefs.getSeenSplash2();
     final isLoggedIn = AppPrefs.getIsLoggedIn();
 
     if (!mounted) return;
@@ -31,16 +30,11 @@ class _SplashScreen1State extends State<SplashScreen1> {
       return;
     }
 
-      if (!seenSplash2) {
-      Navigator.pushReplacementNamed(context, Routes.splash2);
-      return;
-    }
-
     if (!seenOnboarding) {
       Navigator.pushReplacementNamed(context, Routes.onboarding1);
-      return;
+    } else {
+      Navigator.pushReplacementNamed(context, Routes.signUp);
     }
-    Navigator.pushReplacementNamed(context, Routes.signUp);
   }
 
   @override

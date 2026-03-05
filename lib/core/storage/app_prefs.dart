@@ -2,7 +2,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'prefs_keys.dart';
 
 class AppPrefs {
-
   static late SharedPreferences _prefs;
 
   static Future<void> init() async {
@@ -37,11 +36,4 @@ class AppPrefs {
     await _prefs.remove(PrefKeys.token);
     await _prefs.setBool(PrefKeys.isLoggedIn, false);
   }
-  static bool getSeenSplash2() {
-  return _prefs.getBool(PrefKeys.seenSplash2) ?? false;
-}
-
-static Future<void> setSeenSplash2(bool value) async {
-  await _prefs.setBool(PrefKeys.seenSplash2, value);
-}
 }

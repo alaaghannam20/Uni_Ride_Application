@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
-import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/widgets/circle_arrow_button.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/widget/onboarding_widget.dart';
-import 'package:uni_ride_application/features/onboarding_page/presentation/widget/tobBar_widget.dart';
+import 'package:uni_ride_application/features/onboarding_page/presentation/widget/tobbar_widget.dart';
 
 class Onboarding3Screen extends StatelessWidget {
   const Onboarding3Screen({super.key});
@@ -15,39 +14,32 @@ class Onboarding3Screen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.white,
+
       body: SafeArea(
         child: Column(
           children: [
-            TobBarWidget(showSkip: false),
+            const TobBarWidget(),
 
             SizedBox(height: 40),
 
-            const OnboardingWidget(
-              image: 'assets/images/onboarding3.png',
-              title: 'Connected Rides, be \nConnected',
+            OnboardingWidget(
+              image: 'assets/images/onboarding2.png',
+              title: 'Book • Track • Arrive',
               description:
-                  'Choose your ride, set your schedule, and enjoy hassle-free campus transportation.',
+                  'Seamless booking, real-time tracking, and reliable transport for every university day.',
             ),
 
             SizedBox(height: 80),
 
             CircleArrowButton(
-              progress: 1.0,
-              onPressed: () async {
-                await AppPrefs.setSeenOnboarding(true);
-                if (!context.mounted) return;
-
-                Navigator.pushReplacementNamed(context, Routes.signUp);
+              progress: 0.66,
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.onboarding4);
               },
-              child: const Text(
-                'Go',
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 20,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.30,
-                ),
+              child: const Icon(
+                Icons.arrow_forward,
+                color: AppColors.white,
+                size: 30,
               ),
             ),
 

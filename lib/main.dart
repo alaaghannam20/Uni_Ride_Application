@@ -16,7 +16,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: Routes.splash1,          
+      initialRoute: Routes.splash,          
       onGenerateRoute: AppRouter.onGenerateRoute, 
     );
   }
