@@ -15,47 +15,40 @@ class Onboarding1Screen extends StatefulWidget {
 class _Onboarding1ScreenState extends State<Onboarding1Screen> {
   @override
   Widget build(BuildContext context) {
-   
-   final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * (32 / 430)),
-          child: Column(
-            children: [
-              TobBarWidget(),
-              SizedBox(height: screenHeight * 0.068),
+        child: Column(
+          children: [
+            TobBarWidget(),
+            SizedBox(height: 40),
 
-              Expanded(
-                child: const OnboardingWidget(
-                  image: 'assets/images/onboarding1.png',
-                  title: 'Smart Campus Transportation',
-                  description:
-                      'Seamless booking, real-time tracking, and reliable transport for every university day.',
+            const OnboardingWidget(
+              image: 'assets/images/onboarding1.png',
+              title: 'Smart Campus Transportation',
+              description:
+                  'Seamless booking, real-time tracking, and reliable transport for every university day.',
+            ),
+
+            SizedBox(height: 0),
+
+            Center(
+              child: CircleArrowButton(
+                progress: 0.33,
+                onPressed: () {
+                  Navigator.pushNamed(context, Routes.onboarding2);
+                },
+                child: Icon(
+                  Icons.arrow_forward,
+                  color: AppColors.white,
+                  size: 30,
                 ),
               ),
+            ),
 
-              SizedBox(height: screenHeight * (80 / 932)),
-
-              Center(
-                child: CircleArrowButton(
-                  progress: 0.33,
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                       Routes.onboarding2 ,
-                       );
-                  },
-                  child: Icon(Icons.arrow_forward, color: AppColors.white, size: 30),
-
-                ),
-              ),
-
-              SizedBox(height: screenHeight * 0.10),
-            ],
-          ),
+            SizedBox(height: screenHeight * 0.15),
+          ],
         ),
       ),
     );

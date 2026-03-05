@@ -18,7 +18,7 @@ class _SplashScreen1State extends State<SplashScreen1> {
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 3));
 
     final seenOnboarding = AppPrefs.getSeenOnboarding();
     final seenSplash2 = AppPrefs.getSeenSplash2();
