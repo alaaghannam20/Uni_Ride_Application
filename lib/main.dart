@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/routes/app_router.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppPrefs.init();
   runApp(const MainApp());
 }
 
@@ -9,12 +14,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: Routes.splash1,          
+      onGenerateRoute: AppRouter.onGenerateRoute, 
     );
   }
 }
