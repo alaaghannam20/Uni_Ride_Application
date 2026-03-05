@@ -37,4 +37,11 @@ class AppPrefs {
     await _prefs.remove(PrefKeys.token);
     await _prefs.setBool(PrefKeys.isLoggedIn, false);
   }
+  static bool getSeenSplash2() {
+  return _prefs.getBool(PrefKeys.seenSplash2) ?? false;
+}
+
+static Future<void> setSeenSplash2(bool value) async {
+  await _prefs.setBool(PrefKeys.seenSplash2, value);
+}
 }

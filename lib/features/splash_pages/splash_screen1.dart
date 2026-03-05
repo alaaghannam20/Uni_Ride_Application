@@ -21,23 +21,26 @@ class _SplashScreen1State extends State<SplashScreen1> {
     await Future.delayed(const Duration(seconds: 4));
 
     final seenOnboarding = AppPrefs.getSeenOnboarding();
+    final seenSplash2 = AppPrefs.getSeenSplash2();
     final isLoggedIn = AppPrefs.getIsLoggedIn();
 
     if (!mounted) return;
 
     if (isLoggedIn) {
       Navigator.pushReplacementNamed(context, Routes.home);
-      print("go to home");
+      return;
+    }
+
+      if (!seenSplash2) {
+      Navigator.pushReplacementNamed(context, Routes.splash2);
       return;
     }
 
     if (!seenOnboarding) {
       Navigator.pushReplacementNamed(context, Routes.splash2);
-      print("go to splash2");
       return;
     }
     Navigator.pushReplacementNamed(context, Routes.signUp);
-    print("go to signUp");
   }
 
   @override
