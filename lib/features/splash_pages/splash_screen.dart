@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 2));
 
     final seenOnboarding = AppPrefs.getSeenOnboarding();
     final isLoggedIn = AppPrefs.getIsLoggedIn();
@@ -27,13 +27,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (isLoggedIn) {
       Navigator.pushReplacementNamed(context, Routes.home);
-      return;
-    }
-
-    if (!seenOnboarding) {
+    } else if (!seenOnboarding) {
       Navigator.pushReplacementNamed(context, Routes.onboarding1);
     } else {
-      Navigator.pushReplacementNamed(context, Routes.signUp);
+      Navigator.pushReplacementNamed(context, Routes.onboarding1);
     }
   }
 

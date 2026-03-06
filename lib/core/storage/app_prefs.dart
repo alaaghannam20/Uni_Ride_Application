@@ -24,16 +24,7 @@ class AppPrefs {
     await _prefs.setBool(PrefKeys.isLoggedIn, value);
   }
 
-  static String? getToken() {
-    return _prefs.getString(PrefKeys.token);
-  }
 
-  static Future<void> setToken(String token) async {
-    await _prefs.setString(PrefKeys.token, token);
-  }
 
-  static Future<void> logout() async {
-    await _prefs.remove(PrefKeys.token);
-    await _prefs.setBool(PrefKeys.isLoggedIn, false);
-  }
+
 }

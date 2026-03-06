@@ -23,7 +23,7 @@ class Onboarding3Screen extends StatelessWidget {
             SizedBox(height: 40),
 
             OnboardingWidget(
-              image: 'assets/images/onboarding2.png',
+              image: 'assets/images/onboarding3.png',
               title: 'Book • Track • Arrive',
               description:
                   'Seamless booking, real-time tracking, and reliable transport for every university day.',

@@ -23,7 +23,7 @@ class Onboarding4Screen extends StatelessWidget {
             SizedBox(height: 40),
 
             const OnboardingWidget(
-              image: 'assets/images/onboarding3.png',
+              image: 'assets/images/onboarding4.png',
               title: 'Connected Rides, be \nConnected',
               description:
                   'Choose your ride, set your schedule, and enjoy hassle-free campus transportation.',

@@ -31,8 +31,8 @@ class AppRouter {
         return withFade
             ? PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (_, animation, __) => const Onboarding2Screen(),
-                transitionsBuilder: (_, animation, __, child) => FadeTransition(
+                pageBuilder: (_, animation, _) => const Onboarding2Screen(),
+                transitionsBuilder: (_, animation, _, child) => FadeTransition(
                   opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
                   child: child,
                 ),
@@ -42,8 +42,8 @@ class AppRouter {
       case Routes.onboarding3:
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 300),
-          pageBuilder: (_, __, ___) => const Onboarding3Screen(),
-          transitionsBuilder: (_, animation, __, child) => FadeTransition(
+          pageBuilder: (_, _, _) => const Onboarding3Screen(),
+          transitionsBuilder: (_, animation, _, child) => FadeTransition(
             opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
             child: child,
           ),
@@ -53,8 +53,8 @@ class AppRouter {
         return withFade
             ? PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (_, __, ___) => const Onboarding4Screen(),
-                transitionsBuilder: (_, animation, __, child) => FadeTransition(
+                pageBuilder: (_, _, _) => const Onboarding4Screen(),
+                transitionsBuilder: (_, animation, _, child) => FadeTransition(
                   opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
                   child: child,
                 ),
@@ -64,8 +64,8 @@ class AppRouter {
       case Routes.signUp:
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 1200),
-          pageBuilder: (_, __, ___) => SignupUniScreen(),
-          transitionsBuilder: (_, animation, __, child) {
+          pageBuilder: (_, _, _) => SignupUniScreen(),
+          transitionsBuilder: (_, animation, _, child) {
             final offsetAnimation = Tween<Offset>(
               begin: const Offset(1, 0),
               end: Offset.zero,

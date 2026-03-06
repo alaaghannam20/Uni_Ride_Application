@@ -25,7 +25,7 @@ class _Onboarding2ScreenState extends State<Onboarding2Screen> {
             SizedBox(height: 40),
 
             const OnboardingWidget(
-              image: 'assets/images/onboarding1.png',
+              image: 'assets/images/onboarding2.png',
               title: 'Smart Campus Transportation',
               description:
                   'Seamless booking, real-time tracking, and reliable transport for every university day.',

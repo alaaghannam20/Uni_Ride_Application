@@ -11,6 +11,10 @@ class SignupUniScreen extends StatefulWidget {
 class _SignupUniScreenState extends State<SignupUniScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Center(
+        child: Text('Signup University Screen'),
+      ),
+    );
   }
 }
