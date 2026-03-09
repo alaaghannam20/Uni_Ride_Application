@@ -6,12 +6,16 @@ class TobbarRegestrationWidget extends StatelessWidget {
   final String title;
   final VoidCallback? onBackPressed;
 
-  const TobbarRegestrationWidget({super.key, required this.title, this.onBackPressed});
+  const TobbarRegestrationWidget({
+    super.key,
+    required this.title,
+    this.onBackPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 401,
+      width: double.infinity,
       height: 81,
       decoration: const BoxDecoration(
         color: AppColors.white,
@@ -25,14 +29,16 @@ class TobbarRegestrationWidget extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            top: 10,
-            left: 10,
+            top: 16,
+            left: 16,
             child: GestureDetector(
               onTap: onBackPressed ?? () => Navigator.pop(context),
-              child: const SizedBox(
-                width: 28,
-                height: 28,
-                child: Icon(
+              child: Container(
+                width: 48,
+                height: 48,
+                alignment: Alignment.center,
+                color: Colors.transparent,
+                child: const Icon(
                   Icons.arrow_back_ios_new,
                   size: 18,
                   color: AppColors.languagecolor,
@@ -41,9 +47,12 @@ class TobbarRegestrationWidget extends StatelessWidget {
             ),
           ),
 
-          Center(
+          Positioned(
+            top: 30,
+            left: 165,
             child: Text(
               title,
+              textAlign: TextAlign.center,
               style: AppStyle.regestrationstyle,
             ),
           ),

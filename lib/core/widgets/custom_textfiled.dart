@@ -66,10 +66,10 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
     final Color borderColor = AppColors.bordercontainerlanguage;
 
     return SizedBox(
-      width: widget.width ?? 332,
-      height: widget.height ?? 76,
+      width: widget.width ?? 303,
 
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             widget.labelText ?? '',
@@ -77,7 +77,7 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
           ),
           SizedBox(height: 6),
           SizedBox(
-            width: widget.width ?? 332,
+            width: widget.width ?? 303,
             height: widget.height ?? 54,
             child: TextFormField(
               controller: widget.controller,
@@ -113,7 +113,7 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
                 BorderSide(width: 1, color: borderColor),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
             borderSide:
                 BorderSide(width: 1, color: borderColor),
           ),

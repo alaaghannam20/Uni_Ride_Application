@@ -72,4 +72,22 @@ class AppStyle {
     letterSpacing: 0,
     color: AppColors.languagecolor,
   );
+
+  static TextStyle accountQuestionStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    height: 1.43,
+    letterSpacing: 0,
+    color: AppColors.languagecolor,
+  );
+
+  static TextStyle loginNowStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w700,
+    fontSize: 14,
+    height: 1.43,
+    letterSpacing: 0,
+    color: AppColors.orangeprimary,
+  );
 }

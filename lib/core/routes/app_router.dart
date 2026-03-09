@@ -8,7 +8,7 @@ import 'package:uni_ride_application/features/onboarding_page/presentation/scree
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding3_screen.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding4_screen.dart';
 
-import 'package:uni_ride_application/features/signup_pages/presentation/screens/signup_uni_screen.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_uni_screen.dart';
 
 
 
