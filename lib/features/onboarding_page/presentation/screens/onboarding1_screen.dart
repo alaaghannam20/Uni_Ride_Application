@@ -22,7 +22,7 @@ class Onboarding1Screen extends StatelessWidget {
           ),
 
           Padding(
-            padding: const EdgeInsets.only(top: 40, right: 24),
+            padding: const EdgeInsets.only(top: 45, right: 24),
             child: Align(
               alignment: Alignment.topRight,
               child: LanguageButton(),
@@ -47,7 +47,7 @@ class Onboarding1Screen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushReplacementNamed(
                           context,
-                          Routes.onboarding2,
+                          Routes.mainOnboarding,
                           arguments: {'withFade': true},
                         );
                       },
@@ -82,30 +82,32 @@ class Onboarding1Screen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        'Powered by ',
-                        style: TextStyle(
-                          color: AppColors.languagecolor,
-                          fontSize: 12,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
+                  SizedBox(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Powered by ',
+                          style: TextStyle(
+                            color: AppColors.languagecolor,
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'PTUK Engineering',
-                        style: TextStyle(
-                          color: AppColors.white,
-                          fontSize: 12,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w700,
+                        Text(
+                          'PTUK Engineering',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
