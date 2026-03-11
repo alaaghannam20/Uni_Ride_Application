@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/features/onboarding_page/presentation/screens/main_onboarding.dart';
 
 import 'package:uni_ride_application/features/splash_pages/splash_screen.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding1_screen.dart';
@@ -10,15 +11,13 @@ import 'package:uni_ride_application/features/onboarding_page/presentation/scree
 
 import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_uni_screen.dart';
 
-
-
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     final bool withFade =
         (settings.arguments is Map &&
-                (settings.arguments as Map).containsKey('withFade'))
-            ? (settings.arguments as Map)['withFade'] == true
-            : false;
+            (settings.arguments as Map).containsKey('withFade'))
+        ? (settings.arguments as Map)['withFade'] == true
+        : false;
 
     switch (settings.name) {
       case Routes.splash:
@@ -27,39 +26,20 @@ class AppRouter {
       case Routes.onboarding1:
         return MaterialPageRoute(builder: (_) => const Onboarding1Screen());
 
-      case Routes.onboarding2:
+      case Routes.mainOnboarding:
         return withFade
             ? PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (_, animation, _) => const Onboarding2Screen(),
+                pageBuilder: (_, animation, _) => const MainOnboarding(),
                 transitionsBuilder: (_, animation, _, child) => FadeTransition(
-                  opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                  opacity: CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOut,
+                  ),
                   child: child,
                 ),
               )
-            : MaterialPageRoute(builder: (_) => const Onboarding2Screen());
-
-      case Routes.onboarding3:
-        return PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 300),
-          pageBuilder: (_, _, _) => const Onboarding3Screen(),
-          transitionsBuilder: (_, animation, _, child) => FadeTransition(
-            opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-            child: child,
-          ),
-        );
-
-      case Routes.onboarding4:
-        return withFade
-            ? PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 300),
-                pageBuilder: (_, _, _) => const Onboarding4Screen(),
-                transitionsBuilder: (_, animation, _, child) => FadeTransition(
-                  opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                  child: child,
-                ),
-              )
-            : MaterialPageRoute(builder: (_) => const Onboarding4Screen());
+            : MaterialPageRoute(builder: (_) => const MainOnboarding());
 
       case Routes.signUp:
         return PageRouteBuilder(
@@ -74,12 +54,10 @@ class AppRouter {
           },
         );
 
-
       case Routes.home:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text("  HomeScreen here")),
-          ),
+          builder: (_) =>
+              const Scaffold(body: Center(child: Text("  HomeScreen here"))),
         );
 
       default:
