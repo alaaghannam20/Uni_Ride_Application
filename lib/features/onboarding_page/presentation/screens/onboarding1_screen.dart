@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/widgets/language_button.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class Onboarding1Screen extends StatelessWidget {
   const Onboarding1Screen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Directionality.of(context) == TextDirection.rtl;
     return Scaffold(
       backgroundColor: AppColors.transparent,
       body: Stack(
@@ -22,9 +24,9 @@ class Onboarding1Screen extends StatelessWidget {
           ),
 
           Padding(
-            padding: const EdgeInsets.only(top: 45, right: 24),
+            padding: EdgeInsetsDirectional.only(top: 45, end: 24),
             child: Align(
-              alignment: Alignment.topRight,
+              alignment: AlignmentDirectional.topEnd,
               child: LanguageButton(),
             ),
           ),
@@ -32,10 +34,7 @@ class Onboarding1Screen extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 40,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -60,10 +59,10 @@ class Onboarding1Screen extends StatelessWidget {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text(
-                              'Get Started',
-                              style: TextStyle(
+                              AppLocalizations.of(context)!.getStarted,
+                              style: const TextStyle(
                                 color: AppColors.orangeprimary,
                                 fontSize: 18,
                                 fontFamily: 'Inter',
@@ -71,9 +70,9 @@ class Onboarding1Screen extends StatelessWidget {
                                 height: 1.20,
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Icon(
-                              Icons.arrow_forward,
+                              isArabic ? Icons.arrow_back : Icons.arrow_forward,
                               color: AppColors.orangeprimary,
                             ),
                           ],
@@ -82,14 +81,13 @@ class Onboarding1Screen extends StatelessWidget {
                     ),
                   ),
 
-
                   SizedBox(
                     height: 40,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
-                          'Powered by ',
+                          'Powered by',
                           style: TextStyle(
                             color: AppColors.languagecolor,
                             fontSize: 12,
@@ -97,6 +95,7 @@ class Onboarding1Screen extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
+                        SizedBox(width: 4,),
                         Text(
                           'PTUK Engineering',
                           style: TextStyle(

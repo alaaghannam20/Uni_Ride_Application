@@ -7,6 +7,7 @@ import 'package:uni_ride_application/features/onboarding_page/presentation/scree
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding3_screen.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding4_screen.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/widget/onboarding_appbar.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class MainOnboarding extends StatefulWidget {
   const MainOnboarding({super.key});
@@ -29,6 +30,7 @@ class _MainOnboardingState extends State<MainOnboarding> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
@@ -86,8 +88,8 @@ class _MainOnboardingState extends State<MainOnboarding> {
                         );
                       },
                       child: currentPage == onboardingPages.length - 1
-                          ? const Text(
-                              'Go',
+                          ? Text(
+                              AppLocalizations.of(context)!.go,
                               key: ValueKey('go'),
                               style: TextStyle(
                                 color: AppColors.white,
@@ -97,9 +99,9 @@ class _MainOnboardingState extends State<MainOnboarding> {
                                 letterSpacing: 0.30,
                               ),
                             )
-                          : const Icon(
-                              Icons.arrow_forward,
-                              key: ValueKey('arrow'),
+                          : Icon(
+                              isArabic ? Icons.arrow_forward : Icons.arrow_forward,
+                              key: ValueKey(isArabic),
                               color: AppColors.white,
                               size: 30,
                             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/widget/onboarding_widget.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class Onboarding2Screen extends StatelessWidget {
   const Onboarding2Screen({super.key});
@@ -8,9 +9,8 @@ class Onboarding2Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnboardingWidget(
       image: 'assets/images/onboarding2.png',
-      title: 'Smart Campus Transportation',
-      description:
-          'Seamless booking, real-time tracking, and reliable transport for every university day.',
+      title: AppLocalizations.of(context)!.onboarding2Title,
+      description: AppLocalizations.of(context)!.onboardingDescription,
     );
   }
 }
