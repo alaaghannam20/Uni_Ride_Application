@@ -78,7 +78,7 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
           SizedBox(height: 6),
           SizedBox(
             width: widget.width ?? 303,
-            height: widget.height ?? 54,
+            height: widget.height ?? 58,
             child: TextFormField(
               controller: widget.controller,
               keyboardType: widget.keyboardType,
@@ -108,7 +108,7 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
                   vertical: 16,
                 ),
               enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
             borderSide:
                 BorderSide(width: 1, color: borderColor),
           ),

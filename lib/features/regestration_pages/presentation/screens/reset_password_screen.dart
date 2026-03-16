@@ -3,30 +3,25 @@ import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
 import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
-import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_driver.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
-import 'package:uni_ride_application/features/regestration_pages/presentation/widget/role_toggle_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
 
-class SignupUniScreen extends StatefulWidget {
-  const SignupUniScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<SignupUniScreen> createState() => _SignupUniScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _SignupUniScreenState extends State<SignupUniScreen> {
-  bool isStudDocSelected = true;
-  final TextEditingController uniEmailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController newpasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
   @override
   void dispose() {
-    uniEmailController.dispose();
-    passwordController.dispose();
+    newpasswordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
   }
@@ -39,12 +34,11 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
         child: Column(
           children: [
             TobbarRegestrationWidget(
-              title: 'Sign Up',
+              title: 'Reset password',
               onBackPressed: () {
                 Navigator.pop(context);
               },
             ),
-
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -57,41 +51,9 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          RoleToggleWidget(
-                            isStudDocSelected: isStudDocSelected,
-                            onStudentTap: () {
-                              setState(() {
-                                isStudDocSelected = false;
-                              });
-                            },
-                            onDriverTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SignUpDriverScreen(),
-                                ),
-                              );
-                            },
-                          ),
-
-                          const SizedBox(height: 24),
-
                           CustomTextfiled(
-                            controller: uniEmailController,
-                            labelText: 'Email Address',
-                            hintText: 'a.m.ghannam@student.ptuk.edu.ps',
-                            keyboardType: TextInputType.emailAddress,
-                            prefixIcon: const Icon(
-                              Icons.email_sharp,
-                              size: 18,
-                              color: AppColors.languagecolor,
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          CustomTextfiled(
-                            controller: passwordController,
-                            labelText: 'Password',
+                            controller: newpasswordController,
+                            labelText: 'New Password',
                             hintText: '• • • • • • • •',
                             isPassword: true,
                             prefixIcon: const Icon(
@@ -106,8 +68,9 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                           Text(
                             'Minimum 8 characters',
                             style: AppStyle.hintstyle.copyWith(fontSize: 9),
+
                           ),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 22),
 
                           CustomTextfiled(
                             controller: confirmPasswordController,
@@ -120,41 +83,15 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                               color: AppColors.languagecolor,
                             ),
                           ),
-
-                          const SizedBox(height: 24),
-
+                          const SizedBox(height: 26),
                           SizedBox(
                             height: 56,
                             child: CustomButton(
-                              text: 'Sign Up',
+                              text: 'Reset password',
                               backgroundColor: AppColors.orangeprimary,
                               onPressed: () {},
                               textColor: AppColors.white,
                             ),
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          Text(
-                            'Already have an account?',
-                            textAlign: TextAlign.center,
-                            style: AppStyle.accountQuestionStyle,
-                          ),
-
-                          const SizedBox(height: 4),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Login Now', style: AppStyle.loginNowStyle),
-                              const SizedBox(width: 4),
-                              Text('|', style: AppStyle.loginNowStyle),
-                              const SizedBox(width: 4),
-                              Text(
-                                'تسجيل الدخول',
-                                style: AppStyle.loginNowStyle,
-                              ),
-                            ],
                           ),
                         ],
                       ),

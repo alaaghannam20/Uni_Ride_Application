@@ -22,7 +22,7 @@ class OnboardingAppbar extends StatelessWidget {
             if (showSkip)
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, Routes.signUp);
+                  Navigator.pushReplacementNamed(context, Routes.signUpUni);
                 },
                 child: Text(
                   AppLocalizations.of(context)!.skip,

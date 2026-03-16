@@ -50,7 +50,7 @@ class AppStyle {
   static TextStyle lablestyle = TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w700,
-    fontSize: 12,
+    fontSize: 14,
     height: 1.33,
     letterSpacing: 0,
     color: AppColors.skiptextcolor,
@@ -58,11 +58,11 @@ class AppStyle {
 
   static TextStyle hintstyle = TextStyle(
     fontFamily: 'Inter',
-    fontWeight: FontWeight.w400,
-    fontSize: 16,
-    height: 1.5,
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+    height: 1.2,
     letterSpacing: 0,
-    color: AppColors.skiptextcolor,
+    color: AppColors.languagecolor,
   );
   static TextStyle regestrationstyle = TextStyle(
     fontFamily: 'Inter',
@@ -89,5 +89,14 @@ class AppStyle {
     height: 1.43,
     letterSpacing: 0,
     color: AppColors.orangeprimary,
+  );
+
+  static TextStyle passwordStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w700,
+    fontSize: 11,
+    height: 1.5,
+    letterSpacing: 0,
+    color: AppColors.orangeprimary
   );
 }
