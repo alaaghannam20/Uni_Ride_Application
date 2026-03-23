@@ -19,12 +19,7 @@ class TobbarRegestrationWidget extends StatelessWidget {
       height: 81,
       decoration: const BoxDecoration(
         color: AppColors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0x80E0E0E0),
-            width: 1,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0x85E0E0E0), width: 1)),
       ),
       child: Stack(
         children: [
@@ -49,11 +44,14 @@ class TobbarRegestrationWidget extends StatelessWidget {
 
           Positioned(
             top: 30,
-            left: 165,
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppStyle.regestrationstyle,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppStyle.regestrationstyle,
+              ),
             ),
           ),
         ],

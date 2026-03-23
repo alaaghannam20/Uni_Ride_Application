@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/main_onboarding.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/code_verification_screen.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/forget_password_screen.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/otb_verification_screen.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/password_changed_screen.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/reset_password_screen.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/sign_in_screen.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_driver.dart';
 
 import 'package:uni_ride_application/features/splash_pages/splash_screen.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding1_screen.dart';
-
-import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding2_screen.dart';
-import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding3_screen.dart';
-import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding4_screen.dart';
 
 import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_uni_screen.dart';
 
@@ -41,10 +44,100 @@ class AppRouter {
               )
             : MaterialPageRoute(builder: (_) => const MainOnboarding());
 
-      case Routes.signUp:
+      case Routes.signUpUni:
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 1200),
           pageBuilder: (_, _, _) => SignupUniScreen(),
+          transitionsBuilder: (_, animation, _, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.linear));
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+        );
+
+          case Routes.signUpDriver:
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 1200),
+          pageBuilder: (_, _, _) => SignUpDriverScreen(),
+          transitionsBuilder: (_, animation, _, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.linear));
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+        );
+
+      case Routes.OtbVerification:
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 1200),
+          pageBuilder: (_, _, _) => OtbVerificationScreen(),
+          transitionsBuilder: (_, animation, _, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.linear));
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+        );
+
+      case Routes.signIn:
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 1200),
+          pageBuilder: (_, _, _) => SignInScreen(),
+          transitionsBuilder: (_, animation, _, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.linear));
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+        );
+
+      case Routes.forgetPassword:
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 1200),
+          pageBuilder: (_, _, _) => ForgetPasswordScreen(),
+          transitionsBuilder: (_, animation, _, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.linear));
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+        );
+      case Routes.codeVerification:
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 1200),
+          pageBuilder: (_, _, _) => CodeVerificationScreen(),
+          transitionsBuilder: (_, animation, _, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.linear));
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+        );
+
+      case Routes.passwordChanged:
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 1200),
+          pageBuilder: (_, _, _) => PasswordChangedScreen(),
+          transitionsBuilder: (_, animation, _, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.linear));
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+        );
+
+      case Routes.resetPassword:
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 1200),
+          pageBuilder: (_, _, _) => ResetPasswordScreen(),
           transitionsBuilder: (_, animation, _, child) {
             final offsetAnimation = Tween<Offset>(
               begin: const Offset(1, 0),

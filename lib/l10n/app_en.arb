@@ -1,0 +1,22 @@
+
+{
+"@@locale": "en",
+
+"ar": "Arabic",
+"en": "English",
+"theme" : "Theme" ,
+"dark" : "Dark" ,
+"light" : "Light",
+
+"skip": "Skip",
+"getStarted": "Get Started",
+"go": "Go",
+
+
+"onboarding2Title": "Smart Campus Transportation",
+"onboardingDescription": "Seamless booking, real-time tracking, and reliable transport for every university day.",
+
+"onboarding3Title": "Book • Track • Arrive",
+
+"onboarding4Title": "Connected Rides, be Connected"
+}

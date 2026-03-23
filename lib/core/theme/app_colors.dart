@@ -12,4 +12,5 @@ static const Color splashcolor = Color(0xFFFDD35C);
 static const Color transparent = Color(0x00000000);
 static const Color titlecolor = Color(0xFF2A2A2A);
 static const Color redColor = Color(0xFFF44336);
+static const Color forgetpasscolor = Color(0xFF222222);
 }
