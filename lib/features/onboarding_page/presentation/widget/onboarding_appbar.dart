@@ -3,6 +3,7 @@ import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/language_button.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class OnboardingAppbar extends StatelessWidget {
   final bool showSkip;
@@ -23,7 +24,10 @@ class OnboardingAppbar extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, Routes.signUp);
                 },
-                child: Text('Skip', style: AppStyle.skipstyle),
+                child: Text(
+                  AppLocalizations.of(context)!.skip,
+                  style: AppStyle.skipstyle,
+                ),
               ),
             Spacer(),
             LanguageButton(),

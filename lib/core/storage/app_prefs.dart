@@ -25,6 +25,12 @@ class AppPrefs {
   }
 
 
+  static String getLanguageCode() {
+    return _prefs.getString(PrefKeys.languageCode) ?? 'en';
+  }
 
+  static Future<void> setLanguageCode(String code) async {
+    await _prefs.setString(PrefKeys.languageCode, code);
+  }
 
 }
