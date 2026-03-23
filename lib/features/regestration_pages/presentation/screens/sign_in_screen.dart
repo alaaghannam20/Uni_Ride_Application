@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -85,8 +86,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                   hintText: 'a.m.ghannam@student.ptuk.edu.ps',
                                   keyboardType: TextInputType.emailAddress,
                                   prefixIcon: const Icon(
-                                    Icons.badge, 
-                                    size: 22, 
+                                    Icons.badge,
+                                    size: 22,
                                     color: AppColors.languagecolor,
                                   ),
                                 ),
@@ -99,7 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   hintText: '• • • • • • • •',
                                   isPassword: true,
                                   prefixIcon: const Icon(
-                                    Icons.lock, 
+                                    Icons.lock,
                                     size: 22,
                                     color: AppColors.languagecolor,
                                   ),
@@ -150,20 +151,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                               overflow: TextOverflow.ellipsis,
                                               style: AppStyle.passwordStyle
                                                   .copyWith(
-                                                color: AppColors.black,
-                                              ),
+                                                    color: AppColors.black,
+                                                  ),
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () {
-                                      },
+                                      onTap: () {},
                                       child: Text(
                                         'Forgot Password?',
-                                        style:
-                                            AppStyle.passwordStyle.copyWith(
+                                        style: AppStyle.passwordStyle.copyWith(
                                           color: AppColors.orangeprimary,
                                         ),
                                       ),
@@ -183,7 +182,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                 CustomButton(
                                   text: 'Login',
                                   backgroundColor: AppColors.orangeprimary,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      Routes.home,
+                                    );
+                                  },
                                   textColor: AppColors.white,
                                 ),
                                 const SizedBox(height: 14),
@@ -201,10 +205,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       style: AppStyle.loginNowStyle,
                                     ),
                                     const SizedBox(width: 4),
-                                    Text(
-                                      '|',
-                                      style: AppStyle.loginNowStyle,
-                                    ),
+                                    Text('|', style: AppStyle.loginNowStyle),
                                     const SizedBox(width: 4),
                                     Text(
                                       'تسجيل الدخول',

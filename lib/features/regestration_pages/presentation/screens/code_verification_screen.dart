@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -110,7 +111,10 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                               backgroundColor: AppColors.orangeprimary,
                               onPressed: () {
                                 if (otpCode.length == 4) {
-                                  debugPrint('OTP Code: $otpCode');
+                                  Navigator.pushNamed(
+                                    context,
+                                    Routes.resetPassword,
+                                  );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(

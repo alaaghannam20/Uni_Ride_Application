@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -68,7 +69,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           Text(
                             'Minimum 8 characters',
                             style: AppStyle.hintstyle.copyWith(fontSize: 9),
-
                           ),
                           const SizedBox(height: 22),
 
@@ -89,7 +89,31 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             child: CustomButton(
                               text: 'Reset password',
                               backgroundColor: AppColors.orangeprimary,
-                              onPressed: () {},
+                              onPressed: () {
+                                if (newpasswordController.text.length < 8) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Minimum 8 characters'),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                if (newpasswordController.text !=
+                                    confirmPasswordController.text) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Passwords do not match'),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                Navigator.pushNamed(
+                                  context,
+                                  Routes.passwordChanged,
+                                );
+                              },
                               textColor: AppColors.white,
                             ),
                           ),

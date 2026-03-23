@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
-import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
 
 class PasswordChangedScreen extends StatefulWidget {
@@ -61,14 +61,20 @@ class _PasswordChangedScreenState extends State<PasswordChangedScreen> {
                                 style: AppStyle.accountQuestionStyle,
                                 textAlign: TextAlign.center,
                               ),
-                    
+
                               SizedBox(height: 30),
                               SizedBox(
                                 height: 56,
                                 child: CustomButton(
                                   text: 'Finish!',
                                   backgroundColor: AppColors.orangeprimary,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      Routes.signIn,
+                                      (route) => false,
+                                    );
+                                  },
                                   textColor: AppColors.white,
                                 ),
                               ),
