@@ -21,18 +21,22 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 2));
 
     final seenOnboarding = AppPrefs.getSeenOnboarding();
-    final isLoggedIn = AppPrefs.getIsLoggedIn();
+    final token = AppPrefs.getToken();
 
-    if (!mounted) return;
+   if (!mounted) return;
 
-    if (isLoggedIn) {
+  if (!seenOnboarding) {
+    Navigator.pushReplacementNamed(context, Routes.onboarding1);
+  }
+  else {
+    if (token != null && token.isNotEmpty) {
       Navigator.pushReplacementNamed(context, Routes.home);
-    } else if (!seenOnboarding) {
-      Navigator.pushReplacementNamed(context, Routes.onboarding1);
-    } else {
+    } 
+    else {
       Navigator.pushReplacementNamed(context, Routes.signUpUni);
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {

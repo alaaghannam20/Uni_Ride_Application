@@ -3,6 +3,7 @@ import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
 import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/otb_verification_screen.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_driver.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
@@ -128,7 +129,26 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                             child: CustomButton(
                               text: 'Sign Up',
                               backgroundColor: AppColors.orangeprimary,
-                              onPressed: () {},
+                              onPressed: () {
+                                final email = uniEmailController.text.trim();
+
+                                if (email.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Enter your email'),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        OtbVerificationScreen(email: email),
+                                  ),
+                                );
+                              },
                               textColor: AppColors.white,
                             ),
                           ),

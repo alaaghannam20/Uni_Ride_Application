@@ -71,9 +71,10 @@ class AppRouter {
         );
 
       case Routes.OtbVerification:
+      final email = settings.arguments as String;
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 1200),
-          pageBuilder: (_, _, _) => OtbVerificationScreen(),
+          pageBuilder: (_, _, _) => OtbVerificationScreen(email: email),
           transitionsBuilder: (_, animation, _, child) {
             final offsetAnimation = Tween<Offset>(
               begin: const Offset(1, 0),

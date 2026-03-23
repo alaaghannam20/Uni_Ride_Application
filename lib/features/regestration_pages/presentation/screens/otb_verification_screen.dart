@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -8,7 +10,8 @@ import 'package:uni_ride_application/features/regestration_pages/presentation/wi
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
 
 class OtbVerificationScreen extends StatefulWidget {
-  const OtbVerificationScreen({super.key});
+  final String email;
+  const OtbVerificationScreen({super.key, required this.email});
 
   @override
   State<OtbVerificationScreen> createState() => _OtbVerificationScreenState();
@@ -52,17 +55,17 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                                     height: 24 / 18,
                                     color: AppColors.skiptextcolor,
                                   ),
-                                  textAlign: TextAlign.center, 
+                                  textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   "We've sent a 4-digit code to",
                                   style: AppStyle.accountQuestionStyle,
-                                  textAlign: TextAlign.center, 
+                                  textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'a.m.ghannam@student.ptuk.edu.ps',
+                                  widget.email,
                                   style: AppStyle.loginNowStyle.copyWith(
                                     color: AppColors.skiptextcolor,
                                   ),
@@ -107,9 +110,18 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                             child: CustomButton(
                               text: 'Verify',
                               backgroundColor: AppColors.orangeprimary,
-                              onPressed: () {
+                              onPressed: () async {
                                 if (otpCode.length == 4) {
-                                  debugPrint('OTP Code: $otpCode');
+                                  // API 
+                                  String fakeToken = "123456_token";
+
+                                  await AppPrefs.setToken(fakeToken);
+
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    Routes.home,
+                                    (route) => false,
+                                  );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
