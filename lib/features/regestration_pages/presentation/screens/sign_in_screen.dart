@@ -7,6 +7,7 @@ import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -18,6 +19,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailOrPhoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   bool isChecked = false;
 
@@ -36,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           children: [
             TobbarRegestrationWidget(
-              title: 'Sign In',
+              title: AppLocalizations.of(context)!.signIn,
               onBackPressed: () {
                 Navigator.pop(context);
               },
@@ -54,23 +56,26 @@ class _SignInScreenState extends State<SignInScreen> {
                         children: [
                           SizedBox(
                             width: 332,
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  'assets/images/signin.png',
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.contain,
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  'Welcome Back',
-                                  style: AppStyle.custombuttonstyle.copyWith(
-                                    fontSize: 20,
-                                    color: AppColors.skiptextcolor,
+                            child: Form(
+                              key: formKey,
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/signin.png',
+                                    width: 64,
+                                    height: 64,
+                                    fit: BoxFit.contain,
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    AppLocalizations.of(context)!.welcomeBack,
+                                    style: AppStyle.custombuttonstyle.copyWith(
+                                      fontSize: 20,
+                                      color: AppColors.skiptextcolor,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
 
@@ -82,7 +87,9 @@ class _SignInScreenState extends State<SignInScreen> {
                               children: [
                                 CustomTextfiled(
                                   controller: emailOrPhoneController,
-                                  labelText: 'Email or Phone',
+                                  labelText: AppLocalizations.of(
+                                    context,
+                                  )!.emailOrPhone,
                                   hintText: 'a.m.ghannam@student.ptuk.edu.ps',
                                   keyboardType: TextInputType.emailAddress,
                                   prefixIcon: const Icon(
@@ -90,13 +97,23 @@ class _SignInScreenState extends State<SignInScreen> {
                                     size: 22,
                                     color: AppColors.languagecolor,
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return AppLocalizations.of(
+                                        context,
+                                      )!.enterEmail;
+                                    }
+                                    return null;
+                                  },
                                 ),
 
                                 const SizedBox(height: 16),
 
                                 CustomTextfiled(
                                   controller: passwordController,
-                                  labelText: 'Password',
+                                  labelText: AppLocalizations.of(
+                                    context,
+                                  )!.password,
                                   hintText: '• • • • • • • •',
                                   isPassword: true,
                                   prefixIcon: const Icon(
@@ -104,6 +121,19 @@ class _SignInScreenState extends State<SignInScreen> {
                                     size: 22,
                                     color: AppColors.languagecolor,
                                   ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return AppLocalizations.of(
+                                        context,
+                                      )!.enterPassword;
+                                    }
+                                    if (value.length < 8) {
+                                      return AppLocalizations.of(
+                                        context,
+                                      )!.minimum8Chars;
+                                    }
+                                    return null;
+                                  },
                                 ),
 
                                 const SizedBox(height: 12),
@@ -147,7 +177,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                           const SizedBox(width: 10),
                                           Flexible(
                                             child: Text(
-                                              'Remember Me',
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.rememberMe,
                                               overflow: TextOverflow.ellipsis,
                                               style: AppStyle.passwordStyle
                                                   .copyWith(
@@ -161,7 +193,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                     GestureDetector(
                                       onTap: () {},
                                       child: Text(
-                                        'Forgot Password?',
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.forgotPassword,
                                         style: AppStyle.passwordStyle.copyWith(
                                           color: AppColors.orangeprimary,
                                         ),
@@ -180,19 +214,21 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Column(
                               children: [
                                 CustomButton(
-                                  text: 'Login',
+                                  text: AppLocalizations.of(context)!.login,
                                   backgroundColor: AppColors.orangeprimary,
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      Routes.home,
-                                    );
+                                    if (formKey.currentState!.validate()) {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        Routes.home,
+                                      );
+                                    }
                                   },
                                   textColor: AppColors.white,
                                 ),
                                 const SizedBox(height: 14),
                                 Text(
-                                  'Dont have an account?',
+                                  AppLocalizations.of(context)!.dontHaveAccount,
                                   textAlign: TextAlign.center,
                                   style: AppStyle.accountQuestionStyle,
                                 ),
@@ -201,7 +237,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Sign Up Now',
+                                      AppLocalizations.of(context)!.signUpNow,
                                       style: AppStyle.loginNowStyle,
                                     ),
                                     const SizedBox(width: 4),

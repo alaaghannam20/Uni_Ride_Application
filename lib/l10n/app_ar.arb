@@ -1,21 +1,95 @@
 {
-"@@locale": "ar",
-
+  "@@locale": "ar",
   "ar": "العربية",
   "en": "الإنجليزية",
   "theme": "المظهر",
   "dark": "ليلي",
   "light": "نهاري",
-
   "skip": "تخطي",
   "getStarted": "ابدأ الآن",
   "go": "ابدأ",
-
-
   "onboarding2Title": "النقل الجامعي الذكي",
   "onboardingDescription": "حجز سهل، تتبع مباشر، وتنقل موثوق لكل يوم جامعي.",
-
   "onboarding3Title": "احجز • تتبع • وصل",
+  "onboarding4Title": "رحلات مترابطة، ابقَ على اتصال",
 
-  "onboarding4Title": "رحلات مترابطة، ابقَ على اتصال"
+  "signUp": "إنشاء حساب",
+  "driver": "السائق",
+  "emailAddress": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "minimum8Chars": "8 أحرف على الأقل",
+  "alreadyHaveAccount": "لديك حساب بالفعل؟",
+
+  "otpVerification": "التحقق بالرمز",
+  "enterVerificationCode": "أدخل رمز التحقق",
+  "sentCodeTo": "لقد أرسلنا رمزاً مكوناً من 4 أرقام إلى",
+  "resendCodeIn": "إعادة إرسال الرمز خلال ",
+  "verify": "تحقق",
+  "changeEmailAddress": "تغيير البريد الإلكتروني",
+  "universityMember": "اعضاء الجامعة",
+
+  "personalInformation": "المعلومات الشخصية",
+  "signUpDriver": "تسجيل السائق",
+  "fullName": "الاسم الكامل",
+  "phoneNumber": "رقم الهاتف",
+  "carDetails": "تفاصيل السيارة",
+  "carType": "نوع السيارة",
+  "numberOfSeats": "عدد المقاعد",
+  "driverInformation": "معلومات السائق",
+  "licenseNumber": "رقم الرخصة",
+  "vehicleType": "نوع المركبة",
+  "plateNumber": "رقم لوحة السيارة",
+  "uploadDriverLicense": "قم بتحميل نسخة من رخصة القيادة السارية.",
+  "uploadVehicleLicense": "قم بتحميل نسخة من رخصة المركبة.",
+  "uploadDocument": "تحميل الوثيقة",
+  "agreeTerms": "أوافق على الشروط وسياسة الخصوصية",
+  "continu": "متابعة",
+  "cancel": "إلغاء",
+
+  "signIn": "تسجيل الدخول",
+  "emailOrPhone": "البريد أو الهاتف",
+  "rememberMe": "تذكرني",
+  "forgotPassword": "نسيت كلمة المرور؟",
+  "login": "دخول",
+  "dontHaveAccount": "ليس لديك حساب؟",
+  "welcomeBack": "مرحباً بعودتك",
+
+  "forgetPassword": "نسيت كلمة المرور",
+  "enteryouremailtoresetyourpassword": "يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور",
+  "sendCode": "إرسال الرمز",
+  "enterCode": "ادخل الرمز",
+  "didntReceiveCode": "لم تستلم الرمز؟ ",
+  "sendAgain": "أرسل مجدداً",
+
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "newPassword": "كلمة المرور الجديدة",
+  "yourNewPasswordMustBeDifferentFromPreviousOne": "يجب أن تختلف كلمة المرور الجديدة عن السابقة",
+  
+  "passwordChanged": "تم تغيير كلمة المرور",
+  "passwordChangedSuccess": "تم تغيير كلمة المرور بنجاح",
+  "finish": "إنهاء!",
+
+  "poweredBy": "مدعوم من ",
+"ptukEngineering": "كلية الهندسة خضوري",
+
+"signUpUniversity": "تسجيل اعضاء الجامعة",
+"driverDocuments": "وثائق السائق",
+
+"enterEmail": "أدخل بريدك الإلكتروني",
+"invalidEmail": "البريد الإلكتروني غير صحيح",
+"enterPassword": "أدخل كلمة المرور",
+"passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+
+"enterFullName": "أدخل الاسم الكامل",
+"enterPhone": "أدخل رقم الهاتف",
+"invalidPhone": "رقم الهاتف غير صحيح",
+"enterCarType": "أدخل نوع السيارة",
+"enterNumberOfSeats": "أدخل عدد المقاعد",
+"enterLicenseNumber": "أدخل رقم الرخصة",
+"enterVehicleType": "أدخل نوع المركبة",
+"enterPlateNumber": "أدخل رقم اللوحة",
+"pleaseAgreeTerms": "يرجى الموافقة على الشروط وسياسة الخصوصية",
+"submittedSuccessfully": "تم تقديم طلب تسجيل السائق بنجاح",
+"signUpNow": "إنشاء حساب الآن"
 }

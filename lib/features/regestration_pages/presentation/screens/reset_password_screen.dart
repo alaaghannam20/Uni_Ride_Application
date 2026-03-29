@@ -7,6 +7,7 @@ import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -19,6 +20,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController newpasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+      final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -35,7 +37,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         child: Column(
           children: [
             TobbarRegestrationWidget(
-              title: 'Reset password',
+              title: AppLocalizations.of(context)!.resetPassword,
               onBackPressed: () {
                 Navigator.pop(context);
               },
@@ -49,75 +51,80 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: Column(
                   children: [
                     CustomCardContainer(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          CustomTextfiled(
-                            controller: newpasswordController,
-                            labelText: 'New Password',
-                            hintText: '• • • • • • • •',
-                            isPassword: true,
-                            prefixIcon: const Icon(
-                              Icons.lock,
-                              size: 22,
-                              color: AppColors.languagecolor,
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CustomTextfiled(
+                              controller: newpasswordController,
+                              labelText: AppLocalizations.of(context)!.newPassword,
+                              hintText: '• • • • • • • •',
+                              isPassword: true,
+                              prefixIcon: const Icon(
+                                Icons.lock,
+                                size: 22,
+                                color: AppColors.languagecolor,
+                              ),
+                               validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return AppLocalizations.of(
+                                        context,
+                                      )!.enterPassword;
+                                    }
+                                    if (value.length < 8) {
+                                      return AppLocalizations.of(
+                                        context,
+                                      )!.minimum8Chars;
+                                    }
+                                    return null;
+                                  }, 
                             ),
-                          ),
-
-                          const SizedBox(height: 4),
-
-                          Text(
-                            'Minimum 8 characters',
-                            style: AppStyle.hintstyle.copyWith(fontSize: 9),
-                          ),
-                          const SizedBox(height: 22),
-
-                          CustomTextfiled(
-                            controller: confirmPasswordController,
-                            labelText: 'Confirm Password',
-                            hintText: '• • • • • • • •',
-                            isPassword: true,
-                            prefixIcon: const Icon(
-                              Icons.lock,
-                              size: 22,
-                              color: AppColors.languagecolor,
+                        
+                            const SizedBox(height: 4),
+                        
+                            Text(
+                              AppLocalizations.of(context)!.minimum8Chars,
+                              style: AppStyle.hintstyle.copyWith(fontSize: 9),
                             ),
-                          ),
-                          const SizedBox(height: 26),
-                          SizedBox(
-                            height: 56,
-                            child: CustomButton(
-                              text: 'Reset password',
-                              backgroundColor: AppColors.orangeprimary,
-                              onPressed: () {
-                                if (newpasswordController.text.length < 8) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Minimum 8 characters'),
-                                    ),
-                                  );
-                                  return;
+                            const SizedBox(height: 22),
+                        
+                            CustomTextfiled(
+                              controller: confirmPasswordController,
+                              labelText: AppLocalizations.of(context)!.confirmPassword,
+                              hintText: '• • • • • • • •',
+                              isPassword: true,
+                              prefixIcon: const Icon(
+                                Icons.lock,
+                                size: 22,
+                                color: AppColors.languagecolor,
+                              ),
+                                    validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(context)!.enterPassword;
                                 }
-
-                                if (newpasswordController.text !=
-                                    confirmPasswordController.text) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Passwords do not match'),
-                                    ),
-                                  );
-                                  return;
+                                if (value != newpasswordController.text) {
+                                  return AppLocalizations.of(context)!.passwordsDoNotMatch;
                                 }
-
-                                Navigator.pushNamed(
-                                  context,
-                                  Routes.passwordChanged,
-                                );
+                                return null;
                               },
-                              textColor: AppColors.white,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 26),
+                            SizedBox(
+                              height: 56,
+                              child: CustomButton(
+                                text: AppLocalizations.of(context)!.resetPassword,
+                                backgroundColor: AppColors.orangeprimary,
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    Navigator.pushNamed(context, Routes.passwordChanged);
+                                  }
+                                },
+                                textColor: AppColors.white,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 

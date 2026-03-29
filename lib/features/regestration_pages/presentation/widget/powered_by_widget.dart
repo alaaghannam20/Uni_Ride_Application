@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class PoweredByWidget extends StatelessWidget {
   const PoweredByWidget({super.key});
@@ -12,7 +13,7 @@ class PoweredByWidget extends StatelessWidget {
       children: [
 
         Text(
-          'Powered by ',
+          AppLocalizations.of(context)!.poweredBy,
           style: AppStyle.lablestyle.copyWith(
             fontWeight: FontWeight.w400,
             color: AppColors.languagecolor,
@@ -22,7 +23,7 @@ class PoweredByWidget extends StatelessWidget {
         const SizedBox(width: 7),
 
         Text(
-          'PTUK Engineering',
+          AppLocalizations.of(context)!.ptukEngineering,
           style: AppStyle.lablestyle.copyWith(
             color: AppColors.orangeprimary,
           ),

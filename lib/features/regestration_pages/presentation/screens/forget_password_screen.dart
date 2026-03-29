@@ -7,6 +7,7 @@ import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -17,6 +18,8 @@ class ForgetPasswordScreen extends StatefulWidget {
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final TextEditingController emailOrPhoneController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
 
   @override
   void dispose() {
@@ -32,7 +35,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         child: Column(
           children: [
             TobbarRegestrationWidget(
-              title: 'Forget Password',
+              title: AppLocalizations.of(context)!.forgetPassword,
               onBackPressed: () {
                 Navigator.pop(context);
               },
@@ -46,50 +49,53 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 child: Column(
                   children: [
                     CustomCardContainer(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 30),
-                          Text(
-                            'Enter your email \n to reset your password',
-                            style: AppStyle.hintstyle.copyWith(
-                              color: AppColors.titlecolor,
-                              fontSize: 15,
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 30),
+                            Text(
+                              AppLocalizations.of(context)!.enteryouremailtoresetyourpassword,
+                              style: AppStyle.hintstyle.copyWith(
+                                color: AppColors.titlecolor,
+                                fontSize: 15,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 40),
-                          CustomTextfiled(
-                            controller: emailOrPhoneController,
-                            labelText: 'Email ',
-                            hintText: 'a.m.ghannam@student.ptuk.edu.ps',
-                            keyboardType: TextInputType.emailAddress,
-                            prefixIcon: const Icon(
-                              Icons.email,
-                              size: 22,
-                              color: AppColors.languagecolor,
+                            SizedBox(height: 40),
+                            CustomTextfiled(
+                              controller: emailOrPhoneController,
+                              labelText: AppLocalizations.of(context)!.emailAddress,
+                              hintText: 'a.m.ghannam@student.ptuk.edu.ps',
+                              keyboardType: TextInputType.emailAddress,
+                              prefixIcon: const Icon(
+                                Icons.email,
+                                size: 22,
+                                color: AppColors.languagecolor,
+                              ),
+                                   validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return AppLocalizations.of(context)!.enterEmail;
+                                }
+                                if (!value.contains('@')) {
+                                  return AppLocalizations.of(context)!.invalidEmail;
+                                }
+                                return null;
+                              },
                             ),
-                          ),
-                          const SizedBox(height: 30),
-                          CustomButton(
-                            text: 'Send code',
-                            backgroundColor: AppColors.orangeprimary,
-                            onPressed: () {
-                              if (emailOrPhoneController.text.isNotEmpty) {
-                                Navigator.pushNamed(
-                                  context,
-                                  Routes.codeVerification,
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Enter your email'),
-                                  ),
-                                );
-                              }
-                            },
-                            textColor: AppColors.white,
-                          ),
-                        ],
+                            const SizedBox(height: 30),
+                            CustomButton(
+                              text: AppLocalizations.of(context)!.sendCode,
+                              backgroundColor: AppColors.orangeprimary,
+                              onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                  Navigator.pushNamed(context, Routes.codeVerification);
+                                }
+                              },
+                              textColor: AppColors.white,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 22),

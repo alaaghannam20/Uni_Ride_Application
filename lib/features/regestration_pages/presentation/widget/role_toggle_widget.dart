@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
+
 
 class RoleToggleWidget extends StatelessWidget {
   final bool isStudDocSelected;
@@ -34,7 +36,7 @@ class RoleToggleWidget extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  'Student/Doctor',
+                  AppLocalizations.of(context)!.universityMember,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
@@ -61,7 +63,7 @@ class RoleToggleWidget extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  'Driver',
+                  AppLocalizations.of(context)!.driver,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
