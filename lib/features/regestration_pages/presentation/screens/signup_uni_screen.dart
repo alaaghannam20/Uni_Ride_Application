@@ -9,6 +9,7 @@ import 'package:uni_ride_application/features/regestration_pages/presentation/wi
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/role_toggle_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class SignupUniScreen extends StatefulWidget {
   const SignupUniScreen({super.key});
@@ -23,6 +24,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -40,7 +42,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
         child: Column(
           children: [
             TobbarRegestrationWidget(
-              title: 'Sign Up',
+              title: AppLocalizations.of(context)!.signUpUniversity,
               onBackPressed: () {
                 Navigator.pop(context);
               },
@@ -55,128 +57,170 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                 child: Column(
                   children: [
                     CustomCardContainer(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          RoleToggleWidget(
-                            isStudDocSelected: isStudDocSelected,
-                            onStudentTap: () {
-                              setState(() {
-                                isStudDocSelected = false;
-                              });
-                            },
-                            onDriverTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SignUpDriverScreen(),
-                                ),
-                              );
-                            },
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          CustomTextfiled(
-                            controller: uniEmailController,
-                            labelText: 'Email Address',
-                            hintText: 'a.m.ghannam@student.ptuk.edu.ps',
-                            keyboardType: TextInputType.emailAddress,
-                            prefixIcon: const Icon(
-                              Icons.email_sharp,
-                              size: 18,
-                              color: AppColors.languagecolor,
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          CustomTextfiled(
-                            controller: passwordController,
-                            labelText: 'Password',
-                            hintText: '• • • • • • • •',
-                            isPassword: true,
-                            prefixIcon: const Icon(
-                              Icons.lock,
-                              size: 22,
-                              color: AppColors.languagecolor,
-                            ),
-                          ),
-
-                          const SizedBox(height: 4),
-
-                          Text(
-                            'Minimum 8 characters',
-                            style: AppStyle.hintstyle.copyWith(fontSize: 9),
-                          ),
-                          const SizedBox(height: 14),
-
-                          CustomTextfiled(
-                            controller: confirmPasswordController,
-                            labelText: 'Confirm Password',
-                            hintText: '• • • • • • • •',
-                            isPassword: true,
-                            prefixIcon: const Icon(
-                              Icons.lock,
-                              size: 22,
-                              color: AppColors.languagecolor,
-                            ),
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          SizedBox(
-                            height: 56,
-                            child: CustomButton(
-                              text: 'Sign Up',
-                              backgroundColor: AppColors.orangeprimary,
-                              onPressed: () {
-                                final email = uniEmailController.text.trim();
-
-                                if (email.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Enter your email'),
-                                    ),
-                                  );
-                                  return;
-                                }
-
-                                Navigator.push(
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            RoleToggleWidget(
+                              isStudDocSelected: isStudDocSelected,
+                              onStudentTap: () {
+                                setState(() {
+                                  isStudDocSelected = false;
+                                });
+                              },
+                              onDriverTap: () {
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        OtbVerificationScreen(email: email),
+                                        const SignUpDriverScreen(),
                                   ),
                                 );
                               },
-                              textColor: AppColors.white,
                             ),
-                          ),
 
-                          const SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
-                          Text(
-                            'Already have an account?',
-                            textAlign: TextAlign.center,
-                            style: AppStyle.accountQuestionStyle,
-                          ),
-
-                          const SizedBox(height: 4),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Login Now', style: AppStyle.loginNowStyle),
-                              const SizedBox(width: 4),
-                              Text('|', style: AppStyle.loginNowStyle),
-                              const SizedBox(width: 4),
-                              Text(
-                                'تسجيل الدخول',
-                                style: AppStyle.loginNowStyle,
+                            CustomTextfiled(
+                              controller: uniEmailController,
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.emailAddress,
+                              hintText: 'a.m.ghannam@student.ptuk.edu.ps',
+                              keyboardType: TextInputType.emailAddress,
+                              prefixIcon: const Icon(
+                                Icons.email_sharp,
+                                size: 18,
+                                color: AppColors.languagecolor,
                               ),
-                            ],
-                          ),
-                        ],
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.enterEmail;
+                                }
+                                if (!value.contains('@')) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.invalidEmail;
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 14),
+                            CustomTextfiled(
+                              controller: passwordController,
+                              labelText: AppLocalizations.of(context)!.password,
+                              hintText: '• • • • • • • •',
+                              isPassword: true,
+                              prefixIcon: const Icon(
+                                Icons.lock,
+                                size: 22,
+                                color: AppColors.languagecolor,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.enterPassword;
+                                }
+                                if (value.length < 8) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.minimum8Chars;
+                                }
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: 4),
+
+                            Text(
+                              AppLocalizations.of(context)!.minimum8Chars,
+                              style: AppStyle.hintstyle.copyWith(fontSize: 9),
+                            ),
+                            const SizedBox(height: 14),
+
+                            CustomTextfiled(
+                              controller: confirmPasswordController,
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.confirmPassword,
+                              hintText: '• • • • • • • •',
+                              isPassword: true,
+                              prefixIcon: const Icon(
+                                Icons.lock,
+                                size: 22,
+                                color: AppColors.languagecolor,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.enterPassword;
+                                }
+                                if (value != passwordController.text) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.passwordsDoNotMatch;
+                                }
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            SizedBox(
+                              height: 56,
+                              child: CustomButton(
+                                text: AppLocalizations.of(context)!.signUp,
+                                backgroundColor: AppColors.orangeprimary,
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    final email = uniEmailController.text
+                                        .trim();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OtbVerificationScreen(email: email),
+                                      ),
+                                    );
+                                  }
+                                },
+                                textColor: AppColors.white,
+                              ),
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            Text(
+                              AppLocalizations.of(context)!.alreadyHaveAccount,
+                              textAlign: TextAlign.center,
+                              style: AppStyle.accountQuestionStyle,
+                            ),
+
+                            const SizedBox(height: 4),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Login Now',
+                                  style: AppStyle.loginNowStyle,
+                                ),
+                                const SizedBox(width: 4),
+                                Text('|', style: AppStyle.loginNowStyle),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'تسجيل الدخول',
+                                  style: AppStyle.loginNowStyle,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 

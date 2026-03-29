@@ -8,6 +8,7 @@ import 'package:uni_ride_application/features/regestration_pages/presentation/wi
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/otp_pin_field_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class OtbVerificationScreen extends StatefulWidget {
   final String email;
@@ -20,6 +21,26 @@ class OtbVerificationScreen extends StatefulWidget {
 class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
   String otpCode = '';
 
+  int _secondsRemaining = 50;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  dynamic _startTimer() {
+    return Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return false;
+      if (_secondsRemaining == 0) return false;
+      setState(() {
+        _secondsRemaining--;
+      });
+      return true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +49,7 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
         child: Column(
           children: [
             TobbarRegestrationWidget(
-              title: 'OTP Verification',
+              title: AppLocalizations.of(context)!.otpVerification,
               onBackPressed: () {
                 Navigator.pop(context);
               },
@@ -50,7 +71,9 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Enter Verification Code',
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.enterVerificationCode,
                                   style: AppStyle.custombuttonstyle.copyWith(
                                     height: 24 / 18,
                                     color: AppColors.skiptextcolor,
@@ -59,7 +82,7 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  "We've sent a 4-digit code to",
+                                  AppLocalizations.of(context)!.sentCodeTo,
                                   style: AppStyle.accountQuestionStyle,
                                   textAlign: TextAlign.center,
                                 ),
@@ -87,32 +110,61 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                           ),
 
                           const SizedBox(height: 12),
-
-                          RichText(
-                            text: TextSpan(
-                              text: 'Resend code in ',
-                              style: AppStyle.accountQuestionStyle,
-                              children: [
-                                TextSpan(
-                                  text: '50s',
-                                  style: AppStyle.loginNowStyle.copyWith(
-                                    color: AppColors.orangeprimary,
+                          _secondsRemaining > 0
+                              ? RichText(
+                                  text: TextSpan(
+                                    text: AppLocalizations.of(
+                                      context,
+                                    )!.resendCodeIn,
+                                    style: AppStyle.accountQuestionStyle,
+                                    children: [
+                                      TextSpan(
+                                        text: '${_secondsRemaining}s',
+                                        style: AppStyle.loginNowStyle.copyWith(
+                                          color: AppColors.orangeprimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _secondsRemaining = 50;
+                                    });
+                                    _startTimer();
+                                  },
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: AppLocalizations.of(
+                                        context,
+                                      )!.didntReceiveCode,
+                                      style: AppStyle.accountQuestionStyle,
+                                      children: [
+                                        TextSpan(
+                                          text: AppLocalizations.of(
+                                            context,
+                                          )!.sendAgain,
+                                          style: AppStyle.loginNowStyle
+                                              .copyWith(
+                                                color: AppColors.orangeprimary,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
 
                           const SizedBox(height: 24),
 
                           SizedBox(
                             height: 56,
                             child: CustomButton(
-                              text: 'Verify',
+                              text: AppLocalizations.of(context)!.verify,
                               backgroundColor: AppColors.orangeprimary,
                               onPressed: () async {
                                 if (otpCode.length == 4) {
-                                  // API 
+                                  // API
                                   String fakeToken = "123456_token";
 
                                   await AppPrefs.setToken(fakeToken);
@@ -124,8 +176,10 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Enter the 4 digit code'),
+                                    SnackBar(
+                                      content: Text(
+                                        AppLocalizations.of(context)!.enterCode,
+                                      ),
                                     ),
                                   );
                                 }
@@ -141,7 +195,7 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                               Navigator.pop(context);
                             },
                             child: Text(
-                              'Change Email Address',
+                              AppLocalizations.of(context)!.changeEmailAddress,
                               textAlign: TextAlign.center,
                               style: AppStyle.loginNowStyle.copyWith(
                                 color: AppColors.languagecolor,

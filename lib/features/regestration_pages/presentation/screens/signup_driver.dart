@@ -8,6 +8,7 @@ import 'package:uni_ride_application/features/regestration_pages/presentation/wi
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/powered_by_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/role_toggle_widget.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class SignUpDriverScreen extends StatefulWidget {
   const SignUpDriverScreen({super.key});
@@ -57,19 +58,22 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
 
   void goToNextStep() {
     if (currentStep == 0) {
+      if (!_formKeyStep1.currentState!.validate()) return;
+
       setState(() {
         currentStep += 1;
       });
     } else if (currentStep == 1) {
+      if (!_formKeyStep2.currentState!.validate()) return;
+
       setState(() {
         currentStep += 1;
       });
     } else if (currentStep == 2) {
+      if (!_formKeyStep3.currentState!.validate()) return;
       if (!agreeTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please agree to the Terms and Privacy Policy'),
-          ),
+          SnackBar(content: Text(AppLocalizations.of(context)!.agreeTerms)),
         );
         return;
       }
@@ -95,7 +99,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
   List<Step> getSteps() {
     return [
       Step(
-        title: const Text('Personal Information'),
+        title: Text(AppLocalizations.of(context)!.personalInformation),
         isActive: currentStep >= 0,
         state: currentStep > 0 ? StepState.complete : StepState.indexed,
         content: Form(
@@ -104,18 +108,24 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             children: [
               CustomTextfiled(
                 controller: fullNameController,
-                labelText: 'Full Name',
+                labelText: AppLocalizations.of(context)!.fullName,
                 hintText: 'A’laa Mohammad Ghannam',
                 prefixIcon: const Icon(
                   Icons.person_outline,
                   size: 18,
                   color: AppColors.languagecolor,
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterFullName;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 controller: emailController,
-                labelText: 'Email Address',
+                labelText: AppLocalizations.of(context)!.emailAddress,
                 hintText: 'a.m.ghannam@student.ptuk.edu.ps',
                 keyboardType: TextInputType.emailAddress,
                 prefixIcon: const Icon(
@@ -123,11 +133,20 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 18,
                   color: AppColors.languagecolor,
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterEmail;
+                  }
+                  if (!value.contains('@')) {
+                    return AppLocalizations.of(context)!.invalidEmail;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 controller: phoneController,
-                labelText: 'Phone Number',
+                labelText: AppLocalizations.of(context)!.phoneNumber,
                 hintText: '059XXXXXXX',
                 keyboardType: TextInputType.phone,
                 prefixIcon: const Icon(
@@ -135,11 +154,20 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 18,
                   color: AppColors.languagecolor,
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterPhone;
+                  }
+                  if (value.length < 10) {
+                    return AppLocalizations.of(context)!.invalidPhone;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 controller: passwordController,
-                labelText: 'Password',
+                labelText: AppLocalizations.of(context)!.password,
                 hintText: '• • • • • • • •',
                 isPassword: true,
                 prefixIcon: const Icon(
@@ -147,19 +175,28 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 22,
                   color: AppColors.languagecolor,
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppLocalizations.of(context)!.enterPassword;
+                  }
+                  if (value.length < 8) {
+                    return AppLocalizations.of(context)!.minimum8Chars;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 6),
               Align(
                 alignment: AlignmentGeometry.centerLeft,
                 child: Text(
-                  'Minimum 8 characters',
+                  AppLocalizations.of(context)!.minimum8Chars,
                   style: AppStyle.hintstyle.copyWith(fontSize: 9),
                 ),
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 controller: confirmPasswordController,
-                labelText: 'Confirm Password',
+                labelText: AppLocalizations.of(context)!.confirmPassword,
                 hintText: '• • • • • • • •',
                 isPassword: true,
                 prefixIcon: const Icon(
@@ -167,13 +204,22 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 22,
                   color: AppColors.languagecolor,
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppLocalizations.of(context)!.enterPassword;
+                  }
+                  if (value != passwordController.text) {
+                    return AppLocalizations.of(context)!.passwordsDoNotMatch;
+                  }
+                  return null;
+                },
               ),
             ],
           ),
         ),
       ),
       Step(
-        title: const Text('Car Details'),
+        title: Text(AppLocalizations.of(context)!.carDetails),
         isActive: currentStep >= 1,
         state: currentStep > 1 ? StepState.complete : StepState.indexed,
         content: Form(
@@ -182,22 +228,34 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             children: [
               CustomTextfiled(
                 hintText: 'BMW / Kia / Hyundai',
-                labelText: 'Car Type',
+                labelText: AppLocalizations.of(context)!.carType,
                 controller: carTypeController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterCarType;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 hintText: '4',
-                labelText: 'Number of Car’s Seats',
+                labelText: AppLocalizations.of(context)!.numberOfSeats,
                 controller: carSeatsController,
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterNumberOfSeats;
+                  }
+                  return null;
+                },
               ),
             ],
           ),
         ),
       ),
       Step(
-        title: const Text('Driver Documents'),
+        title: Text(AppLocalizations.of(context)!.driverDocuments),
         isActive: currentStep >= 2,
         state: StepState.indexed,
         content: Form(
@@ -206,7 +264,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Driver Information',
+                AppLocalizations.of(context)!.driverInformation,
                 style: AppStyle.lablestyle.copyWith(
                   color: AppColors.orangeprimary,
                   fontWeight: FontWeight.w700,
@@ -216,43 +274,73 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               const SizedBox(height: 16),
               CustomTextfiled(
                 hintText: '123456789',
-                labelText: 'License Number',
+                labelText: AppLocalizations.of(context)!.licenseNumber,
                 controller: licenseNumberController,
                 prefixIcon: const Icon(Icons.badge_outlined),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterLicenseNumber;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 hintText: 'Bus',
-                labelText: 'Vehicle Type',
+                labelText: AppLocalizations.of(context)!.vehicleType,
                 controller: vehicleTypeController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterVehicleType;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 hintText: '123456778',
-                labelText: 'Plate Number',
+                labelText: AppLocalizations.of(context)!.plateNumber,
                 controller: plateNumberController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterPlateNumber;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
                 hintText: '4',
-                labelText: 'Number of Seats',
+                labelText: AppLocalizations.of(context)!.numberOfSeats,
                 controller: driverSeatsController,
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppLocalizations.of(context)!.enterNumberOfSeats;
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               Text(
-                "Upload a copy of your valid driver's license.",
+                AppLocalizations.of(context)!.uploadDriverLicense,
                 style: AppStyle.lablestyle.copyWith(fontSize: 12),
               ),
               const SizedBox(height: 8),
-              _buildUploadBox(title: 'Upload Document', onTap: () {}),
+              _buildUploadBox(
+                title: AppLocalizations.of(context)!.uploadDocument,
+                onTap: () {},
+              ),
               const SizedBox(height: 16),
               Text(
-                'Upload a copy of your vehicle license.',
+                AppLocalizations.of(context)!.uploadVehicleLicense,
                 style: AppStyle.lablestyle.copyWith(fontSize: 12),
               ),
               const SizedBox(height: 8),
-              _buildUploadBox(title: 'Upload Document', onTap: () {}),
+              _buildUploadBox(
+                title: AppLocalizations.of(context)!.uploadDocument,
+                onTap: () {},
+              ),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -267,7 +355,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      'I agree to the Terms and Privacy Policy',
+                      AppLocalizations.of(context)!.agreeTerms,
                       style: AppStyle.lablestyle.copyWith(fontSize: 12),
                     ),
                   ),
@@ -317,7 +405,9 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const TobbarRegestrationWidget(title: 'Sign Up Driver'),
+            TobbarRegestrationWidget(
+              title: AppLocalizations.of(context)!.signUpDriver,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -359,9 +449,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                               child: Stepper(
                                 type: StepperType.vertical,
                                 currentStep: currentStep,
-                                physics:
-                                    const ClampingScrollPhysics(), // تعديل 1
-                                margin: EdgeInsets.zero, // تعديل 2
+                                physics: const ClampingScrollPhysics(),
+                                margin: EdgeInsets.zero,
 
                                 onStepContinue: goToNextStep,
                                 onStepCancel: goToPreviousStep,
@@ -373,8 +462,12 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                                         Expanded(
                                           child: CustomButton(
                                             text: isLastStep
-                                                ? 'Sign Up'
-                                                : 'Continue',
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.signUp
+                                                : AppLocalizations.of(
+                                                    context,
+                                                  )!.continu,
                                             backgroundColor:
                                                 AppColors.orangeprimary,
                                             textColor: Colors.white,
@@ -399,7 +492,9 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                                               ),
                                             ),
                                             child: Text(
-                                              'Cancel',
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.cancel,
                                               style: AppStyle.loginNowStyle
                                                   .copyWith(
                                                     color: isFirstStep
@@ -416,16 +511,6 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                                 },
                                 steps: getSteps(),
                               ),
-                            ),
-                          if (isStudDocSelected)
-                            Column(
-                              children: [
-                                const SizedBox(height: 20),
-                                Text(
-                                  'Student/Doctor form goes here',
-                                  style: AppStyle.lablestyle,
-                                ),
-                              ],
                             ),
                         ],
                       ),

@@ -18,5 +18,85 @@
 
 "onboarding3Title": "Book • Track • Arrive",
 
-"onboarding4Title": "Connected Rides, be Connected"
+"onboarding4Title": "Connected Rides, be Connected",
+
+  "signUp": "Sign Up",
+  "driver": "Driver",
+  "emailAddress": "Email Address",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "minimum8Chars": "Minimum 8 characters",
+  "alreadyHaveAccount": "Already have an account?",
+  "universityMember": "University Member",
+
+  "otpVerification": "OTP Verification",
+  "enterVerificationCode": "Enter Verification Code",
+  "sentCodeTo": "We've sent a 4-digit code to",
+  "resendCodeIn": "Resend code in ",
+  "verify": "Verify",
+  "changeEmailAddress": "Change Email Address",
+
+  "personalInformation": "Personal Information",
+  "signUpDriver": "Sign Up Driver",
+  "fullName": "Full Name",
+  "phoneNumber": "Phone Number",
+  "carDetails": "Car Details",
+  "carType": "Car Type",
+  "numberOfSeats": "Number of Seats",
+  "driverInformation": "Driver Information",
+  "licenseNumber": "License Number",
+  "vehicleType": "Vehicle Type",
+  "plateNumber": "Plate Number",
+  "uploadDriverLicense": "Upload a copy of your valid driver's license.",
+  "uploadVehicleLicense": "Upload a copy of your vehicle license.",
+  "uploadDocument": "Upload Document",
+  "agreeTerms": "I agree to the Terms and Privacy Policy",
+  "continu": "Continue",
+  "cancel": "Cancel",
+
+  "signIn": "Sign In",
+  "emailOrPhone": "Email or Phone",
+  "rememberMe": "Remember Me",
+  "forgotPassword": "Forgot Password?",
+  "login": "Login",
+  "dontHaveAccount": "Don't have an account?",
+  "welcomeBack": "Welcome Back",
+
+  "forgetPassword": "Forget Password",
+  "enteryouremailtoresetyourpassword": "Enter your email \n to reset your password'",
+  "sendCode": "Send Code",
+  "enterCode": "Enter Code",
+  "didntReceiveCode": "Didn't receive a code? ",
+  "sendAgain": "Send Again",
+
+  "resetPassword": "Reset Password",
+  "newPassword": "New Password",
+  "yourNewPasswordMustBeDifferentFromPreviousOne": "Your new password must be different from the previous one",
+
+  "passwordChanged": "Password Changed",
+  "passwordChangedSuccess": "Your password has been \n changed successfully",
+  "finish": "Finish!",
+
+  "poweredBy": "Powered by ",
+"ptukEngineering": "PTUK Engineering",
+
+"signUpUniversity": "Sign Up University",
+"driverDocuments": "Driver Documents",
+
+"enterEmail": "Enter your email",
+"invalidEmail": "Invalid email address",
+"enterPassword": "Enter your password",
+"passwordsDoNotMatch": "Passwords do not match",
+
+"enterFullName": "Enter your full name",
+"enterPhone": "Enter your phone number",
+"invalidPhone": "Invalid phone number",
+"enterCarType": "Enter car type",
+"enterNumberOfSeats": "Enter number of seats",
+"enterLicenseNumber": "Enter license number",
+"enterVehicleType": "Enter vehicle type",
+"enterPlateNumber": "Enter plate number",
+"pleaseAgreeTerms": "Please agree to the Terms and Privacy Policy",
+"submittedSuccessfully": "Driver Sign Up Submitted Successfully",
+"signUpNow": "Sign Up Now"
 }
