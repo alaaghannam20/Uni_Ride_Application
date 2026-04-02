@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
 import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_uni_screen.dart';
@@ -32,25 +34,70 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  final carTypeController = TextEditingController();
+  String? selectedCarType;
   final carSeatsController = TextEditingController();
+  final carModelController = TextEditingController();
 
   final licenseNumberController = TextEditingController();
-  final vehicleTypeController = TextEditingController();
   final plateNumberController = TextEditingController();
   final driverSeatsController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    loadProgress();
+    licenseNumberController.addListener(saveProgress);
+    plateNumberController.addListener(saveProgress);
+    driverSeatsController.addListener(saveProgress);
+  }
+
+  Future<void> saveProgress() async {
+    await AppPrefs.saveDriverProgress(
+      currentStep: currentStep,
+      fullName: fullNameController.text,
+      email: emailController.text,
+      phone: phoneController.text,
+      carType: selectedCarType ?? '',
+      carModel: carModelController.text,
+      carSeats: carSeatsController.text,
+      license: licenseNumberController.text,
+      plate: plateNumberController.text,
+    );
+  }
+
+  Future<void> loadProgress() async {
+    setState(() {
+      currentStep = AppPrefs.getDriverCurrentStep();
+      fullNameController.text = AppPrefs.getDriverFullName();
+      emailController.text = AppPrefs.getDriverEmail();
+      phoneController.text = AppPrefs.getDriverPhone();
+      selectedCarType = AppPrefs.getDriverCarType();
+      carModelController.text = AppPrefs.getDriverCarModel();
+      carSeatsController.text = AppPrefs.getDriverCarSeats();
+      licenseNumberController.text = AppPrefs.getDriverLicense();
+      plateNumberController.text = AppPrefs.getDriverPlate();
+    });
+  }
+
+  Future<void> clearProgress() async {
+    await AppPrefs.clearDriverProgress();
+  }
+
+  @override
   void dispose() {
+    licenseNumberController.removeListener(saveProgress);
+    plateNumberController.removeListener(saveProgress);
+    driverSeatsController.removeListener(saveProgress);
     fullNameController.dispose();
     emailController.dispose();
     phoneController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
-    carTypeController.dispose();
+
     carSeatsController.dispose();
+    carModelController.dispose();
+
     licenseNumberController.dispose();
-    vehicleTypeController.dispose();
     plateNumberController.dispose();
     driverSeatsController.dispose();
     super.dispose();
@@ -59,16 +106,12 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
   void goToNextStep() {
     if (currentStep == 0) {
       if (!_formKeyStep1.currentState!.validate()) return;
-
-      setState(() {
-        currentStep += 1;
-      });
+      setState(() => currentStep += 1);
+      saveProgress();
     } else if (currentStep == 1) {
       if (!_formKeyStep2.currentState!.validate()) return;
-
-      setState(() {
-        currentStep += 1;
-      });
+      setState(() => currentStep += 1);
+      saveProgress();
     } else if (currentStep == 2) {
       if (!_formKeyStep3.currentState!.validate()) return;
       if (!agreeTerms) {
@@ -77,20 +120,20 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         );
         return;
       }
-
+      saveProgress();
       submitForm();
     }
   }
 
   void goToPreviousStep() {
     if (currentStep == 0) return;
-
     setState(() {
       currentStep -= 1;
     });
   }
 
   void submitForm() {
+    clearProgress();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Driver Sign Up Submitted Successfully')),
     );
@@ -115,12 +158,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 18,
                   color: AppColors.languagecolor,
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterFullName;
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    AppValidators.validateFullName(context, value),
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
@@ -133,15 +172,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 18,
                   color: AppColors.languagecolor,
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterEmail;
-                  }
-                  if (!value.contains('@')) {
-                    return AppLocalizations.of(context)!.invalidEmail;
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    AppValidators.validateEmail(context, value),
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
@@ -154,15 +186,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 18,
                   color: AppColors.languagecolor,
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterPhone;
-                  }
-                  if (value.length < 10) {
-                    return AppLocalizations.of(context)!.invalidPhone;
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    AppValidators.validatePhone(context, value),
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
@@ -175,15 +200,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 22,
                   color: AppColors.languagecolor,
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.enterPassword;
-                  }
-                  if (value.length < 8) {
-                    return AppLocalizations.of(context)!.minimum8Chars;
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    AppValidators.validatePassword(context, value),
               ),
               const SizedBox(height: 6),
               Align(
@@ -204,20 +222,17 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                   size: 22,
                   color: AppColors.languagecolor,
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.enterPassword;
-                  }
-                  if (value != passwordController.text) {
-                    return AppLocalizations.of(context)!.passwordsDoNotMatch;
-                  }
-                  return null;
-                },
+                validator: (value) => AppValidators.validateConfirmPassword(
+                  context,
+                  value,
+                  passwordController.text,
+                ),
               ),
             ],
           ),
         ),
       ),
+
       Step(
         title: Text(AppLocalizations.of(context)!.carDetails),
         isActive: currentStep >= 1,
@@ -226,34 +241,86 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
           key: _formKeyStep2,
           child: Column(
             children: [
-              CustomTextfiled(
-                hintText: 'BMW / Kia / Hyundai',
-                labelText: AppLocalizations.of(context)!.carType,
-                controller: carTypeController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterCarType;
-                  }
-                  return null;
+              DropdownButtonFormField<String>(
+                value: selectedCarType,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.carType,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.directions_car,
+                    size: 20,
+                    color: AppColors.languagecolor,
+                  ),
+                ),
+                items: [
+                  DropdownMenuItem(
+                    value: 'car',
+                    child: Text(AppLocalizations.of(context)!.car),
+                  ),
+                  DropdownMenuItem(
+                    value: 'service',
+                    child: Text(AppLocalizations.of(context)!.service),
+                  ),
+                  DropdownMenuItem(
+                    value: 'bus',
+                    child: Text(AppLocalizations.of(context)!.bus),
+                  ),
+                ],
+
+                onChanged: (value) {
+                  setState(() {
+                    selectedCarType = value;
+                    if (value == 'car') {
+                      carSeatsController.text = '4';
+                    } else if (value == 'service') {
+                      carSeatsController.text = '7';
+                    } else if (value == 'bus') {
+                      carSeatsController.text = '20';
+                    }
+                  });
                 },
+                validator: (value) =>
+                    AppValidators.validateCarType(context, value),
               ),
+
               const SizedBox(height: 16),
+
               CustomTextfiled(
-                hintText: '4',
+                hintText: 'Toyota / Hyundai / Kia / BMW',
+                labelText: AppLocalizations.of(context)!.carModel,
+                controller: carModelController,
+                keyboardType: TextInputType.text,
+                prefixIcon: const Icon(
+                  Icons.directions_car_filled,
+                  size: 18,
+                  color: AppColors.languagecolor,
+                ),
+                validator: (value) =>
+                    AppValidators.validateCarModel(context, value),
+              ),
+
+              const SizedBox(height: 16),
+
+              CustomTextfiled(
+                hintText: AppLocalizations.of(context)!.numberOfSeats,
                 labelText: AppLocalizations.of(context)!.numberOfSeats,
                 controller: carSeatsController,
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterNumberOfSeats;
-                  }
-                  return null;
-                },
+                prefixIcon: const Icon(
+                  Icons.event_seat,
+                  size: 18,
+                  color: AppColors.languagecolor,
+                ),
+                validator: (value) =>
+                    AppValidators.validateNumberOfSeats(context, value),
               ),
             ],
           ),
         ),
       ),
+
       Step(
         title: Text(AppLocalizations.of(context)!.driverDocuments),
         isActive: currentStep >= 2,
@@ -277,36 +344,18 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                 labelText: AppLocalizations.of(context)!.licenseNumber,
                 controller: licenseNumberController,
                 prefixIcon: const Icon(Icons.badge_outlined),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterLicenseNumber;
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    AppValidators.validateLicenseNumber(context, value),
               ),
               const SizedBox(height: 16),
-              CustomTextfiled(
-                hintText: 'Bus',
-                labelText: AppLocalizations.of(context)!.vehicleType,
-                controller: vehicleTypeController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterVehicleType;
-                  }
-                  return null;
-                },
-              ),
+
               const SizedBox(height: 16),
               CustomTextfiled(
                 hintText: '123456778',
                 labelText: AppLocalizations.of(context)!.plateNumber,
                 controller: plateNumberController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterPlateNumber;
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    AppValidators.validatePlateNumber(context, value),
               ),
               const SizedBox(height: 16),
               CustomTextfiled(
@@ -314,12 +363,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                 labelText: AppLocalizations.of(context)!.numberOfSeats,
                 controller: driverSeatsController,
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return AppLocalizations.of(context)!.enterNumberOfSeats;
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    AppValidators.validateNumberOfSeats(context, value),
               ),
               const SizedBox(height: 20),
               Text(
@@ -405,8 +450,13 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            TobbarRegestrationWidget(
-              title: AppLocalizations.of(context)!.signUpDriver,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+
+              child: TobbarRegestrationWidget(
+                title: AppLocalizations.of(context)!.signUpDriver,
+                showLoginButton: true,
+              ),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -451,7 +501,6 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                                 currentStep: currentStep,
                                 physics: const ClampingScrollPhysics(),
                                 margin: EdgeInsets.zero,
-
                                 onStepContinue: goToNextStep,
                                 onStepCancel: goToPreviousStep,
                                 controlsBuilder: (context, details) {

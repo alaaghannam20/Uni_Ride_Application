@@ -44,7 +44,7 @@ class Onboarding1Screen extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushNamed(
                           context,
                           Routes.mainOnboarding,
                           arguments: {'withFade': true},

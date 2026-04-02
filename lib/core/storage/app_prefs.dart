@@ -36,4 +36,59 @@ class AppPrefs {
     await _prefs.remove(PrefKeys.token);
   }
 
+    static Future<void> saveDriverProgress({
+    required int currentStep,
+    required String fullName,
+    required String email,
+    required String phone,
+    required String carType,
+    required String carModel,
+    required String carSeats,
+    required String license,
+    required String plate,
+  }) async {
+    await _prefs.setInt(PrefKeys.driverCurrentStep, currentStep);
+    await _prefs.setString(PrefKeys.driverFullName, fullName);
+    await _prefs.setString(PrefKeys.driverEmail, email);
+    await _prefs.setString(PrefKeys.driverPhone, phone);
+    await _prefs.setString(PrefKeys.driverCarType, carType);
+    await _prefs.setString(PrefKeys.driverCarModel, carModel);
+    await _prefs.setString(PrefKeys.driverCarSeats, carSeats);
+    await _prefs.setString(PrefKeys.driverLicense, license);
+    await _prefs.setString(PrefKeys.driverPlate, plate);
+  }
+
+  static int getDriverCurrentStep() =>
+      _prefs.getInt(PrefKeys.driverCurrentStep) ?? 0;
+  static String getDriverFullName() =>
+      _prefs.getString(PrefKeys.driverFullName) ?? '';
+  static String getDriverEmail() =>
+      _prefs.getString(PrefKeys.driverEmail) ?? '';
+  static String getDriverPhone() =>
+      _prefs.getString(PrefKeys.driverPhone) ?? '';
+  static String? getDriverCarType() {
+    final val = _prefs.getString(PrefKeys.driverCarType);
+    return (val == null || val.isEmpty) ? null : val;
+  }
+  static String getDriverCarModel() =>
+      _prefs.getString(PrefKeys.driverCarModel) ?? '';
+  static String getDriverCarSeats() =>
+      _prefs.getString(PrefKeys.driverCarSeats) ?? '';
+  static String getDriverLicense() =>
+      _prefs.getString(PrefKeys.driverLicense) ?? '';
+  static String getDriverPlate() =>
+      _prefs.getString(PrefKeys.driverPlate) ?? '';
+
+  static Future<void> clearDriverProgress() async {
+    await _prefs.remove(PrefKeys.driverCurrentStep);
+    await _prefs.remove(PrefKeys.driverFullName);
+    await _prefs.remove(PrefKeys.driverEmail);
+    await _prefs.remove(PrefKeys.driverPhone);
+    await _prefs.remove(PrefKeys.driverCarType);
+    await _prefs.remove(PrefKeys.driverCarModel);
+    await _prefs.remove(PrefKeys.driverCarSeats);
+    await _prefs.remove(PrefKeys.driverLicense);
+    await _prefs.remove(PrefKeys.driverPlate);
+  }
+
 }

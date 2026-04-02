@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacementNamed(context, Routes.home);
     } 
     else {
-      Navigator.pushReplacementNamed(context, Routes.signUpUni);
+      Navigator.pushReplacementNamed(context, Routes.signIn);
     }
   }
 }

@@ -46,11 +46,12 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            TobbarRegestrationWidget(
-              title: AppLocalizations.of(context)!.otpVerification,
-              onBackPressed: () {
-                Navigator.pop(context);
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TobbarRegestrationWidget(
+                title: AppLocalizations.of(context)!.otpVerification,
+                
+              ),
             ),
             Expanded(
               child: SingleChildScrollView(

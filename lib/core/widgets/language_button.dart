@@ -6,7 +6,8 @@ import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class LanguageButton extends StatelessWidget {
-  const LanguageButton({super.key});
+  final bool showText;
+  const LanguageButton({super.key, this.showText = true});
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +44,17 @@ class LanguageButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
 
           children: [
-            Text(
-              languageProvider.isArabic
-                  ? AppLocalizations.of(context)!.en
-                  : AppLocalizations.of(context)!.ar,
-              style: AppStyle.languagestyle,
-            ),
+            if (showText)
+              Text(
+                languageProvider.isArabic
+                    ? AppLocalizations.of(context)!.en
+                    : AppLocalizations.of(context)!.ar,
+                style: AppStyle.languagestyle,
+              ),
 
-            SizedBox(width: 4),
+            if (showText) const SizedBox(width: 4),
 
-            Icon(Icons.language, size: 16, color: AppColors.splashcolor),
+            const Icon(Icons.language, size: 16, color: AppColors.splashcolor),
           ],
         ),
       ),

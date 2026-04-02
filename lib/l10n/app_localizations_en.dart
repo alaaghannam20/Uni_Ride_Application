@@ -255,4 +255,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signUpNow => 'Sign Up Now';
+
+  @override
+  String get car => 'Car';
+
+  @override
+  String get service => 'Service';
+
+  @override
+  String get bus => 'Bus';
+
+  @override
+  String get carModel => 'Car Model';
+
+  @override
+  String get enterCarModel => 'Enter Car Model';
 }

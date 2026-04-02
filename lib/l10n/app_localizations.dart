@@ -583,6 +583,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign Up Now'**
   String get signUpNow;
+
+  /// No description provided for @car.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get car;
+
+  /// No description provided for @service.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get service;
+
+  /// No description provided for @bus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get bus;
+
+  /// No description provided for @carModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Model'**
+  String get carModel;
+
+  /// No description provided for @enterCarModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Car Model'**
+  String get enterCarModel;
 }
 
 class _AppLocalizationsDelegate

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
 import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
@@ -20,7 +21,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController newpasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-      final formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -36,11 +37,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            TobbarRegestrationWidget(
-              title: AppLocalizations.of(context)!.resetPassword,
-              onBackPressed: () {
-                Navigator.pop(context);
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+
+              child: TobbarRegestrationWidget(
+                title: AppLocalizations.of(context)!.resetPassword,
+              ),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -58,7 +60,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           children: [
                             CustomTextfiled(
                               controller: newpasswordController,
-                              labelText: AppLocalizations.of(context)!.newPassword,
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.newPassword,
                               hintText: '• • • • • • • •',
                               isPassword: true,
                               prefixIcon: const Icon(
@@ -66,32 +70,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 size: 22,
                                 color: AppColors.languagecolor,
                               ),
-                               validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      )!.enterPassword;
-                                    }
-                                    if (value.length < 8) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      )!.minimum8Chars;
-                                    }
-                                    return null;
-                                  }, 
+                              validator: (value) =>
+                                  AppValidators.validatePassword(
+                                    context,
+                                    value,
+                                  ),
                             ),
-                        
+
                             const SizedBox(height: 4),
-                        
+
                             Text(
                               AppLocalizations.of(context)!.minimum8Chars,
                               style: AppStyle.hintstyle.copyWith(fontSize: 9),
                             ),
                             const SizedBox(height: 22),
-                        
+
                             CustomTextfiled(
                               controller: confirmPasswordController,
-                              labelText: AppLocalizations.of(context)!.confirmPassword,
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.confirmPassword,
                               hintText: '• • • • • • • •',
                               isPassword: true,
                               prefixIcon: const Icon(
@@ -99,25 +97,27 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 size: 22,
                                 color: AppColors.languagecolor,
                               ),
-                                    validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(context)!.enterPassword;
-                                }
-                                if (value != newpasswordController.text) {
-                                  return AppLocalizations.of(context)!.passwordsDoNotMatch;
-                                }
-                                return null;
-                              },
+                              validator: (value) =>
+                                  AppValidators.validateConfirmPassword(
+                                    context,
+                                    value,
+                                    newpasswordController.text,
+                                  ),
                             ),
                             const SizedBox(height: 26),
                             SizedBox(
                               height: 56,
                               child: CustomButton(
-                                text: AppLocalizations.of(context)!.resetPassword,
+                                text: AppLocalizations.of(
+                                  context,
+                                )!.resetPassword,
                                 backgroundColor: AppColors.orangeprimary,
                                 onPressed: () {
                                   if (formKey.currentState!.validate()) {
-                                    Navigator.pushNamed(context, Routes.passwordChanged);
+                                    Navigator.pushNamed(
+                                      context,
+                                      Routes.passwordChanged,
+                                    );
                                   }
                                 },
                                 textColor: AppColors.white,
