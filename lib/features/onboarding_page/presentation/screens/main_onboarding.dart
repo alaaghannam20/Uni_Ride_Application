@@ -73,7 +73,7 @@ class _MainOnboardingState extends State<MainOnboarding> {
                       } else {
                         await AppPrefs.setSeenOnboarding(true);
                         if (!context.mounted) return;
-                        Navigator.pushReplacementNamed(context, Routes.signUpUni);
+                        Navigator.pushNamedAndRemoveUntil(context, Routes.signIn, (route) => false);
                       }
                     },
                     child: AnimatedSwitcher(

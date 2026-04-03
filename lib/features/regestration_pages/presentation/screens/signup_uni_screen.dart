@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
 import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/screens/otb_verification_screen.dart';
@@ -41,11 +42,13 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            TobbarRegestrationWidget(
-              title: AppLocalizations.of(context)!.signUpUniversity,
-              onBackPressed: () {
-                Navigator.pop(context);
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+
+              child: TobbarRegestrationWidget(
+                title: AppLocalizations.of(context)!.signUpUniversity,
+                showLoginButton: true,
+              ),
             ),
 
             Expanded(
@@ -94,19 +97,8 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                 size: 18,
                                 color: AppColors.languagecolor,
                               ),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.enterEmail;
-                                }
-                                if (!value.contains('@')) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.invalidEmail;
-                                }
-                                return null;
-                              },
+                              validator: (value) =>
+                                  AppValidators.validateEmail(context, value),
                             ),
                             const SizedBox(height: 14),
                             CustomTextfiled(
@@ -119,19 +111,11 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                 size: 22,
                                 color: AppColors.languagecolor,
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(
+                              validator: (value) =>
+                                  AppValidators.validatePassword(
                                     context,
-                                  )!.enterPassword;
-                                }
-                                if (value.length < 8) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.minimum8Chars;
-                                }
-                                return null;
-                              },
+                                    value,
+                                  ),
                             ),
 
                             const SizedBox(height: 4),
@@ -154,19 +138,12 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                 size: 22,
                                 color: AppColors.languagecolor,
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(
+                              validator: (value) =>
+                                  AppValidators.validateConfirmPassword(
                                     context,
-                                  )!.enterPassword;
-                                }
-                                if (value != passwordController.text) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.passwordsDoNotMatch;
-                                }
-                                return null;
-                              },
+                                    value,
+                                    passwordController.text,
+                                  ),
                             ),
 
                             const SizedBox(height: 24),
@@ -203,21 +180,26 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
 
                             const SizedBox(height: 4),
 
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Login Now',
-                                  style: AppStyle.loginNowStyle,
-                                ),
-                                const SizedBox(width: 4),
-                                Text('|', style: AppStyle.loginNowStyle),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'تسجيل الدخول',
-                                  style: AppStyle.loginNowStyle,
-                                ),
-                              ],
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/signIn');
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Login Now',
+                                    style: AppStyle.loginNowStyle,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text('|', style: AppStyle.loginNowStyle),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'تسجيل الدخول',
+                                    style: AppStyle.loginNowStyle,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

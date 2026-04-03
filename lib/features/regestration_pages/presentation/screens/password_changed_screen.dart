@@ -3,6 +3,7 @@ import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/widget/tobBar_regestration_widget.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class PasswordChangedScreen extends StatelessWidget {
@@ -15,7 +16,10 @@ class PasswordChangedScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-          
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TobbarRegestrationWidget(),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -47,7 +51,9 @@ class PasswordChangedScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 12),
                               Text(
-                                AppLocalizations.of(context)!.passwordChangedSuccess,
+                                AppLocalizations.of(
+                                  context,
+                                )!.passwordChangedSuccess,
                                 style: AppStyle.accountQuestionStyle,
                                 textAlign: TextAlign.center,
                               ),

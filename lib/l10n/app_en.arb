@@ -98,5 +98,10 @@
 "enterPlateNumber": "Enter plate number",
 "pleaseAgreeTerms": "Please agree to the Terms and Privacy Policy",
 "submittedSuccessfully": "Driver Sign Up Submitted Successfully",
-"signUpNow": "Sign Up Now"
+"signUpNow": "Sign Up Now",
+"car": "Car",
+"service": "Service",
+"bus": "Bus",
+"carModel": "Car Model",
+"enterCarModel": "Enter Car Model"
 }

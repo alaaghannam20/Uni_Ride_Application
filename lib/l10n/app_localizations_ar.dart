@@ -189,7 +189,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'يجب أن تختلف كلمة المرور الجديدة عن السابقة';
 
   @override
-  String get passwordChanged => 'تم تغيير كلمة المرور';
+  String get passwordChanged => 'كلمة المرور تغيّرت';
 
   @override
   String get passwordChangedSuccess => 'تم تغيير كلمة المرور بنجاح';
@@ -253,4 +253,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get signUpNow => 'إنشاء حساب الآن';
+
+  @override
+  String get car => 'سيارة';
+
+  @override
+  String get service => 'سرفيس';
+
+  @override
+  String get bus => 'باص';
+
+  @override
+  String get carModel => 'موديل السيارة';
+
+  @override
+  String get enterCarModel => 'أدخل موديل السيارة';
 }

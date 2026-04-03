@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
 import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
@@ -37,11 +38,12 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            TobbarRegestrationWidget(
-              title: AppLocalizations.of(context)!.signIn,
-              onBackPressed: () {
-                Navigator.pop(context);
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+
+              child: TobbarRegestrationWidget(
+                title: AppLocalizations.of(context)!.signIn,
+              ),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -97,14 +99,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                     size: 22,
                                     color: AppColors.languagecolor,
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return AppLocalizations.of(
+                                  validator: (value) =>
+                                      AppValidators.validateEmail(
                                         context,
-                                      )!.enterEmail;
-                                    }
-                                    return null;
-                                  },
+                                        value,
+                                      ),
                                 ),
 
                                 const SizedBox(height: 16),
@@ -121,19 +120,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                     size: 22,
                                     color: AppColors.languagecolor,
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return AppLocalizations.of(
+                                  validator: (value) =>
+                                      AppValidators.validatePassword(
                                         context,
-                                      )!.enterPassword;
-                                    }
-                                    if (value.length < 8) {
-                                      return AppLocalizations.of(
-                                        context,
-                                      )!.minimum8Chars;
-                                    }
-                                    return null;
-                                  },
+                                        value,
+                                      ),
                                 ),
 
                                 const SizedBox(height: 12),
@@ -236,16 +227,32 @@ class _SignInScreenState extends State<SignInScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.signUpNow,
-                                      style: AppStyle.loginNowStyle,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          Routes.signUpUni,
+                                        );
+                                      },
+                                      child: Text(
+                                        AppLocalizations.of(context)!.signUpNow,
+                                        style: AppStyle.loginNowStyle,
+                                      ),
                                     ),
                                     const SizedBox(width: 4),
                                     Text('|', style: AppStyle.loginNowStyle),
                                     const SizedBox(width: 4),
-                                    Text(
-                                      'تسجيل الدخول',
-                                      style: AppStyle.loginNowStyle,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          Routes.signUpUni,
+                                        );
+                                      },
+                                      child: Text(
+                                        'انشاء حساب',
+                                        style: AppStyle.loginNowStyle,
+                                      ),
                                     ),
                                   ],
                                 ),

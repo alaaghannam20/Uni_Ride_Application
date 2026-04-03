@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
 import 'package:uni_ride_application/core/widgets/custom_textfiled.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/widget/custom_card_container.dart';
@@ -18,8 +19,7 @@ class ForgetPasswordScreen extends StatefulWidget {
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final TextEditingController emailOrPhoneController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -34,11 +34,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            TobbarRegestrationWidget(
-              title: AppLocalizations.of(context)!.forgetPassword,
-              onBackPressed: () {
-                Navigator.pop(context);
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TobbarRegestrationWidget(
+                title: AppLocalizations.of(context)!.forgetPassword,
+              ),
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -55,7 +55,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           children: [
                             SizedBox(height: 30),
                             Text(
-                              AppLocalizations.of(context)!.enteryouremailtoresetyourpassword,
+                              AppLocalizations.of(
+                                context,
+                              )!.enteryouremailtoresetyourpassword,
                               style: AppStyle.hintstyle.copyWith(
                                 color: AppColors.titlecolor,
                                 fontSize: 15,
@@ -65,7 +67,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                             SizedBox(height: 40),
                             CustomTextfiled(
                               controller: emailOrPhoneController,
-                              labelText: AppLocalizations.of(context)!.emailAddress,
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.emailAddress,
                               hintText: 'a.m.ghannam@student.ptuk.edu.ps',
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(
@@ -73,23 +77,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                 size: 22,
                                 color: AppColors.languagecolor,
                               ),
-                                   validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return AppLocalizations.of(context)!.enterEmail;
-                                }
-                                if (!value.contains('@')) {
-                                  return AppLocalizations.of(context)!.invalidEmail;
-                                }
-                                return null;
-                              },
+                              validator: (value) =>
+                                  AppValidators.validateEmail(context, value),
                             ),
                             const SizedBox(height: 30),
                             CustomButton(
                               text: AppLocalizations.of(context)!.sendCode,
                               backgroundColor: AppColors.orangeprimary,
                               onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                  Navigator.pushNamed(context, Routes.codeVerification);
+                                if (formKey.currentState!.validate()) {
+                                  Navigator.pushNamed(
+                                    context,
+                                    Routes.codeVerification,
+                                  );
                                 }
                               },
                               textColor: AppColors.white,
