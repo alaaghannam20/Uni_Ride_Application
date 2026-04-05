@@ -14,8 +14,8 @@ class AuthProvider extends ChangeNotifier {
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
 
-  LoginResponseModel? _loginResponse;
-  LoginResponseModel? get loginResponse => _loginResponse;
+  AuthModel? _user;
+  AuthModel? get user => _user;
 
   UserType _userType = UserType.unknown;
   UserType get userType => _userType;
@@ -25,12 +25,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Register Member
+  //  Register Member
+
   Future<bool> registerMember(String email, String password) async {
     _setState(AuthState.loading);
-    final result = await _authService.registerMember(
-      RegisterMemberModel(email: email, password: password),
-    );
+    final result = await _authService.registerMember(email, password);
     if (result.success) {
       _setState(AuthState.success);
       return true;
@@ -42,6 +41,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Register Driver
+
   Future<bool> registerDriver({
     required String fullName,
     required String email,
@@ -57,17 +57,15 @@ class AuthProvider extends ChangeNotifier {
   }) async {
     _setState(AuthState.loading);
     final result = await _authService.registerDriver(
-      RegisterDriverModel(
-        fullName: fullName,
-        email: email,
-        phoneNumber: phoneNumber,
-        password: password,
-        licenseNumber: licenseNumber,
-        vehicleType: vehicleType,
-        vehicleModel: vehicleModel,
-        plateNumber: plateNumber,
-        seatCapacity: seatCapacity,
-      ),
+      fullName: fullName,
+      email: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      licenseNumber: licenseNumber,
+      vehicleType: vehicleType,
+      vehicleModel: vehicleModel,
+      plateNumber: plateNumber,
+      seatCapacity: seatCapacity,
       driverLicensePath: driverLicensePath,
       vehicleLicensePath: vehicleLicensePath,
     );
@@ -82,30 +80,15 @@ class AuthProvider extends ChangeNotifier {
   }
 
   //  Login
+
   Future<bool> login(String emailOrPhone, String password) async {
     _setState(AuthState.loading);
-    final result = await _authService.login(
-      LoginModel(emailOrPhone: emailOrPhone, password: password),
-    );
+    final result = await _authService.login(emailOrPhone, password);
     if (result.success) {
-      _loginResponse = result;
+      _user = result;
       await AppPrefs.setToken(result.token);
-      await AppPrefs.setUserType(result.userType);
-      _userType = UserTypeExtension.fromString(result.userType);
-      _setState(AuthState.success);
-      return true;
-    } else {
-      _errorMessage = result.message;
-      _setState(AuthState.error);
-      return false;
-    }
-  }
-
-  // Send OTP
-  Future<bool> sendOtp(String email) async {
-    _setState(AuthState.loading);
-    final result = await _authService.sendOtp(email);
-    if (result.success) {
+      await AppPrefs.setUserType(result.userType.name);
+      _userType = result.userType;
       _setState(AuthState.success);
       return true;
     } else {
@@ -116,6 +99,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Verify OTP
+
   Future<bool> verifyOtp(String email, String otpCode) async {
     _setState(AuthState.loading);
     final result = await _authService.verifyOtp(email, otpCode);
@@ -129,7 +113,8 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // Forget Password
+  //  Forget Password
+
   Future<bool> forgetPassword(String email) async {
     _setState(AuthState.loading);
     final result = await _authService.forgetPassword(email);
@@ -144,6 +129,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Reset Password
+
   Future<bool> resetPassword({
     required String email,
     required String otpCode,
@@ -151,11 +137,9 @@ class AuthProvider extends ChangeNotifier {
   }) async {
     _setState(AuthState.loading);
     final result = await _authService.resetPassword(
-      ResetPasswordModel(
-        email: email,
-        otpCode: otpCode,
-        newPassword: newPassword,
-      ),
+      email: email,
+      otpCode: otpCode,
+      newPassword: newPassword,
     );
     if (result.success) {
       _setState(AuthState.success);
@@ -167,10 +151,47 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // logout
+  //  Change Password
+
+  Future<bool> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    _setState(AuthState.loading);
+    final result = await _authService.changePassword(
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    );
+    if (result.success) {
+      _setState(AuthState.success);
+      return true;
+    } else {
+      _errorMessage = result.message;
+      _setState(AuthState.error);
+      return false;
+    }
+  }
+
+  //  Send OTP
+
+  Future<bool> sendOtp(String email) async {
+    _setState(AuthState.loading);
+    final result = await _authService.sendOtp(email);
+    if (result.success) {
+      _setState(AuthState.success);
+      return true;
+    } else {
+      _errorMessage = result.message;
+      _setState(AuthState.error);
+      return false;
+    }
+  }
+
+  // Logout
+
   Future<void> logout() async {
     await AppPrefs.logout();
-    _loginResponse = null;
+    _user = null;
     _userType = UserType.unknown;
     _setState(AuthState.idle);
   }

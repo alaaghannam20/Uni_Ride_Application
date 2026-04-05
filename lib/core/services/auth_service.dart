@@ -11,191 +11,204 @@ class AuthService {
     ),
   );
 
-  ApiResponseModel handleDioError(dynamic e) {
+  // Error Handler 
+
+  AuthModel _handleError(dynamic e) {
     if (e is DioException) {
-      // ⏱️ Timeout
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
           e.type == DioExceptionType.sendTimeout) {
-        return ApiResponseModel(
+        return AuthModel(
           success: false,
           message: 'Connection timeout, try again',
+          fullName: '', email: '', token: '',
+          userType: UserType.unknown, status: '',
         );
       }
-
-      // 🌐 No Internet
       if (e.type == DioExceptionType.connectionError) {
-        return ApiResponseModel(
+        return AuthModel(
           success: false,
           message: 'No internet connection',
+          fullName: '', email: '', token: '',
+          userType: UserType.unknown, status: '',
         );
       }
-
-      // 📩 Server Error (400, 401, 500...)
       if (e.type == DioExceptionType.badResponse) {
         final data = e.response?.data;
-
         String message = 'Server error';
-
-        if (data is Map && data['message'] != null) {
-          message = data['message'];
-        }
-
-        return ApiResponseModel(
-          success: false,
-          message: message,
+        if (data is Map && data['message'] != null) message = data['message'];
+        return AuthModel(
+          success: false, message: message,
+          fullName: '', email: '', token: '',
+          userType: UserType.unknown, status: '',
         );
       }
-
-      // ❌ Cancel
       if (e.type == DioExceptionType.cancel) {
-        return ApiResponseModel(
-          success: false,
-          message: 'Request cancelled',
+        return AuthModel(
+          success: false, message: 'Request cancelled',
+          fullName: '', email: '', token: '',
+          userType: UserType.unknown, status: '',
         );
       }
-
-      // ❓ Unknown Dio error
-      return ApiResponseModel(
-        success: false,
-        message: 'Unexpected network error',
-      );
     }
-
-    // ❗ Non-Dio error
-    return ApiResponseModel(
-      success: false,
-      message: 'Unexpected error occurred',
+    return AuthModel(
+      success: false, message: 'Unexpected error occurred',
+      fullName: '', email: '', token: '',
+      userType: UserType.unknown, status: '',
     );
   }
 
-  // Register Member
-  Future<ApiResponseModel> registerMember(RegisterMemberModel model) async {
+  //  Register Member
+
+  Future<AuthModel> registerMember(String email, String password) async {
     try {
       final response = await _dio.post(
         AppEndpoints.registerMember,
-        data: model.toJson(),
+        data: {'email': email, 'password': password},
       );
-
-      return response.data != null
-          ? ApiResponseModel.fromJson(response.data)
-          : ApiResponseModel(success: true, message: 'Success');
+      return AuthModel.fromJson(response.data);
     } catch (e) {
-      return handleDioError(e);
+      return _handleError(e);
     }
   }
 
-  // Register Driver
-  Future<ApiResponseModel> registerDriver(
-    RegisterDriverModel model, {
+  // Register Driver 
+
+  Future<AuthModel> registerDriver({
+    required String fullName,
+    required String email,
+    required String phoneNumber,
+    required String password,
+    required String licenseNumber,
+    required String vehicleType,
+    required String vehicleModel,
+    required String plateNumber,
+    required int seatCapacity,
     required String driverLicensePath,
     required String vehicleLicensePath,
   }) async {
     try {
       final formData = FormData.fromMap({
-        ...model.toJson(),
+        'FullName': fullName,
+        'Email': email,
+        'PhoneNumber': phoneNumber,
+        'Password': password,
+        'LicenseNumber': licenseNumber,
+        'VehicleType': vehicleType,
+        'VehicleModel': vehicleModel,
+        'PlateNumber': plateNumber,
+        'SeatCapacity': seatCapacity,
         'DriverLicenseImage': await MultipartFile.fromFile(driverLicensePath),
         'VehicleLicenseImage': await MultipartFile.fromFile(vehicleLicensePath),
       });
-
       final response = await _dio.post(
         AppEndpoints.registerDriver,
         data: formData,
       );
-
-      return response.data != null
-          ? ApiResponseModel.fromJson(response.data)
-          : ApiResponseModel(success: true, message: 'Success');
+      return AuthModel.fromJson(response.data);
     } catch (e) {
-      return handleDioError(e);
+      return _handleError(e);
     }
   }
 
-  // Login
-  Future<LoginResponseModel> login(LoginModel model) async {
+
+  // Login 
+
+  Future<AuthModel> login(String emailOrPhone, String password) async {
     try {
       final response = await _dio.post(
         AppEndpoints.login,
-        data: model.toJson(),
+        data: {'emailOrPhone': emailOrPhone, 'password': password},
       );
-
-      return LoginResponseModel.fromJson(response.data);
+      return AuthModel.fromJson(response.data);
     } catch (e) {
-      final error = handleDioError(e);
-
-      return LoginResponseModel(
-        success: false,
-        message: error.message,
-        token: '',
-        fullName: '',
-        email: '',
-        userType: '',
-        status: '',
-      );
+      return _handleError(e);
     }
   }
 
-  // Send OTP
-  Future<ApiResponseModel> sendOtp(String email) async {
-    try {
-      final response = await _dio.post(
-        AppEndpoints.sendOtp,
-        data: OtpModel(email: email).toJson(),
-      );
+  //  Verify OTP
 
-      return response.data != null
-          ? ApiResponseModel.fromJson(response.data)
-          : ApiResponseModel(success: true, message: 'Success');
-    } catch (e) {
-      return handleDioError(e);
-    }
-  }
-
-  // Verify OTP
-  Future<ApiResponseModel> verifyOtp(String email, String otpCode) async {
+  Future<AuthModel> verifyOtp(String email, String otpCode) async {
     try {
       final response = await _dio.post(
         AppEndpoints.verifyOtp,
-        data: OtpModel(email: email, otpCode: otpCode).toJson(),
+        data: {'email': email, 'otpCode': otpCode},
       );
-
-      return response.data != null
-          ? ApiResponseModel.fromJson(response.data)
-          : ApiResponseModel(success: true, message: 'Success');
+      return AuthModel.fromJson(response.data);
     } catch (e) {
-      return handleDioError(e);
+      return _handleError(e);
     }
   }
 
-  // Forget Password
-  Future<ApiResponseModel> forgetPassword(String email) async {
+  //  Forget Password
+
+  Future<AuthModel> forgetPassword(String email) async {
     try {
       final response = await _dio.post(
         AppEndpoints.forgetPassword,
-        data: ForgetPasswordModel(email: email).toJson(),
+        data: {'email': email},
       );
-
-      return response.data != null
-          ? ApiResponseModel.fromJson(response.data)
-          : ApiResponseModel(success: true, message: 'Success');
+      return AuthModel.fromJson(response.data);
     } catch (e) {
-      return handleDioError(e);
+      return _handleError(e);
     }
   }
 
-  // Reset Password
-  Future<ApiResponseModel> resetPassword(ResetPasswordModel model) async {
+  // Reset Password 
+
+  Future<AuthModel> resetPassword({
+    required String email,
+    required String otpCode,
+    required String newPassword,
+  }) async {
     try {
       final response = await _dio.post(
         AppEndpoints.resetPassword,
-        data: model.toJson(),
+        data: {
+          'email': email,
+          'otpCode': otpCode,
+          'newPassword': newPassword,
+        },
       );
-
-      return response.data != null
-          ? ApiResponseModel.fromJson(response.data)
-          : ApiResponseModel(success: true, message: 'Success');
+      return AuthModel.fromJson(response.data);
     } catch (e) {
-      return handleDioError(e);
+      return _handleError(e);
     }
   }
+
+  //  Change Password 
+
+  Future<AuthModel> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await _dio.post(
+        AppEndpoints.changePassword,
+        data: {
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+        },
+      );
+      return AuthModel.fromJson(response.data);
+    } catch (e) {
+      return _handleError(e);
+    }
+  }
+  // send otp
+
+Future<AuthModel> sendOtp(String email) async {
+  try {
+    final response = await _dio.post(
+      AppEndpoints.sendOtp,
+      data: {'email': email},
+    );
+    return AuthModel.fromJson(response.data);
+  } catch (e) {
+    return _handleError(e);
+  }
 }
+}
+
+
+
