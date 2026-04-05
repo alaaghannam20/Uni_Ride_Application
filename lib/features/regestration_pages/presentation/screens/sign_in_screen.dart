@@ -1,4 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/models/auth_model.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -21,7 +26,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailOrPhoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
   bool isChecked = false;
 
   @override
@@ -31,8 +35,40 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
+  Future<void> _handleLogin(BuildContext context) async {
+    if (!formKey.currentState!.validate()) return;
+    final provider = context.read<AuthProvider>();
+    final success = await provider.login(
+      emailOrPhoneController.text.trim(),
+      passwordController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    if (success) {
+      final userType = provider.userType;
+      if (userType == UserType.admin) {
+        Navigator.pushReplacementNamed(context, Routes.home); //admin home
+      } else if (userType == UserType.driver) {
+        Navigator.pushReplacementNamed(context, Routes.home); //driver home
+      } else {
+        Navigator.pushReplacementNamed(context, Routes.home); //member home
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final isLoading = authProvider.state == AuthState.loading;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -40,7 +76,6 @@ class _SignInScreenState extends State<SignInScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-
               child: TobbarRegestrationWidget(
                 title: AppLocalizations.of(context)!.signIn,
               ),
@@ -80,18 +115,14 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 24),
-
                           SizedBox(
                             width: 332,
                             child: Column(
                               children: [
                                 CustomTextfiled(
                                   controller: emailOrPhoneController,
-                                  labelText: AppLocalizations.of(
-                                    context,
-                                  )!.emailOrPhone,
+                                  labelText: AppLocalizations.of(context)!.emailOrPhone,
                                   hintText: 'a.m.ghannam@student.ptuk.edu.ps',
                                   keyboardType: TextInputType.emailAddress,
                                   prefixIcon: const Icon(
@@ -100,19 +131,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                     color: AppColors.languagecolor,
                                   ),
                                   validator: (value) =>
-                                      AppValidators.validateEmail(
-                                        context,
-                                        value,
-                                      ),
+                                      AppValidators.validateEmail(context, value),
                                 ),
-
                                 const SizedBox(height: 16),
-
                                 CustomTextfiled(
                                   controller: passwordController,
-                                  labelText: AppLocalizations.of(
-                                    context,
-                                  )!.password,
+                                  labelText: AppLocalizations.of(context)!.password,
                                   hintText: '• • • • • • • •',
                                   isPassword: true,
                                   prefixIcon: const Icon(
@@ -121,17 +145,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                     color: AppColors.languagecolor,
                                   ),
                                   validator: (value) =>
-                                      AppValidators.validatePassword(
-                                        context,
-                                        value,
-                                      ),
+                                      AppValidators.validatePassword(context, value),
                                 ),
-
                                 const SizedBox(height: 12),
-
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
@@ -149,44 +167,37 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 });
                                               },
                                               materialTapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                              visualDensity:
-                                                  VisualDensity.compact,
+                                                  MaterialTapTargetSize.shrinkWrap,
+                                              visualDensity: VisualDensity.compact,
                                               side: const BorderSide(
                                                 width: 1.8,
                                                 color: AppColors.orangeprimary,
                                               ),
-                                              activeColor:
-                                                  AppColors.orangeprimary,
+                                              activeColor: AppColors.orangeprimary,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
+                                                borderRadius: BorderRadius.circular(4),
                                               ),
                                             ),
                                           ),
                                           const SizedBox(width: 10),
                                           Flexible(
                                             child: Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.rememberMe,
+                                              AppLocalizations.of(context)!.rememberMe,
                                               overflow: TextOverflow.ellipsis,
-                                              style: AppStyle.passwordStyle
-                                                  .copyWith(
-                                                    color: AppColors.black,
-                                                  ),
+                                              style: AppStyle.passwordStyle.copyWith(
+                                                color: AppColors.black,
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () {},
+                                      onTap: () {
+                                        Navigator.pushNamed(context, Routes.forgetPassword);
+                                      },
                                       child: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.forgotPassword,
+                                        AppLocalizations.of(context)!.forgotPassword,
                                         style: AppStyle.passwordStyle.copyWith(
                                           color: AppColors.orangeprimary,
                                         ),
@@ -197,26 +208,21 @@ class _SignInScreenState extends State<SignInScreen> {
                               ],
                             ),
                           ),
-
                           const SizedBox(height: 24),
-
                           SizedBox(
                             width: 332,
                             child: Column(
                               children: [
-                                CustomButton(
-                                  text: AppLocalizations.of(context)!.login,
-                                  backgroundColor: AppColors.orangeprimary,
-                                  onPressed: () {
-                                    if (formKey.currentState!.validate()) {
-                                      Navigator.pushReplacementNamed(
-                                        context,
-                                        Routes.home,
-                                      );
-                                    }
-                                  },
-                                  textColor: AppColors.white,
-                                ),
+                                isLoading
+                                    ? const CircularProgressIndicator(
+                                        color: AppColors.orangeprimary,
+                                      )
+                                    : CustomButton(
+                                        text: AppLocalizations.of(context)!.login,
+                                        backgroundColor: AppColors.orangeprimary,
+                                        onPressed: () => _handleLogin(context),
+                                        textColor: AppColors.white,
+                                      ),
                                 const SizedBox(height: 14),
                                 Text(
                                   AppLocalizations.of(context)!.dontHaveAccount,
@@ -229,10 +235,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          Routes.signUpUni,
-                                        );
+                                        Navigator.pushNamed(context, Routes.signUpUni);
                                       },
                                       child: Text(
                                         AppLocalizations.of(context)!.signUpNow,
@@ -244,10 +247,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     const SizedBox(width: 4),
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          Routes.signUpUni,
-                                        );
+                                        Navigator.pushNamed(context, Routes.signUpUni);
                                       },
                                       child: Text(
                                         'انشاء حساب',

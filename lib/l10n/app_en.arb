@@ -40,8 +40,7 @@
   "signUpDriver": "Sign Up Driver",
   "fullName": "Full Name",
   "phoneNumber": "Phone Number",
-  "carDetails": "Car Details",
-  "carType": "Car Type",
+  "vehicleDetails": "Vehicle Details",
   "numberOfSeats": "Number of Seats",
   "driverInformation": "Driver Information",
   "licenseNumber": "License Number",
@@ -102,6 +101,6 @@
 "car": "Car",
 "service": "Service",
 "bus": "Bus",
-"carModel": "Car Model",
-"enterCarModel": "Enter Car Model"
+"vehicleModel": "Vehicle Model",
+"enterVehicleModel": "Enter Vehicle Model"
 }

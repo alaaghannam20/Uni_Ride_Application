@@ -33,8 +33,13 @@ class AppPrefs {
   }
 
   static Future<void> clearToken() async {
-    await _prefs.remove(PrefKeys.token);
-  }
+  await _prefs.remove(PrefKeys.token);
+}
+
+  static Future<void> logout() async {
+  await _prefs.remove(PrefKeys.token);
+  await _prefs.remove(PrefKeys.userType);
+}
 
     static Future<void> saveDriverProgress({
     required int currentStep,
@@ -90,5 +95,18 @@ class AppPrefs {
     await _prefs.remove(PrefKeys.driverLicense);
     await _prefs.remove(PrefKeys.driverPlate);
   }
+
+
+  static String? getUserType() {
+  return _prefs.getString(PrefKeys.userType);
+}
+
+static Future<void> setUserType(String userType) async {
+  await _prefs.setString(PrefKeys.userType, userType);
+}
+
+static Future<void> clearUserType() async {
+  await _prefs.remove(PrefKeys.userType);
+}
 
 }

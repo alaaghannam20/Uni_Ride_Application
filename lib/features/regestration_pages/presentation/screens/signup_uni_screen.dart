@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/validators/app_validators.dart';
@@ -23,8 +25,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
   bool isStudDocSelected = true;
   final TextEditingController uniEmailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -35,8 +36,54 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
     super.dispose();
   }
 
+  Future<void> _handleRegister() async {
+    if (!formKey.currentState!.validate()) return;
+
+    final provider = context.read<AuthProvider>();
+    final email = uniEmailController.text.trim();
+
+    final success = await provider.registerMember(
+      email,
+      passwordController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    if (success) {
+      
+      final otpSent = await provider.sendOtp(email);
+
+      if (!mounted) return;
+
+      if (otpSent) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtbVerificationScreen(email: email),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(provider.errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -44,13 +91,10 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-
               child: TobbarRegestrationWidget(
                 title: AppLocalizations.of(context)!.signUpUniversity,
-                showLoginButton: true,
               ),
             ),
-
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -82,14 +126,10 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                 );
                               },
                             ),
-
                             const SizedBox(height: 24),
-
                             CustomTextfiled(
                               controller: uniEmailController,
-                              labelText: AppLocalizations.of(
-                                context,
-                              )!.emailAddress,
+                              labelText: AppLocalizations.of(context)!.emailAddress,
                               hintText: 'a.m.ghannam@student.ptuk.edu.ps',
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(
@@ -112,25 +152,17 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                 color: AppColors.languagecolor,
                               ),
                               validator: (value) =>
-                                  AppValidators.validatePassword(
-                                    context,
-                                    value,
-                                  ),
+                                  AppValidators.validatePassword(context, value),
                             ),
-
                             const SizedBox(height: 4),
-
                             Text(
                               AppLocalizations.of(context)!.minimum8Chars,
                               style: AppStyle.hintstyle.copyWith(fontSize: 9),
                             ),
                             const SizedBox(height: 14),
-
                             CustomTextfiled(
                               controller: confirmPasswordController,
-                              labelText: AppLocalizations.of(
-                                context,
-                              )!.confirmPassword,
+                              labelText: AppLocalizations.of(context)!.confirmPassword,
                               hintText: '• • • • • • • •',
                               isPassword: true,
                               prefixIcon: const Icon(
@@ -145,41 +177,30 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                     passwordController.text,
                                   ),
                             ),
-
                             const SizedBox(height: 24),
 
                             SizedBox(
                               height: 56,
-                              child: CustomButton(
-                                text: AppLocalizations.of(context)!.signUp,
-                                backgroundColor: AppColors.orangeprimary,
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    final email = uniEmailController.text
-                                        .trim();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            OtbVerificationScreen(email: email),
+                              child: isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.orangeprimary,
                                       ),
-                                    );
-                                  }
-                                },
-                                textColor: AppColors.white,
-                              ),
+                                    )
+                                  : CustomButton(
+                                      text: AppLocalizations.of(context)!.signUp,
+                                      backgroundColor: AppColors.orangeprimary,
+                                      onPressed: _handleRegister,
+                                      textColor: AppColors.white,
+                                    ),
                             ),
-
                             const SizedBox(height: 24),
-
                             Text(
                               AppLocalizations.of(context)!.alreadyHaveAccount,
                               textAlign: TextAlign.center,
                               style: AppStyle.accountQuestionStyle,
                             ),
-
                             const SizedBox(height: 4),
-
                             GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(context, '/signIn');
@@ -187,17 +208,11 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    'Login Now',
-                                    style: AppStyle.loginNowStyle,
-                                  ),
+                                  Text('Login Now', style: AppStyle.loginNowStyle),
                                   const SizedBox(width: 4),
                                   Text('|', style: AppStyle.loginNowStyle),
                                   const SizedBox(width: 4),
-                                  Text(
-                                    'تسجيل الدخول',
-                                    style: AppStyle.loginNowStyle,
-                                  ),
+                                  Text('تسجيل الدخول', style: AppStyle.loginNowStyle),
                                 ],
                               ),
                             ),
@@ -205,9 +220,8 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 22),
-                    PoweredByWidget(),
+                    const PoweredByWidget(),
                   ],
                 ),
               ),

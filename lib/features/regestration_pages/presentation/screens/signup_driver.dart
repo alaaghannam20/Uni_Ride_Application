@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -41,6 +44,10 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
   final licenseNumberController = TextEditingController();
   final plateNumberController = TextEditingController();
   final driverSeatsController = TextEditingController();
+
+  String? _driverLicensePath;
+  String? _vehicleLicensePath;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -93,14 +100,25 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
     phoneController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
-
     carSeatsController.dispose();
     carModelController.dispose();
-
     licenseNumberController.dispose();
     plateNumberController.dispose();
     driverSeatsController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage(bool isDriverLicense) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        if (isDriverLicense) {
+          _driverLicensePath = image.path;
+        } else {
+          _vehicleLicensePath = image.path;
+        }
+      });
+    }
   }
 
   void goToNextStep() {
@@ -120,6 +138,15 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         );
         return;
       }
+      if (_driverLicensePath == null || _vehicleLicensePath == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please upload both license images'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
       saveProgress();
       submitForm();
     }
@@ -127,16 +154,60 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
 
   void goToPreviousStep() {
     if (currentStep == 0) return;
-    setState(() {
-      currentStep -= 1;
-    });
+    setState(() => currentStep -= 1);
   }
 
-  void submitForm() {
-    clearProgress();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Driver Sign Up Submitted Successfully')),
+  Future<void> submitForm() async {
+    final provider = context.read<AuthProvider>();
+
+    final success = await provider.registerDriver(
+      fullName: fullNameController.text.trim(),
+      email: emailController.text.trim(),
+      phoneNumber: phoneController.text.trim(),
+      password: passwordController.text.trim(),
+      licenseNumber: licenseNumberController.text.trim(),
+      vehicleType: selectedCarType ?? '',
+      vehicleModel: carModelController.text.trim(),
+      plateNumber: plateNumberController.text.trim(),
+      seatCapacity: int.tryParse(driverSeatsController.text.trim()) ?? 0,
+      driverLicensePath: _driverLicensePath!,
+      vehicleLicensePath: _vehicleLicensePath!,
     );
+
+    if (!mounted) return;
+
+    if (success) {
+      await clearProgress();
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Registration Submitted'),
+          content: const Text(
+            'Your registration is under review. You will be able to login once the admin approves your account.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/signIn',
+                  (route) => false,
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   List<Step> getSteps() {
@@ -152,7 +223,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               CustomTextfiled(
                 controller: fullNameController,
                 labelText: AppLocalizations.of(context)!.fullName,
-                hintText: 'A’laa Mohammad Ghannam',
+                hintText: 'Alaa Mohammad Ghannam',
                 prefixIcon: const Icon(
                   Icons.person_outline,
                   size: 18,
@@ -234,7 +305,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
       ),
 
       Step(
-        title: Text(AppLocalizations.of(context)!.carDetails),
+        title: Text(AppLocalizations.of(context)!.vehicleDetails),
         isActive: currentStep >= 1,
         state: currentStep > 1 ? StepState.complete : StepState.indexed,
         content: Form(
@@ -244,7 +315,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               DropdownButtonFormField<String>(
                 value: selectedCarType,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.carType,
+                  labelText: AppLocalizations.of(context)!.vehicleType,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -268,28 +339,24 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                     child: Text(AppLocalizations.of(context)!.bus),
                   ),
                 ],
-
                 onChanged: (value) {
                   setState(() {
                     selectedCarType = value;
-                    if (value == 'car') {
+                    if (value == 'car')
                       carSeatsController.text = '4';
-                    } else if (value == 'service') {
+                    else if (value == 'service')
                       carSeatsController.text = '7';
-                    } else if (value == 'bus') {
+                    else if (value == 'bus')
                       carSeatsController.text = '20';
-                    }
                   });
                 },
                 validator: (value) =>
                     AppValidators.validateCarType(context, value),
               ),
-
               const SizedBox(height: 16),
-
               CustomTextfiled(
                 hintText: 'Toyota / Hyundai / Kia / BMW',
-                labelText: AppLocalizations.of(context)!.carModel,
+                labelText: AppLocalizations.of(context)!.vehicleModel,
                 controller: carModelController,
                 keyboardType: TextInputType.text,
                 prefixIcon: const Icon(
@@ -300,9 +367,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                 validator: (value) =>
                     AppValidators.validateCarModel(context, value),
               ),
-
               const SizedBox(height: 16),
-
               CustomTextfiled(
                 hintText: AppLocalizations.of(context)!.numberOfSeats,
                 labelText: AppLocalizations.of(context)!.numberOfSeats,
@@ -348,24 +413,16 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                     AppValidators.validateLicenseNumber(context, value),
               ),
               const SizedBox(height: 16),
-
-              const SizedBox(height: 16),
               CustomTextfiled(
                 hintText: '123456778',
                 labelText: AppLocalizations.of(context)!.plateNumber,
                 controller: plateNumberController,
+                prefixIcon: const Icon(Icons.badge_outlined),
+
                 validator: (value) =>
                     AppValidators.validatePlateNumber(context, value),
               ),
-              const SizedBox(height: 16),
-              CustomTextfiled(
-                hintText: '4',
-                labelText: AppLocalizations.of(context)!.numberOfSeats,
-                controller: driverSeatsController,
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    AppValidators.validateNumberOfSeats(context, value),
-              ),
+
               const SizedBox(height: 20),
               Text(
                 AppLocalizations.of(context)!.uploadDriverLicense,
@@ -373,8 +430,11 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               ),
               const SizedBox(height: 8),
               _buildUploadBox(
-                title: AppLocalizations.of(context)!.uploadDocument,
-                onTap: () {},
+                title: _driverLicensePath != null
+                    ? _driverLicensePath!.split('/').last
+                    : AppLocalizations.of(context)!.uploadDocument,
+                onTap: () => _pickImage(true),
+                isSelected: _driverLicensePath != null,
               ),
               const SizedBox(height: 16),
               Text(
@@ -383,8 +443,11 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               ),
               const SizedBox(height: 8),
               _buildUploadBox(
-                title: AppLocalizations.of(context)!.uploadDocument,
-                onTap: () {},
+                title: _vehicleLicensePath != null
+                    ? _vehicleLicensePath!.split('/').last
+                    : AppLocalizations.of(context)!.uploadDocument,
+                onTap: () => _pickImage(false),
+                isSelected: _vehicleLicensePath != null,
               ),
               const SizedBox(height: 16),
               Row(
@@ -393,9 +456,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                     value: agreeTerms,
                     activeColor: AppColors.orangeprimary,
                     onChanged: (value) {
-                      setState(() {
-                        agreeTerms = value ?? false;
-                      });
+                      setState(() => agreeTerms = value ?? false);
                     },
                   ),
                   Expanded(
@@ -413,7 +474,11 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
     ];
   }
 
-  Widget _buildUploadBox({required String title, required VoidCallback onTap}) {
+  Widget _buildUploadBox({
+    required String title,
+    required VoidCallback onTap,
+    bool isSelected = false,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -421,18 +486,33 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         width: double.infinity,
         height: 52,
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFD9D9D9), width: 1),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.orangeprimary
+                : const Color(0xFFD9D9D9),
+            width: 1,
+          ),
           borderRadius: BorderRadius.circular(14),
           color: Colors.white,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.upload_file_outlined, color: Colors.grey),
+            Icon(
+              isSelected
+                  ? Icons.check_circle_outline
+                  : Icons.upload_file_outlined,
+              color: isSelected ? AppColors.orangeprimary : Colors.grey,
+            ),
             const SizedBox(width: 8),
-            Text(
-              title,
-              style: AppStyle.lablestyle.copyWith(color: Colors.grey),
+            Flexible(
+              child: Text(
+                title,
+                style: AppStyle.lablestyle.copyWith(
+                  color: isSelected ? AppColors.orangeprimary : Colors.grey,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -444,6 +524,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
   Widget build(BuildContext context) {
     final bool isLastStep = currentStep == 2;
     final bool isFirstStep = currentStep == 0;
+    final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -452,10 +533,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-
               child: TobbarRegestrationWidget(
                 title: AppLocalizations.of(context)!.signUpDriver,
-                showLoginButton: true,
               ),
             ),
             Expanded(
@@ -484,9 +563,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                               );
                             },
                             onDriverTap: () {
-                              setState(() {
-                                isStudDocSelected = false;
-                              });
+                              setState(() => isStudDocSelected = false);
                             },
                           ),
                           const SizedBox(height: 20),
@@ -509,19 +586,28 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: CustomButton(
-                                            text: isLastStep
-                                                ? AppLocalizations.of(
-                                                    context,
-                                                  )!.signUp
-                                                : AppLocalizations.of(
-                                                    context,
-                                                  )!.continu,
-                                            backgroundColor:
-                                                AppColors.orangeprimary,
-                                            textColor: Colors.white,
-                                            onPressed: details.onStepContinue!,
-                                          ),
+                                          child: isLoading && isLastStep
+                                              ? const Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        color: AppColors
+                                                            .orangeprimary,
+                                                      ),
+                                                )
+                                              : CustomButton(
+                                                  text: isLastStep
+                                                      ? AppLocalizations.of(
+                                                          context,
+                                                        )!.signUp
+                                                      : AppLocalizations.of(
+                                                          context,
+                                                        )!.continu,
+                                                  backgroundColor:
+                                                      AppColors.orangeprimary,
+                                                  textColor: Colors.white,
+                                                  onPressed:
+                                                      details.onStepContinue!,
+                                                ),
                                         ),
                                         const SizedBox(width: 12),
                                         Expanded(
@@ -561,6 +647,34 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                                 steps: getSteps(),
                               ),
                             ),
+                          const SizedBox(height: 12),
+                          Text(
+                            AppLocalizations.of(context)!.alreadyHaveAccount,
+                            textAlign: TextAlign.center,
+                            style: AppStyle.accountQuestionStyle,
+                          ),
+                          const SizedBox(height: 4),
+                          GestureDetector(
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/signIn'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Login Now',
+                                  style: AppStyle.loginNowStyle,
+                                ),
+                                const SizedBox(width: 4),
+                                Text('|', style: AppStyle.loginNowStyle),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'تسجيل الدخول',
+                                  style: AppStyle.loginNowStyle,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
                         ],
                       ),
                     ),
