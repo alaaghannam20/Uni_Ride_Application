@@ -1,53 +1,50 @@
-enum UserType {
-  member,
-  driver,
-  admin,
-  carpool,
-  unknown,
-}
+enum UserType { member, driver, admin, carpool, unknown }
 
 UserType userTypeFromString(String value) {
-  return UserType.values.firstWhere(
-    (e) => e.name == value.toLowerCase(),
-    orElse: () => UserType.unknown,
-  );
+  final normalized = value.toLowerCase().trim();
+  switch (normalized) {
+    case 'universitymember':
+      return UserType.member;
+    case 'driver':
+      return UserType.driver;
+    case 'admin':
+      return UserType.admin;
+    case 'carpool':
+      return UserType.carpool;
+    default:
+      return UserType.unknown;
+  }
 }
 
-class AuthModel {
-  final bool success;
-  final String message;
+class UserModel {
   final String fullName;
   final String email;
   final UserType userType;
   final String token;
   final String status;
 
-  AuthModel({
+  UserModel({
     required this.fullName,
     required this.email,
     required this.userType,
     required this.token,
-    required this.success,
-    required this.message,
+
     required this.status,
   });
 
-  factory AuthModel.fromJson(Map<String, dynamic> json) {
-    return AuthModel(
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
       fullName: json['fullName'] ?? '',
       email: json['email'] ?? '',
       userType: userTypeFromString(json['userType'] ?? ''),
       token: json['token'] ?? '',
-      success: json['success'] ?? false,
-      message: json['message'] ?? '',
+
       status: json['status'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'success': success,
-      'message': message,
       'fullName': fullName,
       'email': email,
       'userType': userType.name,

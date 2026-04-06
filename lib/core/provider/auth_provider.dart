@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni_ride_application/core/models/auth_model.dart';
+import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/services/auth_service.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 
@@ -14,8 +14,8 @@ class AuthProvider extends ChangeNotifier {
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
 
-  AuthModel? _user;
-  AuthModel? get user => _user;
+  UserModel? _user;
+  UserModel? get user => _user;
 
   UserType _userType = UserType.unknown;
   UserType get userType => _userType;
@@ -26,7 +26,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   //  Register Member
-
   Future<bool> registerMember(String email, String password) async {
     _setState(AuthState.loading);
     final result = await _authService.registerMember(email, password);
@@ -41,7 +40,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Register Driver
-
   Future<bool> registerDriver({
     required String fullName,
     required String email,
@@ -80,26 +78,24 @@ class AuthProvider extends ChangeNotifier {
   }
 
   //  Login
-
   Future<bool> login(String emailOrPhone, String password) async {
     _setState(AuthState.loading);
-    final result = await _authService.login(emailOrPhone, password);
-    if (result.success) {
-      _user = result;
-      await AppPrefs.setToken(result.token);
-      await AppPrefs.setUserType(result.userType.name);
-      _userType = result.userType;
+    try {
+      final userResult = await _authService.login(emailOrPhone, password);
+      _user = userResult;
+      await AppPrefs.setToken(userResult.token);
+      await AppPrefs.setUserType(userResult.userType.name);
+      _userType = userResult.userType;
       _setState(AuthState.success);
       return true;
-    } else {
-      _errorMessage = result.message;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
       _setState(AuthState.error);
       return false;
     }
   }
 
   // Verify OTP
-
   Future<bool> verifyOtp(String email, String otpCode) async {
     _setState(AuthState.loading);
     final result = await _authService.verifyOtp(email, otpCode);
@@ -114,7 +110,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   //  Forget Password
-
   Future<bool> forgetPassword(String email) async {
     _setState(AuthState.loading);
     final result = await _authService.forgetPassword(email);
@@ -129,7 +124,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Reset Password
-
   Future<bool> resetPassword({
     required String email,
     required String otpCode,
@@ -152,7 +146,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   //  Change Password
-
   Future<bool> changePassword({
     required String oldPassword,
     required String newPassword,
@@ -173,7 +166,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   //  Send OTP
-
   Future<bool> sendOtp(String email) async {
     _setState(AuthState.loading);
     final result = await _authService.sendOtp(email);
@@ -188,7 +180,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Logout
-
   Future<void> logout() async {
     await AppPrefs.logout();
     _user = null;

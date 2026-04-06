@@ -50,26 +50,12 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
     if (!mounted) return;
 
     if (success) {
-      
-      final otpSent = await provider.sendOtp(email);
-
-      if (!mounted) return;
-
-      if (otpSent) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OtbVerificationScreen(email: email),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(provider.errorMessage),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OtbVerificationScreen(email: email),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
