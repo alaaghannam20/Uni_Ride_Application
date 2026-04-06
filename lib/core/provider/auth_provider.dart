@@ -17,7 +17,7 @@ class AuthProvider extends ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
 
-  UserType _userType = UserType.unknown;
+  UserType _userType = UserType.unauthorized;
   UserType get userType => _userType;
 
   void _setState(AuthState newState) {
@@ -183,7 +183,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout() async {
     await AppPrefs.logout();
     _user = null;
-    _userType = UserType.unknown;
+    _userType = UserType.unauthorized;
     _setState(AuthState.idle);
   }
 }

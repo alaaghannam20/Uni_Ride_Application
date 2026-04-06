@@ -1,4 +1,6 @@
-enum UserType { member, driver, admin, carpool, unknown }
+import 'package:uni_ride_application/core/constants/api_keys.dart';
+
+enum UserType { member, driver, admin, carpool, unauthorized }
 
 UserType userTypeFromString(String value) {
   final normalized = value.toLowerCase().trim();
@@ -12,7 +14,7 @@ UserType userTypeFromString(String value) {
     case 'carpool':
       return UserType.carpool;
     default:
-      return UserType.unknown;
+      return UserType.unauthorized;
   }
 }
 
@@ -34,22 +36,21 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      fullName: json['fullName'] ?? '',
-      email: json['email'] ?? '',
-      userType: userTypeFromString(json['userType'] ?? ''),
-      token: json['token'] ?? '',
-
-      status: json['status'] ?? '',
+      fullName: json[ApiKeys.fullName] ?? '',
+      email: json[ApiKeys.email] ?? '',
+      userType: userTypeFromString(json[ApiKeys.userType] ?? ''),
+      token: json[ApiKeys.token] ?? '',
+      status: json[ApiKeys.status] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'fullName': fullName,
-      'email': email,
-      'userType': userType.name,
-      'token': token,
-      'status': status,
+      ApiKeys.fullName: fullName,
+      ApiKeys.email: email,
+      ApiKeys.userType: userType.name,
+      ApiKeys.token: token,
+      ApiKeys.status: status,
     };
   }
 
