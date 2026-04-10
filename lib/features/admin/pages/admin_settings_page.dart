@@ -1,0 +1,234 @@
+import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/widgets/responsive.dart';
+import 'package:uni_ride_application/features/admin/widgets/admin_layout.dart';
+import 'package:uni_ride_application/features/admin/widgets/admin_header.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
+
+class AdminSettingsPage extends StatefulWidget {
+  const AdminSettingsPage({super.key});
+
+  @override
+  State<AdminSettingsPage> createState() => _AdminSettingsPageState();
+}
+
+class _AdminSettingsPageState extends State<AdminSettingsPage> {
+  bool _autoApprove = false;
+  bool _emailNotifications = true;
+  bool _smsNotifications = true;
+  final _baseFareController = TextEditingController(text: '5');
+  final _perKmController = TextEditingController(text: '2');
+
+  @override
+  void dispose() {
+    _baseFareController.dispose();
+    _perKmController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context)!;
+    final bool isDesktop = Responsive.isDesktop(context);
+
+    return AdminLayout(
+      activeRoute: '/AdminSettings',
+      child: Column(
+        children: [
+          AdminHeader(
+            title: locale.systemSettings,
+            showSearchAndFilter: false,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 25 : 12,
+                vertical: 25,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: isDesktop ? 1160 : double.infinity),
+                  child: Column(
+                    children: [
+                      _SettingsSection(
+                        title: locale.systemConfiguration,
+                        children: [
+                          _SwitchSettingRow(
+                            title: locale.autoApproveDrivers,
+                            description: locale.autoApproveDriversDesc,
+                            value: _autoApprove,
+                            onChanged: (val) => setState(() => _autoApprove = val),
+                          ),
+                          const Divider(height: 1, color: AppColors.adminDivider),
+                          _SwitchSettingRow(
+                            title: locale.emailNotifications,
+                            description: locale.emailNotificationsDesc,
+                            value: _emailNotifications,
+                            onChanged: (val) => setState(() => _emailNotifications = val),
+                          ),
+                          const Divider(height: 1, color: AppColors.adminDivider),
+                          _SwitchSettingRow(
+                            title: locale.smsNotifications,
+                            description: locale.smsNotificationsDesc,
+                            value: _smsNotifications,
+                            onChanged: (val) => setState(() => _smsNotifications = val),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      _SettingsSection(
+                        title: locale.pricingConfiguration,
+                        children: [
+                          _InputSettingRow(
+                            label: locale.baseFare,
+                            controller: _baseFareController,
+                          ),
+                          const SizedBox(height: 16),
+                          _InputSettingRow(
+                            label: locale.perKilometer,
+                            controller: _perKmController,
+                          ),
+                          const SizedBox(height: 32),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:  AppColors.adminSecondary,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Text(
+                                locale.saveChanges,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsSection extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _SettingsSection({required this.title, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDesktop = Responsive.isDesktop(context);
+    return Container(
+      padding: EdgeInsets.all(isDesktop ? 24 : 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color:  AppColors.borderadmincolor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 18)),
+          const SizedBox(height: 24),
+          ...children,
+        ],
+      ),
+    );
+  }
+}
+
+class _SwitchSettingRow extends StatelessWidget {
+  final String title;
+  final String description;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const _SwitchSettingRow({
+    required this.title,
+    required this.description,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w500)),
+                const SizedBox(height: 4),
+                Text(description, style: AppStyle.adminCardContactStyle),
+              ],
+            ),
+          ),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeThumbColor:  AppColors.adminSecondary,
+            inactiveThumbColor:  AppColors.adminSearchHint,
+            inactiveTrackColor: AppColors.adminDivider,
+            
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InputSettingRow extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+
+  const _InputSettingRow({required this.label, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.adminTextDark)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor:  AppColors.adminBackground,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.borderadmincolor),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.borderadmincolor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.adminSecondary),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          ),
+        ),
+      ],
+    );
+  }
+}

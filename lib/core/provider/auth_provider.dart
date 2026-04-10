@@ -82,6 +82,14 @@ class AuthProvider extends ChangeNotifier {
     _setState(AuthState.loading);
     try {
       final userResult = await _authService.login(emailOrPhone, password);
+      
+      // Check if the account is pending approval
+      if (userResult.status.toLowerCase() == 'pending') {
+        _errorMessage = 'ACCOUNT_PENDING';
+        _setState(AuthState.error);
+        return false;
+      }
+
       _user = userResult;
       await AppPrefs.setToken(userResult.token);
       await AppPrefs.setUserType(userResult.userType.name);

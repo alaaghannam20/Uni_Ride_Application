@@ -265,4 +265,148 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enterVehicleModel => 'Enter Vehicle Model';
+
+  @override
+  String get searchHint => 'بحث...';
+
+  @override
+  String get filter => 'فلترة';
+
+  @override
+  String get ptukAdmin => 'لوحة الإدارة';
+
+  @override
+  String get ptukTransport => 'نقل خضوري';
+
+  @override
+  String get overview => 'نظرة عامة';
+
+  @override
+  String get pendingApprovals => 'الموافقات المعلقة';
+
+  @override
+  String get drivers => 'السائقون';
+
+  @override
+  String get students => 'الطلاب';
+
+  @override
+  String get trips => 'الرحلات';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get adminUser => 'مستخدم إداري';
+
+  @override
+  String get adminEmail => 'admin@ptuk.edu';
+
+  @override
+  String get logOut => 'تسجيل الخروج';
+
+  @override
+  String get vehicleInformation => 'معلومات المركبة';
+
+  @override
+  String get viewDetails => 'عرض التفاصيل';
+
+  @override
+  String get reject => 'رفض';
+
+  @override
+  String get approve => 'قَبول';
+
+  @override
+  String get applied => 'قدّم الطلب';
+
+  @override
+  String get driverManagement => 'إدارة السائقين';
+
+  @override
+  String get rating => 'التقييم';
+
+  @override
+  String get totalTrips => 'إجمالي الرحلات';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get actions => 'الإجراءات';
+
+  @override
+  String get active => 'نشط';
+
+  @override
+  String get inactive => 'غير نشط';
+
+  @override
+  String get studentManagement => 'إدارة الطلاب';
+
+  @override
+  String get student => 'طالب';
+
+  @override
+  String get joined => 'تاريخ الانضمام';
+
+  @override
+  String get tripManagement => 'إدارة الرحلات';
+
+  @override
+  String get completed => 'مكتملة';
+
+  @override
+  String get ongoing => 'قيد التنفيذ';
+
+  @override
+  String get cancelled => 'ملغاة';
+
+  @override
+  String get ils => '₪';
+
+  @override
+  String get systemSettings => 'إعدادات النظام';
+
+  @override
+  String get systemConfiguration => 'تكوين النظام';
+
+  @override
+  String get pricingConfiguration => 'تكوين الأسعار';
+
+  @override
+  String get autoApproveDrivers => 'الموافقة التلقائية على السائقين';
+
+  @override
+  String get autoApproveDriversDesc =>
+      'الموافقة تلقائيًا على السائقين الذين تم التحقق منهم';
+
+  @override
+  String get emailNotifications => 'إشعارات البريد الإلكتروني';
+
+  @override
+  String get emailNotificationsDesc =>
+      'إرسال تنبيهات عبر البريد الإلكتروني للأحداث المهمة';
+
+  @override
+  String get smsNotifications => 'إشعارات SMS';
+
+  @override
+  String get smsNotificationsDesc => 'إرسال تنبيهات SMS للمستخدمين';
+
+  @override
+  String get baseFare => 'السعر الأساسي (₪)';
+
+  @override
+  String get perKilometer => 'لكل كيلومتر (₪)';
+
+  @override
+  String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get vehicle => 'المركبة';
+
+  @override
+  String get underReview =>
+      'حسابك قيد المراجعة من قبل الإدارة. يرجى المحاولة لاحقاً.';
 }

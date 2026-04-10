@@ -267,4 +267,146 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterVehicleModel => 'Enter Vehicle Model';
+
+  @override
+  String get searchHint => 'Search...';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get ptukAdmin => 'Admin Panel';
+
+  @override
+  String get ptukTransport => 'PTUK Transport';
+
+  @override
+  String get overview => 'Overview';
+
+  @override
+  String get pendingApprovals => 'Pending Approvals';
+
+  @override
+  String get drivers => 'Drivers';
+
+  @override
+  String get students => 'Students';
+
+  @override
+  String get trips => 'Trips';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get adminUser => 'Admin User';
+
+  @override
+  String get adminEmail => 'admin@ptuk.edu';
+
+  @override
+  String get logOut => 'Log Out';
+
+  @override
+  String get vehicleInformation => 'Vehicle Information';
+
+  @override
+  String get viewDetails => 'View Details';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get applied => 'Applied';
+
+  @override
+  String get driverManagement => 'Driver Management';
+
+  @override
+  String get rating => 'Rating';
+
+  @override
+  String get totalTrips => 'Total Trips';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get actions => 'Actions';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get inactive => 'Inactive';
+
+  @override
+  String get studentManagement => 'Student Management';
+
+  @override
+  String get student => 'Student';
+
+  @override
+  String get joined => 'Joined';
+
+  @override
+  String get tripManagement => 'Trip Management';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get ongoing => 'Ongoing';
+
+  @override
+  String get cancelled => 'Cancelled';
+
+  @override
+  String get ils => '₪';
+
+  @override
+  String get systemSettings => 'System Settings';
+
+  @override
+  String get systemConfiguration => 'System Configuration';
+
+  @override
+  String get pricingConfiguration => 'Pricing Configuration';
+
+  @override
+  String get autoApproveDrivers => 'Auto-approve Drivers';
+
+  @override
+  String get autoApproveDriversDesc => 'Automatically approve verified drivers';
+
+  @override
+  String get emailNotifications => 'Email Notifications';
+
+  @override
+  String get emailNotificationsDesc => 'Send email alerts for important events';
+
+  @override
+  String get smsNotifications => 'SMS Notifications';
+
+  @override
+  String get smsNotificationsDesc => 'Send SMS alerts to users';
+
+  @override
+  String get baseFare => 'Base Fare (₪)';
+
+  @override
+  String get perKilometer => 'Per Kilometer (₪)';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get vehicle => 'Vehicle';
+
+  @override
+  String get underReview =>
+      'Your account is under review by the administration. Please try again later.';
 }

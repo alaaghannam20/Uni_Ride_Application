@@ -13,6 +13,12 @@ import 'package:uni_ride_application/features/splash_pages/splash_screen.dart';
 import 'package:uni_ride_application/features/onboarding_page/presentation/screens/onboarding1_screen.dart';
 
 import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_uni_screen.dart';
+import 'package:uni_ride_application/features/admin/pages/admin_overview_page.dart';
+import 'package:uni_ride_application/features/admin/pages/admin_pending_approvals_page.dart';
+import 'package:uni_ride_application/features/admin/pages/admin_drivers_page.dart';
+import 'package:uni_ride_application/features/admin/pages/admin_students_page.dart';
+import 'package:uni_ride_application/features/admin/pages/admin_trips_page.dart';
+import 'package:uni_ride_application/features/admin/pages/admin_settings_page.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -157,6 +163,36 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) =>
               const Scaffold(body: Center(child: Text("  HomeScreen here"))),
+        );
+
+      case Routes.adminOverview:
+        return MaterialPageRoute(
+          builder: (_) => const AdminOverviewPage(),
+        );
+
+      case Routes.adminPendingApprovals:
+        return MaterialPageRoute(
+          builder: (_) => const AdminPendingApprovalsPage(),
+        );
+
+      case Routes.adminDrivers:
+        return MaterialPageRoute(
+          builder: (_) => const AdminDriversPage(),
+        );
+
+      case Routes.adminStudents:
+        return MaterialPageRoute(
+          builder: (_) => const AdminStudentsPage(),
+        );
+
+      case Routes.adminTrips:
+        return MaterialPageRoute(
+          builder: (_) => const AdminTripsPage(),
+        );
+
+      case Routes.adminSettings:
+        return MaterialPageRoute(
+          builder: (_) => const AdminSettingsPage(),
         );
 
       default:

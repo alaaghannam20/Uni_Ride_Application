@@ -9,4 +9,9 @@ class AppEndpoints {
   static const String forgetPassword = 'auth/forget-password';
   static const String resetPassword = 'auth/reset-password';
   static const String changePassword = 'auth/change-password';
+
+  // Admin Endpoints
+  static const String pendingApprovals = 'Admin/pending-approvals';
+  static const String approve = 'Admin/approve';
+  static const String reject = 'Admin/reject';
 }

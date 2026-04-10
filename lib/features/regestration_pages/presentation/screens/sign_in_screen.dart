@@ -55,9 +55,13 @@ class _SignInScreenState extends State<SignInScreen> {
         Navigator.pushReplacementNamed(context, Routes.home); //member home
       }
     } else {
+      String message = provider.errorMessage;
+      if (message == 'ACCOUNT_PENDING') {
+        message = AppLocalizations.of(context)!.underReview;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(provider.errorMessage),
+          content: Text(message),
           backgroundColor: Colors.red,
         ),
       );

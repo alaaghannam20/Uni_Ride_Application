@@ -13,5 +13,12 @@ class Routes {
   static const codeVerification = '/CodeVerificationScreen';
   static const signUpDriver = '/SignUpDriverScreen';
   static const home = '/HomeScreen';
+  
+  static const adminOverview = '/AdminOverview';
+  static const adminPendingApprovals = '/AdminPendingApprovals';
+  static const adminDrivers = '/AdminDrivers';
+  static const adminStudents = '/AdminStudents';
+  static const adminTrips = '/AdminTrips';
+  static const adminSettings = '/AdminSettings';
 
 }

@@ -607,6 +607,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter Vehicle Model'**
   String get enterVehicleModel;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get searchHint;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// No description provided for @ptukAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Panel'**
+  String get ptukAdmin;
+
+  /// No description provided for @ptukTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'PTUK Transport'**
+  String get ptukTransport;
+
+  /// No description provided for @overview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get overview;
+
+  /// No description provided for @pendingApprovals.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Approvals'**
+  String get pendingApprovals;
+
+  /// No description provided for @drivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Drivers'**
+  String get drivers;
+
+  /// No description provided for @students.
+  ///
+  /// In en, this message translates to:
+  /// **'Students'**
+  String get students;
+
+  /// No description provided for @trips.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips'**
+  String get trips;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @adminUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin User'**
+  String get adminUser;
+
+  /// No description provided for @adminEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'admin@ptuk.edu'**
+  String get adminEmail;
+
+  /// No description provided for @logOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get logOut;
+
+  /// No description provided for @vehicleInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Information'**
+  String get vehicleInformation;
+
+  /// No description provided for @viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get viewDetails;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
+
+  /// No description provided for @applied.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied'**
+  String get applied;
+
+  /// No description provided for @driverManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Management'**
+  String get driverManagement;
+
+  /// No description provided for @rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get rating;
+
+  /// No description provided for @totalTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Trips'**
+  String get totalTrips;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actions;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
+
+  /// No description provided for @studentManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Student Management'**
+  String get studentManagement;
+
+  /// No description provided for @student.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get student;
+
+  /// No description provided for @joined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined'**
+  String get joined;
+
+  /// No description provided for @tripManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Management'**
+  String get tripManagement;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
+
+  /// No description provided for @ongoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get ongoing;
+
+  /// No description provided for @cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelled;
+
+  /// No description provided for @ils.
+  ///
+  /// In en, this message translates to:
+  /// **'₪'**
+  String get ils;
+
+  /// No description provided for @systemSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'System Settings'**
+  String get systemSettings;
+
+  /// No description provided for @systemConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'System Configuration'**
+  String get systemConfiguration;
+
+  /// No description provided for @pricingConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing Configuration'**
+  String get pricingConfiguration;
+
+  /// No description provided for @autoApproveDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-approve Drivers'**
+  String get autoApproveDrivers;
+
+  /// No description provided for @autoApproveDriversDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically approve verified drivers'**
+  String get autoApproveDriversDesc;
+
+  /// No description provided for @emailNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Notifications'**
+  String get emailNotifications;
+
+  /// No description provided for @emailNotificationsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Send email alerts for important events'**
+  String get emailNotificationsDesc;
+
+  /// No description provided for @smsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS Notifications'**
+  String get smsNotifications;
+
+  /// No description provided for @smsNotificationsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Send SMS alerts to users'**
+  String get smsNotificationsDesc;
+
+  /// No description provided for @baseFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Base Fare (₪)'**
+  String get baseFare;
+
+  /// No description provided for @perKilometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Per Kilometer (₪)'**
+  String get perKilometer;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @vehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle'**
+  String get vehicle;
+
+  /// No description provided for @underReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is under review by the administration. Please try again later.'**
+  String get underReview;
 }
 
 class _AppLocalizationsDelegate
