@@ -409,4 +409,176 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get underReview =>
       'Your account is under review by the administration. Please try again later.';
+
+  @override
+  String get payment => 'Payment';
+
+  @override
+  String get tripSummary => 'Trip Summary';
+
+  @override
+  String get route => 'Route';
+
+  @override
+  String get dateTime => 'Date & Time';
+
+  @override
+  String get pricePerSeat => 'Price per seat';
+
+  @override
+  String get totalAmount => 'Total Amount';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get confirmPayment => 'Confirm Payment';
+
+  @override
+  String get myWallet => 'My Wallet';
+
+  @override
+  String get transactionHistory => 'Transaction history';
+
+  @override
+  String get currentBalance => 'Current Balance';
+
+  @override
+  String get topUpWallet => 'Top Up Wallet';
+
+  @override
+  String get searchTransactions => 'Search transactions...';
+
+  @override
+  String get allTabs => 'All';
+
+  @override
+  String get paymentsTabs => 'Payments';
+
+  @override
+  String get refundsTabs => 'Refunds';
+
+  @override
+  String get topUpsTabs => 'Top-ups';
+
+  @override
+  String get tripPayment => 'Trip Payment';
+
+  @override
+  String get walletTopUp => 'Wallet Top-up';
+
+  @override
+  String get tripCancellationRefund => 'Trip Cancellation Refund';
+
+  @override
+  String get driverCancellationRefund => 'Driver Cancellation Refund';
+
+  @override
+  String get ptukWallet => 'PTUK Wallet';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get manageAccount => 'Manage your account';
+
+  @override
+  String get memberSince => 'Member since';
+
+  @override
+  String get tripsCount => 'trips';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get languageLabel => 'Language';
+
+  @override
+  String get lightMode => 'Light mode';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get pushNotifications => 'Push notifications';
+
+  @override
+  String get securitySupport => 'Security & Support';
+
+  @override
+  String get privacySecurity => 'Privacy & Security';
+
+  @override
+  String get managePrivacySettings => 'Manage your privacy settings';
+
+  @override
+  String get helpSupport => 'Help & Support';
+
+  @override
+  String get getHelpOrContact => 'Get help or contact us';
+
+  @override
+  String get rateYourDriver => 'Rate Your Driver';
+
+  @override
+  String get howWasExperience => 'How was your experience?';
+
+  @override
+  String get ratingPoor => 'Poor';
+
+  @override
+  String get ratingFair => 'Fair';
+
+  @override
+  String get ratingGood => 'Good';
+
+  @override
+  String get ratingVeryGood => 'Very Good';
+
+  @override
+  String get ratingExcellent => 'Excellent';
+
+  @override
+  String get additionalComments => 'Additional Comments';
+
+  @override
+  String get shareMoreDetails =>
+      'Share more details about your experience (optional)';
+
+  @override
+  String get commentHint => 'What did you like or dislike about this trip?';
+
+  @override
+  String get characters => 'characters';
+
+  @override
+  String get quickFeedback => 'Quick Feedback';
+
+  @override
+  String get friendly => 'Friendly';
+
+  @override
+  String get onTime => 'On Time';
+
+  @override
+  String get safeDriver => 'Safe Driver';
+
+  @override
+  String get cleanCar => 'Clean Car';
+
+  @override
+  String get submitRating => 'Submit Rating';
+
+  @override
+  String get darkMode => 'Dark mode';
 }

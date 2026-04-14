@@ -889,6 +889,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your account is under review by the administration. Please try again later.'**
   String get underReview;
+
+  /// No description provided for @payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get payment;
+
+  /// No description provided for @tripSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Summary'**
+  String get tripSummary;
+
+  /// No description provided for @route.
+  ///
+  /// In en, this message translates to:
+  /// **'Route'**
+  String get route;
+
+  /// No description provided for @dateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get dateTime;
+
+  /// No description provided for @pricePerSeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per seat'**
+  String get pricePerSeat;
+
+  /// No description provided for @totalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get totalAmount;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// No description provided for @confirmPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Payment'**
+  String get confirmPayment;
+
+  /// No description provided for @myWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'My Wallet'**
+  String get myWallet;
+
+  /// No description provided for @transactionHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction history'**
+  String get transactionHistory;
+
+  /// No description provided for @currentBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Balance'**
+  String get currentBalance;
+
+  /// No description provided for @topUpWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Up Wallet'**
+  String get topUpWallet;
+
+  /// No description provided for @searchTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Search transactions...'**
+  String get searchTransactions;
+
+  /// No description provided for @allTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allTabs;
+
+  /// No description provided for @paymentsTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get paymentsTabs;
+
+  /// No description provided for @refundsTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Refunds'**
+  String get refundsTabs;
+
+  /// No description provided for @topUpsTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-ups'**
+  String get topUpsTabs;
+
+  /// No description provided for @tripPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Payment'**
+  String get tripPayment;
+
+  /// No description provided for @walletTopUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Top-up'**
+  String get walletTopUp;
+
+  /// No description provided for @tripCancellationRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Cancellation Refund'**
+  String get tripCancellationRefund;
+
+  /// No description provided for @driverCancellationRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Cancellation Refund'**
+  String get driverCancellationRefund;
+
+  /// No description provided for @ptukWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'PTUK Wallet'**
+  String get ptukWallet;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @manageAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your account'**
+  String get manageAccount;
+
+  /// No description provided for @memberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since'**
+  String get memberSince;
+
+  /// No description provided for @tripsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'trips'**
+  String get tripsCount;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageLabel;
+
+  /// No description provided for @lightMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Light mode'**
+  String get lightMode;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @pushNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Push notifications'**
+  String get pushNotifications;
+
+  /// No description provided for @securitySupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Security & Support'**
+  String get securitySupport;
+
+  /// No description provided for @privacySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get privacySecurity;
+
+  /// No description provided for @managePrivacySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your privacy settings'**
+  String get managePrivacySettings;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupport;
+
+  /// No description provided for @getHelpOrContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Get help or contact us'**
+  String get getHelpOrContact;
+
+  /// No description provided for @rateYourDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Your Driver'**
+  String get rateYourDriver;
+
+  /// No description provided for @howWasExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'How was your experience?'**
+  String get howWasExperience;
+
+  /// No description provided for @ratingPoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Poor'**
+  String get ratingPoor;
+
+  /// No description provided for @ratingFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get ratingFair;
+
+  /// No description provided for @ratingGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get ratingGood;
+
+  /// No description provided for @ratingVeryGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Good'**
+  String get ratingVeryGood;
+
+  /// No description provided for @ratingExcellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent'**
+  String get ratingExcellent;
+
+  /// No description provided for @additionalComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Comments'**
+  String get additionalComments;
+
+  /// No description provided for @shareMoreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Share more details about your experience (optional)'**
+  String get shareMoreDetails;
+
+  /// No description provided for @commentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What did you like or dislike about this trip?'**
+  String get commentHint;
+
+  /// No description provided for @characters.
+  ///
+  /// In en, this message translates to:
+  /// **'characters'**
+  String get characters;
+
+  /// No description provided for @quickFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Feedback'**
+  String get quickFeedback;
+
+  /// No description provided for @friendly.
+  ///
+  /// In en, this message translates to:
+  /// **'Friendly'**
+  String get friendly;
+
+  /// No description provided for @onTime.
+  ///
+  /// In en, this message translates to:
+  /// **'On Time'**
+  String get onTime;
+
+  /// No description provided for @safeDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe Driver'**
+  String get safeDriver;
+
+  /// No description provided for @cleanCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean Car'**
+  String get cleanCar;
+
+  /// No description provided for @submitRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Rating'**
+  String get submitRating;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get darkMode;
 }
 
 class _AppLocalizationsDelegate

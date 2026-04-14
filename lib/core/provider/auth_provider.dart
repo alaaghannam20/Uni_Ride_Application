@@ -89,7 +89,16 @@ class AuthProvider extends ChangeNotifier {
         _setState(AuthState.error);
         return false;
       }
-
+        //TODO:Check authstate error for pending approval and show appropriate message in UI
+        //TODO: Implement the navigation by user type in the login function of the auth provider and remove the navigation logic from the login page
+        //if (userResult.userType == UserType.driver) {
+        //  // Navigate to driver dashboard
+        //} else if (userResult.userType == UserType.member) {
+        //  // Navigate to member dashboard
+        //} else if (userResult.userType == UserType.admin) {
+        //  // Navigate to admin dashboard
+        //} else {
+        //  // Handle unauthorized user type
       _user = userResult;
       await AppPrefs.setToken(userResult.token);
       await AppPrefs.setUserType(userResult.userType.name);

@@ -409,4 +409,176 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get underReview =>
       'حسابك قيد المراجعة من قبل الإدارة. يرجى المحاولة لاحقاً.';
+
+  @override
+  String get payment => 'الدفع';
+
+  @override
+  String get tripSummary => 'ملخص الرحلة';
+
+  @override
+  String get route => 'المسار';
+
+  @override
+  String get dateTime => 'التاريخ والوقت';
+
+  @override
+  String get pricePerSeat => 'سعر المقعد';
+
+  @override
+  String get totalAmount => 'المبلغ الإجمالي';
+
+  @override
+  String get paymentMethod => 'طريقة الدفع';
+
+  @override
+  String get confirmPayment => 'تأكيد الدفع';
+
+  @override
+  String get myWallet => 'محفظتي';
+
+  @override
+  String get transactionHistory => 'سجل المعاملات';
+
+  @override
+  String get currentBalance => 'الرصيد الحالي';
+
+  @override
+  String get topUpWallet => 'شحن المحفظة';
+
+  @override
+  String get searchTransactions => 'البحث في المعاملات...';
+
+  @override
+  String get allTabs => 'الكل';
+
+  @override
+  String get paymentsTabs => 'المدفوعات';
+
+  @override
+  String get refundsTabs => 'الاستردادات';
+
+  @override
+  String get topUpsTabs => 'الشحن';
+
+  @override
+  String get tripPayment => 'دفع ثمن الرحلة';
+
+  @override
+  String get walletTopUp => 'شحن المحفظة';
+
+  @override
+  String get tripCancellationRefund => 'استرداد إلغاء الرحلة';
+
+  @override
+  String get driverCancellationRefund => 'استرداد إلغاء السائق';
+
+  @override
+  String get ptukWallet => 'محفظة خضوري';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get manageAccount => 'إدارة حسابك';
+
+  @override
+  String get memberSince => 'عضو منذ';
+
+  @override
+  String get tripsCount => 'رحلة';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get phone => 'الهاتف';
+
+  @override
+  String get location => 'الموقع';
+
+  @override
+  String get preferences => 'التفضيلات';
+
+  @override
+  String get languageLabel => 'اللغة';
+
+  @override
+  String get lightMode => 'نهاري';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get pushNotifications => 'إشعارات الدفع';
+
+  @override
+  String get securitySupport => 'الأمان والدعم';
+
+  @override
+  String get privacySecurity => 'الخصوصية والأمان';
+
+  @override
+  String get managePrivacySettings => 'إدارة إعدادات الخصوصية';
+
+  @override
+  String get helpSupport => 'المساعدة والدعم';
+
+  @override
+  String get getHelpOrContact => 'احصل على مساعدة أو تواصل معنا';
+
+  @override
+  String get rateYourDriver => 'Rate Your Driver';
+
+  @override
+  String get howWasExperience => 'How was your experience?';
+
+  @override
+  String get ratingPoor => 'Poor';
+
+  @override
+  String get ratingFair => 'Fair';
+
+  @override
+  String get ratingGood => 'Good';
+
+  @override
+  String get ratingVeryGood => 'Very Good';
+
+  @override
+  String get ratingExcellent => 'Excellent';
+
+  @override
+  String get additionalComments => 'Additional Comments';
+
+  @override
+  String get shareMoreDetails =>
+      'Share more details about your experience (optional)';
+
+  @override
+  String get commentHint => 'What did you like or dislike about this trip?';
+
+  @override
+  String get characters => 'characters';
+
+  @override
+  String get quickFeedback => 'Quick Feedback';
+
+  @override
+  String get friendly => 'Friendly';
+
+  @override
+  String get onTime => 'On Time';
+
+  @override
+  String get safeDriver => 'Safe Driver';
+
+  @override
+  String get cleanCar => 'Clean Car';
+
+  @override
+  String get submitRating => 'Submit Rating';
+
+  @override
+  String get darkMode => 'ليلي';
 }

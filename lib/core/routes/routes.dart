@@ -20,5 +20,10 @@ class Routes {
   static const adminStudents = '/AdminStudents';
   static const adminTrips = '/AdminTrips';
   static const adminSettings = '/AdminSettings';
-
+  
+  static const payment = '/PaymentPage';
+  static const myWallet = '/MyWalletPage';
+  
+  static const rateDriver = '/RateDriverPage';
+  static const profile = '/ProfilePage';
 }

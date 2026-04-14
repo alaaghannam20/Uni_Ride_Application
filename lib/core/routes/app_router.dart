@@ -19,6 +19,10 @@ import 'package:uni_ride_application/features/admin/pages/admin_drivers_page.dar
 import 'package:uni_ride_application/features/admin/pages/admin_students_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_trips_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_settings_page.dart';
+import 'package:uni_ride_application/features/payment/pages/payment_page.dart';
+import 'package:uni_ride_application/features/payment/pages/my_wallet_page.dart';
+import 'package:uni_ride_application/features/rating/pages/rate_driver_page.dart';
+import 'package:uni_ride_application/features/profile/pages/profile_page.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -193,6 +197,26 @@ class AppRouter {
       case Routes.adminSettings:
         return MaterialPageRoute(
           builder: (_) => const AdminSettingsPage(),
+        );
+
+      case Routes.payment:
+        return MaterialPageRoute(
+          builder: (_) => const PaymentPage(),
+        );
+
+      case Routes.myWallet:
+        return MaterialPageRoute(
+          builder: (_) => const MyWalletPage(),
+        );
+
+      case Routes.rateDriver:
+        return MaterialPageRoute(
+          builder: (_) => const RateDriverPage(),
+        );
+
+      case Routes.profile:
+        return MaterialPageRoute(
+          builder: (_) => const ProfilePage(),
         );
 
       default:

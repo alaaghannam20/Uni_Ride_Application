@@ -41,7 +41,7 @@ class _AdminPendingApprovalsPageState extends State<AdminPendingApprovalsPage> {
             child: Consumer<AdminProvider>(
               builder: (context, provider, child) {
                 if (provider.state == AdminState.loading && provider.pendingApprovals.isEmpty) {
-                  return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+                  return const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary));
                 }
 
                 if (provider.state == AdminState.error && provider.pendingApprovals.isEmpty) {

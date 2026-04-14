@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:uni_ride_application/core/network/app_endpoints.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 
 class DioFactory {
   static Dio? _dioFactory;
@@ -10,6 +11,9 @@ class DioFactory {
         baseUrl: AppEndpoints.baseUrl,
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
+        // headers: {
+        //   "Authorization": "${AppPrefs.getToken()}",
+        // },
       ),
     );
     return _dioFactory!;

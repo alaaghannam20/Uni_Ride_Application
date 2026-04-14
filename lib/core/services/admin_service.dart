@@ -12,8 +12,7 @@ class AdminService {
             .map((item) => PendingApprovalModel.fromJson(item))
             .toList();
       } else if (response.data is Map && response.data['data'] is List) {
-         // Handle case where data is wrapped in a 'data' field
-         return (response.data['data'] as List)
+        return (response.data['data'] as List)
             .map((item) => PendingApprovalModel.fromJson(item))
             .toList();
       }

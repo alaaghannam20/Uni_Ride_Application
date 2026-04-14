@@ -66,17 +66,20 @@ class AuthService {
   // Login 
   Future<UserModel> login(String emailOrPhone, String password) async {
     try {
+      print("start api call");
       final response = await DioFactory.post(
         AppEndpoints.login,
         data: {ApiKeys.emailOrPhone: emailOrPhone, ApiKeys.password: password},
       );
-      
+              print("api call completed");
+
       if (response.data != null && response.data[ApiKeys.success] == true) {
          return UserModel.fromJson(response.data);
       } else {
          throw Exception(response.data[ApiKeys.message] ?? 'Login failed');
       }
     } catch (e) {
+      print(e);
       throw Exception(_cleanError(e));
     }
   }
