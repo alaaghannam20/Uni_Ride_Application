@@ -77,6 +77,42 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // Register Carpool
+  Future<bool> registerCarpool({
+    required String email,
+    required String password,
+    required String phoneNumber,
+    required String vehicleType,
+    required String vehicleModel,
+    required String plateNumber,
+    required int seatCapacity,
+    required String licenseNumber,
+    required String driverLicensePath,
+    required String vehicleLicensePath,
+  }) async {
+    _setState(AuthState.loading);
+    final result = await _authService.registerCarpool(
+      email: email,
+      password: password,
+      phoneNumber: phoneNumber,
+      vehicleType: vehicleType,
+      vehicleModel: vehicleModel,
+      plateNumber: plateNumber,
+      seatCapacity: seatCapacity,
+      licenseNumber: licenseNumber,
+      driverLicensePath: driverLicensePath,
+      vehicleLicensePath: vehicleLicensePath,
+    );
+    if (result.success) {
+      _setState(AuthState.success);
+      return true;
+    } else {
+      _errorMessage = result.message;
+      _setState(AuthState.error);
+      return false;
+    }
+  }
+
   //  Login
   Future<bool> login(String emailOrPhone, String password) async {
     _setState(AuthState.loading);

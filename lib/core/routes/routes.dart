@@ -26,4 +26,13 @@ class Routes {
   
   static const rateDriver = '/RateDriverPage';
   static const profile = '/ProfilePage';
+  static const allAvailableTrips = '/AllAvailableTripsScreen';
+  static const offerCarpool = '/OfferCarpoolScreen';
+  static const previewCarpool = '/PreviewCarpoolScreen';
+  static const offerConfirmation = '/OfferConfirmationScreen';
+
+  static const driverhome = '/DriverHomeScreen';
+  static const driverprofile = '/DriverProfileScreen';
+  static const tripDetails = '/TripDetailsScreen';
+  static const bookingConfirmed = '/BookingConfirmedScreen';
 }

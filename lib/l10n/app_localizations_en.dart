@@ -91,6 +91,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personalInformation => 'Personal Information';
 
   @override
+  String get signUpCarpool => 'Sign Up Carpool';
+
+  @override
   String get signUpDriver => 'Sign Up Driver';
 
   @override
@@ -297,6 +300,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get appSettings => 'App Settings';
+
+  @override
+  String get carType => 'Car Type';
 
   @override
   String get adminUser => 'Admin User';
@@ -580,5 +589,585 @@ class AppLocalizationsEn extends AppLocalizations {
   String get submitRating => 'Submit Rating';
 
   @override
+  String get find_trips => 'Find Trips';
+
+  @override
+  String get my_trips => 'My Trips';
+
+  @override
+  String get carpool => 'Carpool';
+
+  @override
+  String get rewards => 'Rewards';
+
+  @override
+  String get where_to_today => 'Where to today?';
+
+  @override
+  String get search_trips => 'Search for trips...';
+
+  @override
+  String get available_trips => 'Available Trips';
+
+  @override
+  String get view_all => 'View all';
+
+  @override
+  String get hello_user => 'Hello, ';
+
+  @override
+  String get offer_a_ride => 'Offer a Ride';
+
+  @override
+  String get offer_ride_sub => 'Share your journey and earn rewards';
+
+  @override
+  String get available_rides => 'Available Rides';
+
+  @override
+  String get my_rides => 'My Rides';
+
+  @override
+  String get find_rides => 'Find Rides';
+
+  @override
+  String get no_rides_yet => 'No rides yet';
+
+  @override
+  String get no_rides_sub =>
+      'Start offering rides or join carpools to see them here';
+
+  @override
+  String get offer_first_ride => 'Offer Your First Ride';
+
+  @override
+  String get your_points => 'Your Points';
+
+  @override
+  String get level => 'Level';
+
+  @override
+  String get gold_member => 'Gold Member';
+
+  @override
+  String get rank => 'Rank';
+
+  @override
+  String get refer_a_friend => 'Refer a Friend';
+
+  @override
+  String get refer_sub => 'Get 50 points for each referral';
+
+  @override
+  String get friends_joined => '3 friends joined · +150 pts earned';
+
+  @override
+  String get achievements => 'Achievements';
+
+  @override
+  String get redeem_rewards => 'Redeem Rewards';
+
+  @override
+  String get ach_first_ride_title => 'First Ride';
+
+  @override
+  String get ach_first_ride_sub => 'Complete your first trip';
+
+  @override
+  String get ach_top_rider_title => 'Top Rider';
+
+  @override
+  String get ach_top_rider_sub => 'Complete 20 trips';
+
+  @override
+  String get rew_free_ride_title => 'Free Ride';
+
+  @override
+  String get rew_free_ride_sub => 'Get one trip completely free';
+
+  @override
+  String get rew_half_off_title => '50% Off Next Ride';
+
+  @override
+  String get rew_half_off_sub => 'Half price on your next trip';
+
+  @override
+  String get per_seat => 'per seat';
+
+  @override
+  String get trip_details => 'Trip Details';
+
+  @override
+  String get trips_label => 'trips';
+
+  @override
+  String get driver_information => 'Driver Information';
+
+  @override
+  String get pickup_points => 'Pickup Points';
+
+  @override
+  String get available_seats => 'Available Seats';
+
+  @override
+  String get select_seats => 'Select Seats';
+
+  @override
+  String get seats_remaining => 'seats remaining';
+
+  @override
+  String get how_many_seats => 'How many seats approach?';
+
+  @override
+  String get seats_available => 'seats available';
+
+  @override
+  String get number_of_seats_label => 'Number of seats';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get total_price => 'Total Price';
+
+  @override
+  String get book_now => 'Book Now';
+
+  @override
+  String get booking_confirmed => 'Booking Confirmed!';
+
+  @override
+  String get booking_confirmed_sub => 'Your trip has been booked successfully.';
+
+  @override
+  String get will_be_charged => 'will be charged from your wallet.';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get pickup_ptuk_gate => 'PTUK Main Gate';
+
+  @override
+  String get pickup_eng_building => 'Engineering Building';
+
+  @override
+  String get pickup_student_housing => 'Student Housing';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get upcoming => 'Upcoming';
+
+  @override
+  String get recurring => 'Recurring';
+
+  @override
+  String get per_seat_label => '/seat';
+
+  @override
+  String get recurring_ride => 'Recurring Ride';
+
+  @override
+  String get filter_label => 'Filter';
+
+  @override
   String get darkMode => 'Dark mode';
+
+  @override
+  String get carpool_find_rides => 'Find Rides';
+
+  @override
+  String get carpool_my_rides => 'My Rides';
+
+  @override
+  String get no_rides_found => 'No rides found.';
+
+  @override
+  String get refer_friend_title => 'Refer a Friend & Earn';
+
+  @override
+  String get refer_friend_sub =>
+      'Get 50 points for each referral and your friend gets \$10 off.';
+
+  @override
+  String get referrals_label => 'referrals';
+
+  @override
+  String get points_label => 'points';
+
+  @override
+  String get total_points_label => 'Total Points';
+
+  @override
+  String get redeem_points_btn => 'Redeem Your Points';
+
+  @override
+  String get all_available_trips => 'All Available Trips';
+
+  @override
+  String trips_available_count(Object count) {
+    return '$count trips available';
+  }
+
+  @override
+  String get offer_a_carpool => 'Offer a Carpool';
+
+  @override
+  String get offer_carpool_sub => 'Share your ride and earn rewards';
+
+  @override
+  String get car_details => 'Car Details';
+
+  @override
+  String get car_type => 'Car Type';
+
+  @override
+  String get number_of_car_seats => 'Number of Car\'s Seats';
+
+  @override
+  String get route_details => 'Route Details';
+
+  @override
+  String get pickup_loc => 'Pickup Location';
+
+  @override
+  String get dropoff_loc => 'Dropoff Location';
+
+  @override
+  String get when_leaving => 'When are you leaving?';
+
+  @override
+  String get available_seats_label => 'Available Seats';
+
+  @override
+  String get how_many_passengers => 'How many passengers can you take?';
+
+  @override
+  String get price_per_seat_label => 'Price per Seat';
+
+  @override
+  String get set_price => 'Set your price in ILS (₪)';
+
+  @override
+  String get suggested_price_range => 'Suggested price range: ₪5-₪12 per seat';
+
+  @override
+  String get additional_notes_optional => 'Additional Notes (Optional)';
+
+  @override
+  String get notes_hint => 'Any special requirements or information...';
+
+  @override
+  String get estimated_earnings => 'Estimated Earnings';
+
+  @override
+  String get continue_to_preview => 'Continue to Preview';
+
+  @override
+  String get registration_submitted => 'Registration Submitted';
+
+  @override
+  String get under_review_message =>
+      'Your registration is under review. You will be able to login once the admin approves your account.';
+
+  @override
+  String get upload_both_licenses => 'Please upload both license images';
+
+  @override
+  String get oK => 'OK';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get time => 'Time';
+
+  @override
+  String get preview_your_offer => 'Preview Your Offer';
+
+  @override
+  String get review_before_posting => 'Review before posting';
+
+  @override
+  String get your_route => 'Your Route';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get approx_drive => 'Approx. drive';
+
+  @override
+  String get departure_details => 'Departure Details';
+
+  @override
+  String get departure_time => 'Departure Time';
+
+  @override
+  String get pricing_details => 'Pricing Details';
+
+  @override
+  String get total_potential_earnings => 'Total Potential Earnings';
+
+  @override
+  String get if_all_seats_booked => 'If all seats are booked';
+
+  @override
+  String get ready_to_post => 'Ready to Post?';
+
+  @override
+  String get ready_to_post_sub =>
+      'Your offer will be visible to all students. You\'ll receive notifications when someone books a seat.';
+
+  @override
+  String get post_carpool_offer => 'Post Carpool Offer';
+
+  @override
+  String get offer_posted_successfully => 'Carpool Offer Posted Successfully!';
+
+  @override
+  String get congratulations => 'Congratulations!';
+
+  @override
+  String get back_to_home => 'Back to Home';
+
+  @override
+  String get offer_posted => 'Offer Posted!';
+
+  @override
+  String get offer_posted_sub =>
+      'Your carpool is now live and visible to students';
+
+  @override
+  String get carpool_id => 'Carpool ID';
+
+  @override
+  String get your_carpool_offer => 'Your Carpool Offer';
+
+  @override
+  String get offer_statistics => 'Offer Statistics';
+
+  @override
+  String get potential_earnings => 'Potential Earnings';
+
+  @override
+  String get activeTrip => 'Active Trip';
+
+  @override
+  String get pickupIn5Min => 'Pickup in 5 min';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get call => 'Call';
+
+  @override
+  String get message => 'Message';
+
+  @override
+  String get scheduled => 'Scheduled';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String get navigate => 'Navigate';
+
+  @override
+  String get bookingId => 'Booking ID';
+
+  @override
+  String get confirmed => 'Confirmed';
+
+  @override
+  String get pickupLocation => 'Pickup Location';
+
+  @override
+  String get dropoffLocation => 'Dropoff Location';
+
+  @override
+  String get availableSeats => 'Available Seats';
+
+  @override
+  String get tripDetails => 'Trip Details';
+
+  @override
+  String get cancelBooking => 'Cancel Booking';
+
+  @override
+  String get contactDriver => 'Contact Driver';
+
+  @override
+  String get viewRoute => 'View Route';
+
+  @override
+  String get downloadTicket => 'Download Ticket';
+
+  @override
+  String get shareTrip => 'Share Trip';
+
+  @override
+  String get cancelBookingTitle => 'Cancel Booking';
+
+  @override
+  String get cancelBookingMessage =>
+      'Are you sure you want to cancel this booking? You will receive a refund according to our cancellation policy.';
+
+  @override
+  String get keepBooking => 'Keep Booking';
+
+  @override
+  String get confirmCancel => 'Confirm Cancel';
+
+  @override
+  String get bookingCancelled => 'Booking Cancelled';
+
+  @override
+  String get bookingCancelledMessage =>
+      'Your booking has been cancelled successfully. You will receive a refund within 3-5 business days.';
+
+  @override
+  String get driverContact => 'Driver Contact';
+
+  @override
+  String get callDriver => 'Call Driver';
+
+  @override
+  String get messageDriver => 'Message Driver';
+
+  @override
+  String get tripRoute => 'Trip Route';
+
+  @override
+  String get estimatedDuration => 'Estimated Duration';
+
+  @override
+  String get distance => 'Distance';
+
+  @override
+  String get vehicleInfo => 'Vehicle Information';
+
+  @override
+  String get driverInfo => 'Driver Information';
+
+  @override
+  String get paymentInfo => 'Payment Information';
+
+  @override
+  String get paymentStatus => 'Payment Status';
+
+  @override
+  String get paid => 'Paid';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get bookingConfirmed => 'Booking Confirmed';
+
+  @override
+  String get bookingConfirmedMessage =>
+      'Your booking has been confirmed successfully. You can view all trip details here.';
+
+  @override
+  String get pickupReminder =>
+      'Please arrive at the pickup point 5 minutes before departure time';
+
+  @override
+  String get my_offers => 'My Offers';
+
+  @override
+  String get what_happens_next => 'What Happens Next?';
+
+  @override
+  String get next1_title => 'Students Browse Your Offer';
+
+  @override
+  String get next1_sub =>
+      'Your carpool is now visible to all students looking for rides';
+
+  @override
+  String get next2_title => 'Get Booking Notifications';
+
+  @override
+  String get next2_sub =>
+      'You\'ll receive instant notifications when someone books a seat';
+
+  @override
+  String get next3_title => 'Complete the Ride';
+
+  @override
+  String get next3_sub => 'Pick up passengers and earn money + reward points';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get pro_tip => 'Pro Tip';
+
+  @override
+  String get pro_tip_description =>
+      'Be punctual and communicate clearly with your passengers for better ratings and more bookings!';
+
+  @override
+  String get cancel_the_trip => 'Cancel The Trip';
+
+  @override
+  String get cancel_trip => 'Cancel Trip';
+
+  @override
+  String get cancel_trip_confirmation =>
+      'Are you sure you want to cancel this trip? You will receive a refund according to our cancellation policy.';
+
+  @override
+  String get keep_booking => 'Keep Booking';
+
+  @override
+  String get confirm_cancel => 'Confirm Cancel';
+
+  @override
+  String get booking_id => 'Booking ID';
+
+  @override
+  String get driver_details => 'Driver Details';
+
+  @override
+  String get payment_status => 'Payment Status';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get pickup_reminder =>
+      'Please arrive at the pickup point 5 minutes before departure time';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get earned => 'Earned';
+
+  @override
+  String get manageYourAlerts => 'Manage your alerts';
+
+  @override
+  String get controlYourData => 'Control your data';
+
+  @override
+  String get paymentMethods => 'Payment Methods';
+
+  @override
+  String get manageWithdrawals => 'Manage withdrawals';
+
+  @override
+  String get faqsAndContactUs => 'FAQs and contact us';
+
+  @override
+  String get version => 'Version 1.0.0';
+
+  @override
+  String get driverActiveStatus => 'Driver • Active';
 }

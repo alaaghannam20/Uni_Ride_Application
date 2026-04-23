@@ -6,16 +6,26 @@ class DioFactory {
   static Dio? _dioFactory;
 
   static Dio get dio {
-    _dioFactory ??= Dio(
-      BaseOptions(
-        baseUrl: AppEndpoints.baseUrl,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
-        // headers: {
-        //   "Authorization": "${AppPrefs.getToken()}",
-        // },
-      ),
-    );
+    if (_dioFactory == null) {
+      _dioFactory = Dio(
+        BaseOptions(
+          baseUrl: AppEndpoints.baseUrl,
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+        ),
+      );
+      _dioFactory!.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            final token = AppPrefs.getToken();
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+            handler.next(options);
+          },
+        ),
+      );
+    }
     return _dioFactory!;
   }
 

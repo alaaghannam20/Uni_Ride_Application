@@ -17,6 +17,31 @@ class ApiKeys {
   static const String newPassword = 'newPassword';
   static const String oldPassword = 'oldPassword';
 
+  // Trip Keys
+  static const String tripId = 'tripId';
+  static const String tripCode = 'tripCode';
+  static const String driverName = 'driverName';
+  static const String pickupLocation = 'pickupLocation';
+  static const String dropoffLocation = 'dropoffLocation';
+  static const String departureTime = 'departureTime';
+  static const String pricePerSeat = 'pricePerSeat';
+  static const String availableSeats = 'availableSeats';
+  static const String estimatedDurationMinutes = 'estimatedDurationMinutes';
+  static const String driverType = 'driverType';
+  static const String vehicleModel = 'vehicleModel';
+  static const String description = 'description';
+  static const String stops = 'stops';
+  static const String stopName = 'stopName';
+  static const String estimatedArrivalTime = 'estimatedArrivalTime';
+  static const String stopOrder = 'stopOrder';
+  static const String totalSeats = 'totalSeats';
+  static const String driverRating = 'driverRating';
+  static const String totalDriverTrips = 'totalDriverTrips';
+  static const String plateNumber = 'plateNumber';
+  static const String vehicleType = 'vehicleType';
+  static const String data = 'data';
+  static const String type = 'type';
+
   // Driver Provider Keys (Backend requested them capitalized)
   static const String driverFullName = 'FullName';
   static const String driverEmail = 'Email';

@@ -23,6 +23,15 @@ import 'package:uni_ride_application/features/payment/pages/payment_page.dart';
 import 'package:uni_ride_application/features/payment/pages/my_wallet_page.dart';
 import 'package:uni_ride_application/features/rating/pages/rate_driver_page.dart';
 import 'package:uni_ride_application/features/profile/pages/profile_page.dart';
+import 'package:uni_ride_application/features/home_page/presentation/screens/home_screen.dart';
+import 'package:uni_ride_application/features/home_page/presentation/screens/all_available_trips_screen.dart';
+import 'package:uni_ride_application/features/home_page/presentation/screens/offer_carpool_screen.dart';
+import 'package:uni_ride_application/features/home_page/presentation/screens/preview_carpool_screen.dart';
+import 'package:uni_ride_application/features/home_page/presentation/screens/offer_confirmation_screen.dart';
+import 'package:uni_ride_application/features/driver/presentation/screens/driver_home_screen.dart';
+import 'package:uni_ride_application/features/driver/driver_profile_screen.dart';
+import 'package:uni_ride_application/features/trip_details/presentation/screens/trip_details_screen.dart';
+import 'package:uni_ride_application/features/trip_details/presentation/screens/booking_confirmed_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -165,8 +174,7 @@ class AppRouter {
 
       case Routes.home:
         return MaterialPageRoute(
-          builder: (_) =>
-              const Scaffold(body: Center(child: Text("  HomeScreen here"))),
+          builder: (_) => const HomeScreen(),
         );
 
       case Routes.adminOverview:
@@ -219,6 +227,56 @@ class AppRouter {
           builder: (_) => const ProfilePage(),
         );
 
+      case Routes.allAvailableTrips:
+        return MaterialPageRoute(builder: (_) => const AllAvailableTripsScreen());
+      case Routes.offerCarpool:
+        return MaterialPageRoute(builder: (_) => const OfferCarpoolScreen());
+      case Routes.previewCarpool:
+        final args = settings.arguments as Map<String, dynamic>? ?? {
+          'pickupLocation': 'PTUK Main Gate',
+          'dropoffLocation': 'Engineering Building',
+          'date': '2024-05-20',
+          'time': '08:30 AM',
+          'availableSeats': 3,
+          'pricePerSeat': 8,
+        };
+        return MaterialPageRoute(
+          builder: (_) => PreviewCarpoolScreen(
+            pickupLocation: args['pickupLocation'],
+            dropoffLocation: args['dropoffLocation'],
+            date: args['date'],
+            time: args['time'],
+            availableSeats: args['availableSeats'],
+            pricePerSeat: args['pricePerSeat'],
+          ),
+        );
+      case Routes.offerConfirmation:
+        final args = settings.arguments as Map<String, dynamic>? ?? {
+          'pickupLocation': 'PTUK Main Gate',
+          'dropoffLocation': 'Engineering Building',
+          'date': '2024-05-20',
+          'time': '08:30 AM',
+          'availableSeats': 3,
+          'pricePerSeat': 8,
+        };
+        return MaterialPageRoute(
+          builder: (_) => OfferConfirmationScreen(
+            pickupLocation: args['pickupLocation'],
+            dropoffLocation: args['dropoffLocation'],
+            date: args['date'],
+            time: args['time'],
+            availableSeats: args['availableSeats'],
+            pricePerSeat: args['pricePerSeat'],
+          ),
+        );
+      case Routes.driverhome:
+        return MaterialPageRoute(builder: (_) => const DriverHomeScreen());
+      case Routes.driverprofile:
+        return MaterialPageRoute(builder: (_) => const DriverProfileScreen());
+      case Routes.tripDetails:
+        return MaterialPageRoute(builder: (_) => const TripDetailsScreen());
+      case Routes.bookingConfirmed:
+        return MaterialPageRoute(builder: (_) => const BookingConfirmedScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

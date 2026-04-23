@@ -260,6 +260,12 @@ abstract class AppLocalizations {
   /// **'Personal Information'**
   String get personalInformation;
 
+  /// No description provided for @signUpCarpool.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up Carpool'**
+  String get signUpCarpool;
+
   /// No description provided for @signUpDriver.
   ///
   /// In en, this message translates to:
@@ -667,6 +673,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @appSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get appSettings;
+
+  /// No description provided for @carType.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Type'**
+  String get carType;
 
   /// No description provided for @adminUser.
   ///
@@ -1226,11 +1244,1139 @@ abstract class AppLocalizations {
   /// **'Submit Rating'**
   String get submitRating;
 
+  /// No description provided for @find_trips.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Trips'**
+  String get find_trips;
+
+  /// No description provided for @my_trips.
+  ///
+  /// In en, this message translates to:
+  /// **'My Trips'**
+  String get my_trips;
+
+  /// No description provided for @carpool.
+  ///
+  /// In en, this message translates to:
+  /// **'Carpool'**
+  String get carpool;
+
+  /// No description provided for @rewards.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards'**
+  String get rewards;
+
+  /// No description provided for @where_to_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to today?'**
+  String get where_to_today;
+
+  /// No description provided for @search_trips.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for trips...'**
+  String get search_trips;
+
+  /// No description provided for @available_trips.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Trips'**
+  String get available_trips;
+
+  /// No description provided for @view_all.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get view_all;
+
+  /// No description provided for @hello_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, '**
+  String get hello_user;
+
+  /// No description provided for @offer_a_ride.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer a Ride'**
+  String get offer_a_ride;
+
+  /// No description provided for @offer_ride_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your journey and earn rewards'**
+  String get offer_ride_sub;
+
+  /// No description provided for @available_rides.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Rides'**
+  String get available_rides;
+
+  /// No description provided for @my_rides.
+  ///
+  /// In en, this message translates to:
+  /// **'My Rides'**
+  String get my_rides;
+
+  /// No description provided for @find_rides.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Rides'**
+  String get find_rides;
+
+  /// No description provided for @no_rides_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No rides yet'**
+  String get no_rides_yet;
+
+  /// No description provided for @no_rides_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Start offering rides or join carpools to see them here'**
+  String get no_rides_sub;
+
+  /// No description provided for @offer_first_ride.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Your First Ride'**
+  String get offer_first_ride;
+
+  /// No description provided for @your_points.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Points'**
+  String get your_points;
+
+  /// No description provided for @level.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get level;
+
+  /// No description provided for @gold_member.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold Member'**
+  String get gold_member;
+
+  /// No description provided for @rank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get rank;
+
+  /// No description provided for @refer_a_friend.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer a Friend'**
+  String get refer_a_friend;
+
+  /// No description provided for @refer_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Get 50 points for each referral'**
+  String get refer_sub;
+
+  /// No description provided for @friends_joined.
+  ///
+  /// In en, this message translates to:
+  /// **'3 friends joined · +150 pts earned'**
+  String get friends_joined;
+
+  /// No description provided for @achievements.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achievements;
+
+  /// No description provided for @redeem_rewards.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem Rewards'**
+  String get redeem_rewards;
+
+  /// No description provided for @ach_first_ride_title.
+  ///
+  /// In en, this message translates to:
+  /// **'First Ride'**
+  String get ach_first_ride_title;
+
+  /// No description provided for @ach_first_ride_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your first trip'**
+  String get ach_first_ride_sub;
+
+  /// No description provided for @ach_top_rider_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Rider'**
+  String get ach_top_rider_title;
+
+  /// No description provided for @ach_top_rider_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 20 trips'**
+  String get ach_top_rider_sub;
+
+  /// No description provided for @rew_free_ride_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Ride'**
+  String get rew_free_ride_title;
+
+  /// No description provided for @rew_free_ride_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Get one trip completely free'**
+  String get rew_free_ride_sub;
+
+  /// No description provided for @rew_half_off_title.
+  ///
+  /// In en, this message translates to:
+  /// **'50% Off Next Ride'**
+  String get rew_half_off_title;
+
+  /// No description provided for @rew_half_off_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Half price on your next trip'**
+  String get rew_half_off_sub;
+
+  /// No description provided for @per_seat.
+  ///
+  /// In en, this message translates to:
+  /// **'per seat'**
+  String get per_seat;
+
+  /// No description provided for @trip_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Details'**
+  String get trip_details;
+
+  /// No description provided for @trips_label.
+  ///
+  /// In en, this message translates to:
+  /// **'trips'**
+  String get trips_label;
+
+  /// No description provided for @driver_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Information'**
+  String get driver_information;
+
+  /// No description provided for @pickup_points.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Points'**
+  String get pickup_points;
+
+  /// No description provided for @available_seats.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Seats'**
+  String get available_seats;
+
+  /// No description provided for @select_seats.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Seats'**
+  String get select_seats;
+
+  /// No description provided for @seats_remaining.
+  ///
+  /// In en, this message translates to:
+  /// **'seats remaining'**
+  String get seats_remaining;
+
+  /// No description provided for @how_many_seats.
+  ///
+  /// In en, this message translates to:
+  /// **'How many seats approach?'**
+  String get how_many_seats;
+
+  /// No description provided for @seats_available.
+  ///
+  /// In en, this message translates to:
+  /// **'seats available'**
+  String get seats_available;
+
+  /// No description provided for @number_of_seats_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of seats'**
+  String get number_of_seats_label;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @total_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Price'**
+  String get total_price;
+
+  /// No description provided for @book_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Book Now'**
+  String get book_now;
+
+  /// No description provided for @booking_confirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Confirmed!'**
+  String get booking_confirmed;
+
+  /// No description provided for @booking_confirmed_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip has been booked successfully.'**
+  String get booking_confirmed_sub;
+
+  /// No description provided for @will_be_charged.
+  ///
+  /// In en, this message translates to:
+  /// **'will be charged from your wallet.'**
+  String get will_be_charged;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @pickup_ptuk_gate.
+  ///
+  /// In en, this message translates to:
+  /// **'PTUK Main Gate'**
+  String get pickup_ptuk_gate;
+
+  /// No description provided for @pickup_eng_building.
+  ///
+  /// In en, this message translates to:
+  /// **'Engineering Building'**
+  String get pickup_eng_building;
+
+  /// No description provided for @pickup_student_housing.
+  ///
+  /// In en, this message translates to:
+  /// **'Student Housing'**
+  String get pickup_student_housing;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @upcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get upcoming;
+
+  /// No description provided for @recurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get recurring;
+
+  /// No description provided for @per_seat_label.
+  ///
+  /// In en, this message translates to:
+  /// **'/seat'**
+  String get per_seat_label;
+
+  /// No description provided for @recurring_ride.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring Ride'**
+  String get recurring_ride;
+
+  /// No description provided for @filter_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter_label;
+
   /// No description provided for @darkMode.
   ///
   /// In en, this message translates to:
   /// **'Dark mode'**
   String get darkMode;
+
+  /// No description provided for @carpool_find_rides.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Rides'**
+  String get carpool_find_rides;
+
+  /// No description provided for @carpool_my_rides.
+  ///
+  /// In en, this message translates to:
+  /// **'My Rides'**
+  String get carpool_my_rides;
+
+  /// No description provided for @no_rides_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No rides found.'**
+  String get no_rides_found;
+
+  /// No description provided for @refer_friend_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer a Friend & Earn'**
+  String get refer_friend_title;
+
+  /// No description provided for @refer_friend_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Get 50 points for each referral and your friend gets \$10 off.'**
+  String get refer_friend_sub;
+
+  /// No description provided for @referrals_label.
+  ///
+  /// In en, this message translates to:
+  /// **'referrals'**
+  String get referrals_label;
+
+  /// No description provided for @points_label.
+  ///
+  /// In en, this message translates to:
+  /// **'points'**
+  String get points_label;
+
+  /// No description provided for @total_points_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Points'**
+  String get total_points_label;
+
+  /// No description provided for @redeem_points_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem Your Points'**
+  String get redeem_points_btn;
+
+  /// No description provided for @all_available_trips.
+  ///
+  /// In en, this message translates to:
+  /// **'All Available Trips'**
+  String get all_available_trips;
+
+  /// No description provided for @trips_available_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} trips available'**
+  String trips_available_count(Object count);
+
+  /// No description provided for @offer_a_carpool.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer a Carpool'**
+  String get offer_a_carpool;
+
+  /// No description provided for @offer_carpool_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your ride and earn rewards'**
+  String get offer_carpool_sub;
+
+  /// No description provided for @car_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Details'**
+  String get car_details;
+
+  /// No description provided for @car_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Car Type'**
+  String get car_type;
+
+  /// No description provided for @number_of_car_seats.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Car\'s Seats'**
+  String get number_of_car_seats;
+
+  /// No description provided for @route_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Route Details'**
+  String get route_details;
+
+  /// No description provided for @pickup_loc.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Location'**
+  String get pickup_loc;
+
+  /// No description provided for @dropoff_loc.
+  ///
+  /// In en, this message translates to:
+  /// **'Dropoff Location'**
+  String get dropoff_loc;
+
+  /// No description provided for @when_leaving.
+  ///
+  /// In en, this message translates to:
+  /// **'When are you leaving?'**
+  String get when_leaving;
+
+  /// No description provided for @available_seats_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Seats'**
+  String get available_seats_label;
+
+  /// No description provided for @how_many_passengers.
+  ///
+  /// In en, this message translates to:
+  /// **'How many passengers can you take?'**
+  String get how_many_passengers;
+
+  /// No description provided for @price_per_seat_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per Seat'**
+  String get price_per_seat_label;
+
+  /// No description provided for @set_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your price in ILS (₪)'**
+  String get set_price;
+
+  /// No description provided for @suggested_price_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested price range: ₪5-₪12 per seat'**
+  String get suggested_price_range;
+
+  /// No description provided for @additional_notes_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Notes (Optional)'**
+  String get additional_notes_optional;
+
+  /// No description provided for @notes_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Any special requirements or information...'**
+  String get notes_hint;
+
+  /// No description provided for @estimated_earnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Earnings'**
+  String get estimated_earnings;
+
+  /// No description provided for @continue_to_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to Preview'**
+  String get continue_to_preview;
+
+  /// No description provided for @registration_submitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Submitted'**
+  String get registration_submitted;
+
+  /// No description provided for @under_review_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Your registration is under review. You will be able to login once the admin approves your account.'**
+  String get under_review_message;
+
+  /// No description provided for @upload_both_licenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Please upload both license images'**
+  String get upload_both_licenses;
+
+  /// No description provided for @oK.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get oK;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get time;
+
+  /// No description provided for @preview_your_offer.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview Your Offer'**
+  String get preview_your_offer;
+
+  /// No description provided for @review_before_posting.
+  ///
+  /// In en, this message translates to:
+  /// **'Review before posting'**
+  String get review_before_posting;
+
+  /// No description provided for @your_route.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Route'**
+  String get your_route;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @approx_drive.
+  ///
+  /// In en, this message translates to:
+  /// **'Approx. drive'**
+  String get approx_drive;
+
+  /// No description provided for @departure_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure Details'**
+  String get departure_details;
+
+  /// No description provided for @departure_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure Time'**
+  String get departure_time;
+
+  /// No description provided for @pricing_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing Details'**
+  String get pricing_details;
+
+  /// No description provided for @total_potential_earnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Potential Earnings'**
+  String get total_potential_earnings;
+
+  /// No description provided for @if_all_seats_booked.
+  ///
+  /// In en, this message translates to:
+  /// **'If all seats are booked'**
+  String get if_all_seats_booked;
+
+  /// No description provided for @ready_to_post.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to Post?'**
+  String get ready_to_post;
+
+  /// No description provided for @ready_to_post_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Your offer will be visible to all students. You\'ll receive notifications when someone books a seat.'**
+  String get ready_to_post_sub;
+
+  /// No description provided for @post_carpool_offer.
+  ///
+  /// In en, this message translates to:
+  /// **'Post Carpool Offer'**
+  String get post_carpool_offer;
+
+  /// No description provided for @offer_posted_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Carpool Offer Posted Successfully!'**
+  String get offer_posted_successfully;
+
+  /// No description provided for @congratulations.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations!'**
+  String get congratulations;
+
+  /// No description provided for @back_to_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get back_to_home;
+
+  /// No description provided for @offer_posted.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Posted!'**
+  String get offer_posted;
+
+  /// No description provided for @offer_posted_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Your carpool is now live and visible to students'**
+  String get offer_posted_sub;
+
+  /// No description provided for @carpool_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Carpool ID'**
+  String get carpool_id;
+
+  /// No description provided for @your_carpool_offer.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Carpool Offer'**
+  String get your_carpool_offer;
+
+  /// No description provided for @offer_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Statistics'**
+  String get offer_statistics;
+
+  /// No description provided for @potential_earnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Potential Earnings'**
+  String get potential_earnings;
+
+  /// No description provided for @activeTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Trip'**
+  String get activeTrip;
+
+  /// No description provided for @pickupIn5Min.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup in 5 min'**
+  String get pickupIn5Min;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
+
+  /// No description provided for @message.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get message;
+
+  /// No description provided for @scheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get scheduled;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
+
+  /// No description provided for @navigate.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate'**
+  String get navigate;
+
+  /// No description provided for @bookingId.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking ID'**
+  String get bookingId;
+
+  /// No description provided for @confirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get confirmed;
+
+  /// No description provided for @pickupLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickup Location'**
+  String get pickupLocation;
+
+  /// No description provided for @dropoffLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Dropoff Location'**
+  String get dropoffLocation;
+
+  /// No description provided for @availableSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Seats'**
+  String get availableSeats;
+
+  /// No description provided for @tripDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Details'**
+  String get tripDetails;
+
+  /// No description provided for @cancelBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Booking'**
+  String get cancelBooking;
+
+  /// No description provided for @contactDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Driver'**
+  String get contactDriver;
+
+  /// No description provided for @viewRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'View Route'**
+  String get viewRoute;
+
+  /// No description provided for @downloadTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Ticket'**
+  String get downloadTicket;
+
+  /// No description provided for @shareTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Trip'**
+  String get shareTrip;
+
+  /// No description provided for @cancelBookingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Booking'**
+  String get cancelBookingTitle;
+
+  /// No description provided for @cancelBookingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this booking? You will receive a refund according to our cancellation policy.'**
+  String get cancelBookingMessage;
+
+  /// No description provided for @keepBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Booking'**
+  String get keepBooking;
+
+  /// No description provided for @confirmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Cancel'**
+  String get confirmCancel;
+
+  /// No description provided for @bookingCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Cancelled'**
+  String get bookingCancelled;
+
+  /// No description provided for @bookingCancelledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your booking has been cancelled successfully. You will receive a refund within 3-5 business days.'**
+  String get bookingCancelledMessage;
+
+  /// No description provided for @driverContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Contact'**
+  String get driverContact;
+
+  /// No description provided for @callDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Call Driver'**
+  String get callDriver;
+
+  /// No description provided for @messageDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Message Driver'**
+  String get messageDriver;
+
+  /// No description provided for @tripRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Route'**
+  String get tripRoute;
+
+  /// No description provided for @estimatedDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Duration'**
+  String get estimatedDuration;
+
+  /// No description provided for @distance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get distance;
+
+  /// No description provided for @vehicleInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Information'**
+  String get vehicleInfo;
+
+  /// No description provided for @driverInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Information'**
+  String get driverInfo;
+
+  /// No description provided for @paymentInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Information'**
+  String get paymentInfo;
+
+  /// No description provided for @paymentStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Status'**
+  String get paymentStatus;
+
+  /// No description provided for @paid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get paid;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @bookingConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Confirmed'**
+  String get bookingConfirmed;
+
+  /// No description provided for @bookingConfirmedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your booking has been confirmed successfully. You can view all trip details here.'**
+  String get bookingConfirmedMessage;
+
+  /// No description provided for @pickupReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Please arrive at the pickup point 5 minutes before departure time'**
+  String get pickupReminder;
+
+  /// No description provided for @my_offers.
+  ///
+  /// In en, this message translates to:
+  /// **'My Offers'**
+  String get my_offers;
+
+  /// No description provided for @what_happens_next.
+  ///
+  /// In en, this message translates to:
+  /// **'What Happens Next?'**
+  String get what_happens_next;
+
+  /// No description provided for @next1_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Students Browse Your Offer'**
+  String get next1_title;
+
+  /// No description provided for @next1_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Your carpool is now visible to all students looking for rides'**
+  String get next1_sub;
+
+  /// No description provided for @next2_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Booking Notifications'**
+  String get next2_title;
+
+  /// No description provided for @next2_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll receive instant notifications when someone books a seat'**
+  String get next2_sub;
+
+  /// No description provided for @next3_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the Ride'**
+  String get next3_title;
+
+  /// No description provided for @next3_sub.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick up passengers and earn money + reward points'**
+  String get next3_sub;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @pro_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro Tip'**
+  String get pro_tip;
+
+  /// No description provided for @pro_tip_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Be punctual and communicate clearly with your passengers for better ratings and more bookings!'**
+  String get pro_tip_description;
+
+  /// No description provided for @cancel_the_trip.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel The Trip'**
+  String get cancel_the_trip;
+
+  /// No description provided for @cancel_trip.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Trip'**
+  String get cancel_trip;
+
+  /// No description provided for @cancel_trip_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this trip? You will receive a refund according to our cancellation policy.'**
+  String get cancel_trip_confirmation;
+
+  /// No description provided for @keep_booking.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Booking'**
+  String get keep_booking;
+
+  /// No description provided for @confirm_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Cancel'**
+  String get confirm_cancel;
+
+  /// No description provided for @booking_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking ID'**
+  String get booking_id;
+
+  /// No description provided for @driver_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Details'**
+  String get driver_details;
+
+  /// No description provided for @payment_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Status'**
+  String get payment_status;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
+  /// No description provided for @pickup_reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Please arrive at the pickup point 5 minutes before departure time'**
+  String get pickup_reminder;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @earned.
+  ///
+  /// In en, this message translates to:
+  /// **'Earned'**
+  String get earned;
+
+  /// No description provided for @manageYourAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your alerts'**
+  String get manageYourAlerts;
+
+  /// No description provided for @controlYourData.
+  ///
+  /// In en, this message translates to:
+  /// **'Control your data'**
+  String get controlYourData;
+
+  /// No description provided for @paymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Methods'**
+  String get paymentMethods;
+
+  /// No description provided for @manageWithdrawals.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage withdrawals'**
+  String get manageWithdrawals;
+
+  /// No description provided for @faqsAndContactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQs and contact us'**
+  String get faqsAndContactUs;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version 1.0.0'**
+  String get version;
+
+  /// No description provided for @driverActiveStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver • Active'**
+  String get driverActiveStatus;
 }
 
 class _AppLocalizationsDelegate

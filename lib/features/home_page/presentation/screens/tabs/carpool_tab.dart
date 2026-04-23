@@ -1,0 +1,282 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/models/user_model.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
+import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/features/home_page/data/models/trip_model.dart';
+import 'package:uni_ride_application/features/home_page/presentation/widgets/trip_cards.dart';
+import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_driver.dart';
+
+class CarpoolTab extends StatefulWidget {
+  const CarpoolTab({super.key});
+
+  @override
+  State<CarpoolTab> createState() => _CarpoolTabState();
+}
+
+class _CarpoolTabState extends State<CarpoolTab> {
+  int _carpoolSubTab = 0;
+
+  // ✅ حذفنا _isRegistered و _isApproved المزيفين
+
+  void _handleOfferClick() {
+    final userType = context.read<AuthProvider>().userType;
+    final user = context.read<AuthProvider>().user;
+
+    if (userType == UserType.carpool) {
+      if (user?.isActive == true) {
+        // ✅ مسجل ومعتمد → صفحة العرض
+        Navigator.pushNamed(context, Routes.offerCarpool);
+      } else {
+        // ✅ مسجل بس تحت المراجعة
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.underReview),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    } else {
+      // ✅ مش مسجل كـ carpool → روح لتسجيل الكاربول
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => SignUpDriverScreen.carpoolRigestration(),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+          child: Text(
+            'Carpool',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF101828),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              _buildTabItem(l.find_rides, _carpoolSubTab == 0, () => setState(() => _carpoolSubTab = 0)),
+              const SizedBox(width: 24),
+              _buildTabItem(l.my_rides, _carpoolSubTab == 1, () => setState(() => _carpoolSubTab = 1)),
+            ],
+          ),
+        ),
+        const Divider(height: 1, thickness: 1, color: Color(0xFFF2F4F7)),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              const SizedBox(height: 24),
+              if (_carpoolSubTab == 0) ...[
+                _buildOfferBanner(l),
+                const SizedBox(height: 32),
+                _buildSectionLabel(l.available_rides, l.filter_label),
+                const SizedBox(height: 16),
+                ...mockCarpoolTrips.map((trip) => CarpoolTripCard(trip: trip)),
+              ] else ...[
+                _buildMyRidesEmptyState(l),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabItem(String label, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                color: isActive ? AppColors.orangeprimary : const Color(0xFF667085),
+              ),
+            ),
+          ),
+          if (isActive)
+            Container(
+              height: 2,
+              width: 40,
+              decoration: BoxDecoration(
+                color: AppColors.orangeprimary,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            )
+          else
+            const SizedBox(height: 2),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOfferBanner(AppLocalizations l) {
+    return GestureDetector(
+      onTap: _handleOfferClick,
+      child: Container(
+        width: double.infinity,
+        height: 112,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [Color(0xFFCF8307), Color(0xFFE09520)],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFCF8307).withOpacity(0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l.offer_a_ride,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l.offer_ride_sub,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.add, color: Colors.white, size: 28),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionLabel(String title, String filterLabel) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+        ),
+        Row(
+          children: [
+            const Icon(Icons.filter_alt_outlined, size: 16, color: AppColors.orangeprimary),
+            const SizedBox(width: 4),
+            Text(filterLabel,
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.orangeprimary,
+                    fontWeight: FontWeight.w500)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMyRidesEmptyState(AppLocalizations l) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(height: 60),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: const BoxDecoration(
+            color: Color(0xFFF9FAFB),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.directions_car_filled_outlined,
+              size: 40, color: Color(0xFFD1D5DB)),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          l.no_rides_yet,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF101828),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Text(
+            l.no_rides_sub,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Color(0xFF667085),
+              height: 1.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 32),
+        SizedBox(
+          width: 220,
+          child: ElevatedButton(
+            onPressed: _handleOfferClick,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.orangeprimary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 0,
+            ),
+            child: Text(
+              l.offer_first_ride,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

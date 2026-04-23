@@ -63,6 +63,42 @@ class AuthService {
     }
   }
 
+  // Register Carpool 
+  Future<ApiResponseModel> registerCarpool({
+    required String email,
+    required String password,
+    required String phoneNumber,
+    required String vehicleType,
+    required String vehicleModel,
+    required String plateNumber,
+    required int seatCapacity,
+    required String licenseNumber,
+    required String driverLicensePath,
+    required String vehicleLicensePath,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        ApiKeys.driverEmail: email,
+        ApiKeys.driverPassword: password,
+        ApiKeys.driverPhoneNumber: phoneNumber,
+        ApiKeys.driverVehicleType: vehicleType,
+        ApiKeys.driverVehicleModel: vehicleModel,
+        ApiKeys.driverPlateNumber: plateNumber,
+        ApiKeys.driverSeatCapacity: seatCapacity,
+        ApiKeys.driverLicenseNumber: licenseNumber,
+        ApiKeys.driverLicenseImage: await MultipartFile.fromFile(driverLicensePath),
+        ApiKeys.driverVehicleLicenseImage: await MultipartFile.fromFile(vehicleLicensePath),
+      });
+      final response = await DioFactory.post(
+        AppEndpoints.registerCarpool,
+        data: formData,
+      );
+      return ApiResponseModel.fromJson(response.data);
+    } catch (e) {
+      return ApiResponseModel(success: false, message: _cleanError(e));
+    }
+  }
+
   // Login 
   Future<UserModel> login(String emailOrPhone, String password) async {
     try {
