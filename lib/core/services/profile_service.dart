@@ -1,0 +1,36 @@
+import 'package:uni_ride_application/core/network/app_endpoints.dart';
+import 'package:uni_ride_application/core/services/dio_factory/dio_factory.dart';
+import 'package:uni_ride_application/features/profile_memberuni/data/models/driver_profile_model.dart';
+import 'package:uni_ride_application/features/profile_memberuni/data/models/member_profile_model.dart';
+
+class ProfileService {
+  String _cleanError(dynamic e) {
+    return e.toString().replaceAll('Exception: ', '');
+  }
+
+  // GET /user/member-profile
+  Future<MemberProfileModel> getMemberProfile() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.memberProfile);
+      final json = (response.data is Map && response.data['data'] != null)
+          ? response.data['data']
+          : response.data;
+      return MemberProfileModel.fromJson(json);
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
+  // GET /User/driver-profile
+  Future<DriverProfileModel> getDriverProfile() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.driverProfile);
+      final json = (response.data is Map && response.data['data'] != null)
+          ? response.data['data']
+          : response.data;
+      return DriverProfileModel.fromJson(json);
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+}

@@ -67,4 +67,44 @@ class AppColors {
   static const Color greyHint = Color(0xFF99A1AF);
   static const Color greyLight = Color(0xFFF3F4F6);
   static const Color greyBackground = Color(0xFFF9FAFB);
+
+  // ── Extended Grey Palette ──
+  static const Color grey667 = Color(0xFF667085);
+  static const Color grey364 = Color(0xFF364153);
+  static const Color grey4B5 = Color(0xFF4B5563);
+  static const Color grey9CA = Color(0xFF9CA3AF);
+  static const Color greyCCC = Color(0xFFCCCCCC);
+  static const Color greyE5E = Color(0xFFE5E5E5);
+  static const Color greyF2F = Color(0xFFF2F4F7);
+
+  // ── Error / Cancel ──
+  static const Color errorRed = Color(0xFFE7000B);
+  static const Color lightRedBg = Color(0xFFFFF2F2);
+  static const Color lightRedBorder = Color(0xFFFFE2E2);
+
+  // ── Upcoming / Scheduled ──
+  static const Color upcomingBg = Color(0xFFFFFAEE);
+
+  // ── Wallet Card ──
+  static const Color walletCardBg = Color(0xFFFFF8EE);
+  static const Color walletCardBorder = Color(0xFFFFE4B0);
+
+  // ── Icon Accent Colors ──
+  static const Color emeraldGreen = Color(0xFF10B981);
+  static const Color emeraldGreenBg = Color(0xFFECFDF5);
+  static const Color purpleAccent = Color(0xFF8B5CF6);
+  static const Color purpleAccentBg = Color(0xFFF5F3FF);
+  static const Color infoBlue = Color(0xFF2563EB);
+  static const Color infoBlueBg = Color(0xFFEFF6FF);
+  static const Color amberWarning = Color(0xFFF59E0B);
+  static const Color amberWarningBg = Color(0xFFFFFBEB);
+
+  // ── Additional Colors ──
+  static const Color greyBlueLight = Color(0xFF98A2B3);
+  static const Color grey344 = Color(0xFF344054);
+  static const Color borderLightGrey = Color(0xFFD0D5DD);
+  static const Color lightBlueBg = Color(0xFFDBEAFE);
+  static const Color infoDarkBlue = Color(0xFF1D4ED8);
+  static const Color successGreen = Color(0xFF16A34A);
+  static const Color darkGreen = Color(0xFF15803D);
 }

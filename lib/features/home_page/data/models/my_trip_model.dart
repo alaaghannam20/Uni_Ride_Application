@@ -25,12 +25,12 @@ class MyTripModel {
 
   factory MyTripModel.fromJson(Map<String, dynamic> json) {
     return MyTripModel(
-      tripId: json[ApiKeys.tripId] ?? 0,
+      tripId: (json[ApiKeys.tripId] ?? 0).toInt(),
       tripCode: json[ApiKeys.tripCode] ?? '',
       pickupLocation: json[ApiKeys.pickupLocation] ?? '',
       dropoffLocation: json[ApiKeys.dropoffLocation] ?? '',
       departureTime: json[ApiKeys.departureTime] ?? '',
-      pricePerSeat: json[ApiKeys.pricePerSeat] ?? 0,
+      pricePerSeat: (json[ApiKeys.pricePerSeat] ?? 0).toInt(),
       driverName: json[ApiKeys.driverName] ?? '',
       vehicleModel: json[ApiKeys.vehicleModel] ?? '',
       status: json[ApiKeys.status] ?? '',

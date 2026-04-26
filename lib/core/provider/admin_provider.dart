@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/models/admin_dashboard_stats_model.dart';
+import 'package:uni_ride_application/core/models/admin_student_model.dart';
+import 'package:uni_ride_application/core/models/admin_trip_model.dart';
 import 'package:uni_ride_application/core/models/pending_approval_model.dart';
 import 'package:uni_ride_application/core/services/admin_service.dart';
 
@@ -7,17 +10,70 @@ enum AdminState { idle, loading, success, error }
 class AdminProvider extends ChangeNotifier {
   final AdminService _adminService = AdminService();
 
-  AdminState _state = AdminState.idle;
-  AdminState get state => _state;
+  AdminState _state           = AdminState.idle;
+  AdminState _dashboardState  = AdminState.idle;
+  AdminState _studentsState   = AdminState.idle;
+  AdminState _tripsState      = AdminState.idle;
+
+  AdminState get state          => _state;
+  AdminState get dashboardState => _dashboardState;
+  AdminState get studentsState  => _studentsState;
+  AdminState get tripsState     => _tripsState;
 
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
 
-  List<PendingApprovalModel> _pendingApprovals = [];
-  List<PendingApprovalModel> get pendingApprovals => _pendingApprovals;
+  List<PendingApprovalModel>    _pendingApprovals = [];
+  AdminDashboardStatsModel?     _dashboardStats;
+  List<AdminStudentModel>       _students         = [];
+  List<AdminTripModel>          _adminTrips       = [];
+
+  List<PendingApprovalModel>    get pendingApprovals => _pendingApprovals;
+  AdminDashboardStatsModel?     get dashboardStats   => _dashboardStats;
+  List<AdminStudentModel>       get students         => _students;
+  List<AdminTripModel>          get adminTrips       => _adminTrips;
 
   void _setState(AdminState newState) {
     _state = newState;
+    notifyListeners();
+  }
+
+  Future<void> fetchDashboardStats() async {
+    _dashboardState = AdminState.loading;
+    notifyListeners();
+    try {
+      _dashboardStats = await _adminService.getDashboardStats();
+      _dashboardState = AdminState.success;
+    } catch (e) {
+      _errorMessage   = e.toString().replaceAll('Exception: ', '');
+      _dashboardState = AdminState.error;
+    }
+    notifyListeners();
+  }
+
+  Future<void> fetchStudents() async {
+    _studentsState = AdminState.loading;
+    notifyListeners();
+    try {
+      _students      = await _adminService.getStudents();
+      _studentsState = AdminState.success;
+    } catch (e) {
+      _errorMessage  = e.toString().replaceAll('Exception: ', '');
+      _studentsState = AdminState.error;
+    }
+    notifyListeners();
+  }
+
+  Future<void> fetchAdminTrips() async {
+    _tripsState = AdminState.loading;
+    notifyListeners();
+    try {
+      _adminTrips = await _adminService.getAdminTrips();
+      _tripsState = AdminState.success;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _tripsState   = AdminState.error;
+    }
     notifyListeners();
   }
 

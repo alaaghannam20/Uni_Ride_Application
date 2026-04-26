@@ -16,12 +16,14 @@ class TripService {
         AppEndpoints.availableTrips,
         queryParameters: type != null ? {ApiKeys.type: type} : null,
       );
+      print('✅ Available Trips response: ${response.data}');
+      List<dynamic> list = [];
       if (response.data is List) {
-        return (response.data as List)
-            .map((item) => AvailableTripModel.fromJson(item))
-            .toList();
+        list = response.data as List;
+      } else if (response.data is Map && response.data['data'] is List) {
+        list = response.data['data'] as List;
       }
-      return [];
+      return list.map((item) => AvailableTripModel.fromJson(item)).toList();
     } catch (e) {
       throw Exception(_cleanError(e));
     }

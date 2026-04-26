@@ -38,6 +38,7 @@ class AuthService {
     required int seatCapacity,
     required String driverLicensePath,
     required String vehicleLicensePath,
+    required String profileImagePath,
   }) async {
     try {
       final formData = FormData.fromMap({
@@ -52,6 +53,7 @@ class AuthService {
         ApiKeys.driverSeatCapacity: seatCapacity,
         ApiKeys.driverLicenseImage: await MultipartFile.fromFile(driverLicensePath),
         ApiKeys.driverVehicleLicenseImage: await MultipartFile.fromFile(vehicleLicensePath),
+        ApiKeys.driverProfileImage: await MultipartFile.fromFile(profileImagePath),
       });
       final response = await DioFactory.post(
         AppEndpoints.registerDriver,
@@ -75,6 +77,7 @@ class AuthService {
     required String licenseNumber,
     required String driverLicensePath,
     required String vehicleLicensePath,
+    required String profileImagePath,
   }) async {
     try {
       final formData = FormData.fromMap({
@@ -88,6 +91,7 @@ class AuthService {
         ApiKeys.driverLicenseNumber: licenseNumber,
         ApiKeys.driverLicenseImage: await MultipartFile.fromFile(driverLicensePath),
         ApiKeys.driverVehicleLicenseImage: await MultipartFile.fromFile(vehicleLicensePath),
+        ApiKeys.driverProfileImage: await MultipartFile.fromFile(profileImagePath),
       });
       final response = await DioFactory.post(
         AppEndpoints.registerCarpool,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/widgets/responsive.dart';
 import 'admin_sidebar.dart';
 
@@ -16,7 +16,7 @@ class AdminLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.adminBackground,
+      backgroundColor: context.bgColor,
       drawer: Responsive.isDesktop(context)
           ? null
           : AdminSidebar(activeRoute: activeRoute),

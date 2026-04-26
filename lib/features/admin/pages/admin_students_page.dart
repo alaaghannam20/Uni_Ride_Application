@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/models/admin_student_model.dart';
+import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/responsive.dart';
@@ -6,32 +9,26 @@ import 'package:uni_ride_application/features/admin/widgets/admin_layout.dart';
 import 'package:uni_ride_application/features/admin/widgets/admin_header.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
-class AdminStudentsPage extends StatelessWidget {
+class AdminStudentsPage extends StatefulWidget {
   const AdminStudentsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context)!;
-    final bool isDesktop = Responsive.isDesktop(context);
+  State<AdminStudentsPage> createState() => _AdminStudentsPageState();
+}
 
-    final students = [
-      {
-        'name': 'Sara Khalil',
-        'phone': '+972 59 234 5678',
-        'email': 'sara.k@ptuk.edu',
-        'trips': 45,
-        'joined': '2 months ago',
-        'status': 'active',
-      },
-      {
-        'name': 'Ahmed Mohammed',
-        'phone': '+972 59 123 4567',
-        'email': 'ahmed.m@ptuk.edu',
-        'trips': 67,
-        'joined': '3 months ago',
-        'status': 'active',
-      },
-    ];
+class _AdminStudentsPageState extends State<AdminStudentsPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AdminProvider>().fetchStudents();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locale    = AppLocalizations.of(context)!;
+    final isDesktop = Responsive.isDesktop(context);
 
     return AdminLayout(
       activeRoute: '/AdminStudents',
@@ -43,60 +40,67 @@ class AdminStudentsPage extends StatelessWidget {
             searchHint: 'Search students...',
           ),
           Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: isDesktop ? 25 : 12,
-                vertical: 25,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color:  AppColors.borderadmincolor),
-                ),
-                child: Column(
-                  children: [
-                    if (isDesktop)
-                      Container(
-                        height: 52,
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(color: AppColors.borderadmincolor),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(flex: 3, child: Text(locale.student.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle)),
-                            Expanded(flex: 3, child: Text(locale.emailAddress.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle)),
-                            Expanded(flex: 2, child: Text(locale.totalTrips.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
-                            Expanded(flex: 2, child: Text(locale.joined.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
-                            Expanded(flex: 2, child: Text(locale.status.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
-                            Expanded(flex: 2, child: Text(locale.actions.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
-                          ],
-                        ),
-                      ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: students.length,
-                      itemBuilder: (context, index) {
-                        final student = students[index];
-                        final isLast = index == students.length - 1;
-                        return _StudentRow(
-                          name: student['name'] as String,
-                          phone: student['phone'] as String,
-                          email: student['email'] as String,
-                          trips: student['trips'] as int,
-                          joined: student['joined'] as String,
-                          status: student['status'] as String,
-                          showBottomBorder: !isLast,
-                        );
-                      },
+            child: Consumer<AdminProvider>(
+              builder: (context, provider, _) {
+                if (provider.studentsState == AdminState.loading) {
+                  return const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary));
+                }
+                if (provider.studentsState == AdminState.error) {
+                  return Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red)));
+                }
+
+                final students = provider.students;
+
+                return SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: isDesktop ? 25 : 12, vertical: 25),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.borderadmincolor),
                     ),
-                  ],
-                ),
-              ),
+                    child: Column(
+                      children: [
+                        if (isDesktop)
+                          Container(
+                            height: 52,
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            decoration: const BoxDecoration(
+                              border: Border(bottom: BorderSide(color: AppColors.borderadmincolor)),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(flex: 3, child: Text(locale.student.toUpperCase(),     style: AppStyle.adminCardSectionTitleStyle)),
+                                Expanded(flex: 3, child: Text(locale.emailAddress.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle)),
+                                Expanded(flex: 2, child: Text(locale.totalTrips.toUpperCase(),   style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.joined.toUpperCase(),       style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.status.toUpperCase(),       style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.actions.toUpperCase(),      style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
+                              ],
+                            ),
+                          ),
+                        if (students.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Center(child: Text(locale.noStudentsFound, style: const TextStyle(color: AppColors.greyHint))),
+                          )
+                        else
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: students.length,
+                            itemBuilder: (context, index) {
+                              return _StudentRow(
+                                student: students[index],
+                                showBottomBorder: index < students.length - 1,
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -106,37 +110,22 @@ class AdminStudentsPage extends StatelessWidget {
 }
 
 class _StudentRow extends StatelessWidget {
-  final String name;
-  final String phone;
-  final String email;
-  final int trips;
-  final String joined;
-  final String status;
+  final AdminStudentModel student;
   final bool showBottomBorder;
 
-  const _StudentRow({
-    required this.name,
-    required this.phone,
-    required this.email,
-    required this.trips,
-    required this.joined,
-    required this.status,
-    this.showBottomBorder = true,
-  });
+  const _StudentRow({required this.student, this.showBottomBorder = true});
 
   @override
   Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context)!;
-    final isActive = status == 'active';
-    final bool isDesktop = Responsive.isDesktop(context);
+    final locale    = AppLocalizations.of(context)!;
+    final isActive  = student.status.toLowerCase() == 'active';
+    final isDesktop = Responsive.isDesktop(context);
 
     if (!isDesktop) {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: showBottomBorder
-              ? const Border(bottom: BorderSide(color: AppColors.adminDivider))
-              : null,
+          border: showBottomBorder ? const Border(bottom: BorderSide(color: AppColors.adminDivider)) : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,43 +134,27 @@ class _StudentRow extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor:  AppColors.adminDivider,
-                  child: const Icon(Icons.person_outline, size: 22, color:  AppColors.adminIcon),
+                  backgroundColor: AppColors.adminDivider,
+                  child: Text(student.fullName.isNotEmpty ? student.fullName[0].toUpperCase() : '?',
+                      style: const TextStyle(color: AppColors.adminIcon, fontWeight: FontWeight.bold)),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 16)),
-                      Text(phone, style: AppStyle.adminCardContactStyle),
+                      Text(student.fullName, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 16)),
+                      Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContactStyle),
                     ],
                   ),
                 ),
-                _buildStatusBadge(isActive, locale),
+                _statusBadge(isActive, locale),
               ],
             ),
             const SizedBox(height: 12),
-            _buildInfoRow(locale.emailAddress, email),
-            _buildInfoRow(locale.totalTrips, trips.toString()),
-            _buildInfoRow(locale.joined, joined),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.visibility_outlined, size: 18),
-                  label: Text(locale.viewDetails ?? "View"),
-                  style: TextButton.styleFrom(foregroundColor: AppColors.adminIcon),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.more_vert, size: 20, color: AppColors.adminIcon),
-                  onPressed: () {},
-                ),
-              ],
-            ),
+            _infoRow(locale.emailAddress, student.email),
+            _infoRow(locale.totalTrips, '${student.totalTrips}'),
+            _infoRow(locale.joined, student.joined),
           ],
         ),
       );
@@ -191,9 +164,7 @@ class _StudentRow extends StatelessWidget {
       height: 73,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
-        border: showBottomBorder
-            ? const Border(bottom: BorderSide(color: AppColors.adminDivider))
-            : null,
+        border: showBottomBorder ? const Border(bottom: BorderSide(color: AppColors.adminDivider)) : null,
       ),
       child: Row(
         children: [
@@ -203,51 +174,33 @@ class _StudentRow extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 18,
-                  backgroundColor:  AppColors.adminDivider,
-                  child: const Icon(Icons.person_outline, size: 20, color:  AppColors.adminIcon),
+                  backgroundColor: AppColors.adminDivider,
+                  child: Text(student.fullName.isNotEmpty ? student.fullName[0].toUpperCase() : '?',
+                      style: const TextStyle(color: AppColors.adminIcon, fontWeight: FontWeight.bold, fontSize: 14)),
                 ),
                 const SizedBox(width: 12),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 14)),
-                    Text(phone, style: AppStyle.adminCardContactStyle),
+                    Text(student.fullName, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 14)),
+                    Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContactStyle),
                   ],
                 ),
               ],
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: Text(email, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w400)),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(trips.toString(), style: AppStyle.adminCardInfoValueStyle, textAlign: TextAlign.center),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(joined, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.center),
-          ),
-          Expanded(
-            flex: 2,
-            child: Center(child: _buildStatusBadge(isActive, locale)),
-          ),
+          Expanded(flex: 3, child: Text(student.email,              style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w400))),
+          Expanded(flex: 2, child: Text('${student.totalTrips}',    style: AppStyle.adminCardInfoValueStyle, textAlign: TextAlign.center)),
+          Expanded(flex: 2, child: Text(student.joined,             style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.center)),
+          Expanded(flex: 2, child: Center(child: _statusBadge(isActive, locale))),
           Expanded(
             flex: 2,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.visibility_outlined, size: 20, color: AppColors.adminIcon),
-                  onPressed: () {},
-                ),
-                const SizedBox(width: 4),
-                IconButton(
-                  icon: const Icon(Icons.more_vert, size: 20, color: AppColors.adminIcon),
-                  onPressed: () {},
-                ),
+                IconButton(icon: const Icon(Icons.visibility_outlined, size: 20, color: AppColors.adminIcon), onPressed: () {}),
+                IconButton(icon: const Icon(Icons.more_vert,           size: 20, color: AppColors.adminIcon), onPressed: () {}),
               ],
             ),
           ),
@@ -256,25 +209,21 @@ class _StudentRow extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(bool isActive, AppLocalizations locale) {
+  Widget _statusBadge(bool isActive, AppLocalizations locale) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isActive ?  AppColors.adminSuccessBG :  AppColors.adminDivider,
+        color: isActive ? AppColors.adminSuccessBG : AppColors.adminDivider,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         isActive ? locale.active : locale.inactive,
-        style: TextStyle(
-          color: isActive ?  AppColors.adminSuccessText :  AppColors.adminIcon,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
+        style: TextStyle(color: isActive ? AppColors.adminSuccessText : AppColors.adminIcon, fontSize: 12, fontWeight: FontWeight.w500),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _infoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(

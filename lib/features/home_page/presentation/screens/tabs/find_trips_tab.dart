@@ -34,12 +34,12 @@ class _FindTripsTabState extends State<FindTripsTab> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE5E5E5)),
+            border: Border.all(color: AppColors.greyE5E),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
-              const Icon(Icons.search, size: 18, color: Color(0xFF757575)),
+              const Icon(Icons.search, size: 18, color: AppColors.languagecolor),
               const SizedBox(width: 10),
               Text(
                 l.search_trips,
@@ -47,7 +47,7 @@ class _FindTripsTabState extends State<FindTripsTab> {
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
                   fontSize: 13.7,
-                  color: Color(0xFF757575),
+                  color: AppColors.languagecolor,
                 ),
               ),
             ],
@@ -63,7 +63,7 @@ class _FindTripsTabState extends State<FindTripsTab> {
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
                 fontSize: 15.5,
-                color: Color(0xFF212121),
+                color: AppColors.skiptextcolor,
               ),
             ),
             GestureDetector(
@@ -102,10 +102,10 @@ class _FindTripsTabState extends State<FindTripsTab> {
               );
             }
             if (provider.availableTrips.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 40),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 40),
                 child: Center(
-                  child: Text('No trips available', style: TextStyle(color: Color(0xFF99A1AF))),
+                  child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint)),
                 ),
               );
             }

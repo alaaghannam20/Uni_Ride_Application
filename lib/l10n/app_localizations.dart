@@ -830,6 +830,66 @@ abstract class AppLocalizations {
   /// **'System Settings'**
   String get systemSettings;
 
+  /// No description provided for @dashboardOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard Overview'**
+  String get dashboardOverview;
+
+  /// No description provided for @totalUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Users'**
+  String get totalUsers;
+
+  /// No description provided for @activeDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Drivers'**
+  String get activeDrivers;
+
+  /// No description provided for @totalTripsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Trips'**
+  String get totalTripsCount;
+
+  /// No description provided for @todayRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Revenue'**
+  String get todayRevenue;
+
+  /// No description provided for @activeTripsNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Trips Now'**
+  String get activeTripsNow;
+
+  /// No description provided for @realtimeMonitoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time monitoring'**
+  String get realtimeMonitoring;
+
+  /// No description provided for @recentTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Trips'**
+  String get recentTrips;
+
+  /// No description provided for @noRecentTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent trips'**
+  String get noRecentTrips;
+
+  /// No description provided for @fromYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'from yesterday'**
+  String get fromYesterday;
+
   /// No description provided for @systemConfiguration.
   ///
   /// In en, this message translates to:
@@ -2377,6 +2437,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Driver • Active'**
   String get driverActiveStatus;
+
+  /// No description provided for @walletBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Balance'**
+  String get walletBalance;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get myProfile;
+
+  /// No description provided for @viewAndEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'View and edit profile'**
+  String get viewAndEditProfile;
+
+  /// No description provided for @viewTripHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View trip history'**
+  String get viewTripHistory;
+
+  /// No description provided for @rewardsAndPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards & Points'**
+  String get rewardsAndPoints;
+
+  /// No description provided for @noTripsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No trips available'**
+  String get noTripsAvailable;
+
+  /// No description provided for @noTripsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No trips found'**
+  String get noTripsFound;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @noPendingApprovals.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending approvals'**
+  String get noPendingApprovals;
+
+  /// No description provided for @noStudentsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No students found'**
+  String get noStudentsFound;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date'**
+  String get selectDate;
+
+  /// No description provided for @selectTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Time'**
+  String get selectTime;
+
+  /// No description provided for @enterPickupLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter pickup location'**
+  String get enterPickupLocation;
+
+  /// No description provided for @enterDropoffLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter dropoff location'**
+  String get enterDropoffLocation;
+
+  /// No description provided for @profileMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View and edit profile'**
+  String get profileMenuSubtitle;
+
+  /// No description provided for @tripsMenuSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View trip history'**
+  String get tripsMenuSubtitle;
+
+  /// No description provided for @serverError.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error'**
+  String get serverError;
+
+  /// No description provided for @noInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get noInternetConnection;
+
+  /// No description provided for @connectionTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timeout, try again'**
+  String get connectionTimeout;
 }
 
 class _AppLocalizationsDelegate

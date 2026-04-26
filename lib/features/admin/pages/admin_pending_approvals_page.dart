@@ -53,7 +53,7 @@ class _AdminPendingApprovalsPageState extends State<AdminPendingApprovalsPage> {
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () => provider.fetchPendingApprovals(),
-                          child: const Text('Retry'),
+                          child: Text(locale.retry),
                         ),
                       ],
                     ),
@@ -67,7 +67,7 @@ class _AdminPendingApprovalsPageState extends State<AdminPendingApprovalsPage> {
                       children: [
                         const Icon(Icons.check_circle_outline, size: 64, color: Colors.grey),
                         const SizedBox(height: 16),
-                        Text('No pending approvals', style: AppStyle.adminCardSectionTitleStyle.copyWith(color: Colors.grey)),
+                        Text(locale.noPendingApprovals, style: AppStyle.adminCardSectionTitleStyle.copyWith(color: Colors.grey)),
                       ],
                     ),
                   );
@@ -130,7 +130,15 @@ class _ApprovalCard extends StatelessWidget {
                   CircleAvatar(
                     radius: 25,
                     backgroundColor: AppColors.adminDivider,
-                    child: const Icon(Icons.person_outline, color: AppColors.adminIcon, size: 28),
+                    backgroundImage: approval.profileImage != null
+                        ? NetworkImage('http://uniride.runasp.net/${approval.profileImage}')
+                        : null,
+                    child: approval.profileImage == null
+                        ? Text(
+                            approval.fullName.isNotEmpty ? approval.fullName[0].toUpperCase() : '?',
+                            style: const TextStyle(color: AppColors.adminIcon, fontWeight: FontWeight.bold, fontSize: 18),
+                          )
+                        : null,
                   ),
                   const SizedBox(width: 16),
                   Column(
@@ -219,7 +227,7 @@ class _ApprovalCard extends StatelessWidget {
                   onPressed: () {
                     // TODO: Implement View Details
                   },
-                  color: const Color(0xFF4A5565),
+                  color: AppColors.adminTextSecondary,
                   bgColor: AppColors.adminBackground,
                   borderColor: AppColors.borderadmincolor,
                 ),
@@ -237,9 +245,9 @@ class _ApprovalCard extends StatelessWidget {
                        );
                     }
                   },
-                  color: const Color(0xFFF04438),
-                  bgColor: const Color(0xFFFEF3F2),
-                  borderColor: const Color(0xFFFDA29B),
+                  color: AppColors.adminErrorText,
+                  bgColor: AppColors.adminErrorBG,
+                  borderColor: AppColors.adminErrorText,
                 ),
               ),
               const SizedBox(width: 12),
@@ -255,9 +263,9 @@ class _ApprovalCard extends StatelessWidget {
                        );
                     }
                   },
-                  color: const Color(0xFF12B76A),
-                  bgColor: const Color(0xFFECFDF3),
-                  borderColor: const Color(0xFF6CE9A6),
+                  color: AppColors.adminSuccessText,
+                  bgColor: AppColors.adminSuccessBG,
+                  borderColor: AppColors.successSolid,
                 ),
               ),
             ],

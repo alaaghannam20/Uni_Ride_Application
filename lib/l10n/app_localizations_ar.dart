@@ -378,6 +378,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get systemSettings => 'إعدادات النظام';
 
   @override
+  String get dashboardOverview => 'نظرة عامة';
+
+  @override
+  String get totalUsers => 'إجمالي المستخدمين';
+
+  @override
+  String get activeDrivers => 'السائقون النشطون';
+
+  @override
+  String get totalTripsCount => 'إجمالي الرحلات';
+
+  @override
+  String get todayRevenue => 'إيرادات اليوم';
+
+  @override
+  String get activeTripsNow => 'الرحلات النشطة الآن';
+
+  @override
+  String get realtimeMonitoring => 'مراقبة فورية';
+
+  @override
+  String get recentTrips => 'الرحلات الأخيرة';
+
+  @override
+  String get noRecentTrips => 'لا توجد رحلات حديثة';
+
+  @override
+  String get fromYesterday => 'من أمس';
+
+  @override
   String get systemConfiguration => 'ضبط النظام';
 
   @override
@@ -1165,4 +1195,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get driverActiveStatus => 'السائق • نشط';
+
+  @override
+  String get walletBalance => 'رصيد المحفظة';
+
+  @override
+  String get myProfile => 'ملفي الشخصي';
+
+  @override
+  String get viewAndEditProfile => 'عرض وتعديل الملف الشخصي';
+
+  @override
+  String get viewTripHistory => 'عرض سجل الرحلات';
+
+  @override
+  String get rewardsAndPoints => 'المكافآت والنقاط';
+
+  @override
+  String get noTripsAvailable => 'لا توجد رحلات متاحة';
+
+  @override
+  String get noTripsFound => 'لا توجد رحلات';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get noPendingApprovals => 'لا توجد طلبات معلقة';
+
+  @override
+  String get noStudentsFound => 'لا يوجد طلاب';
+
+  @override
+  String get selectDate => 'اختر التاريخ';
+
+  @override
+  String get selectTime => 'اختر الوقت';
+
+  @override
+  String get enterPickupLocation => 'أدخل موقع الاستقبال';
+
+  @override
+  String get enterDropoffLocation => 'أدخل موقع التوصيل';
+
+  @override
+  String get profileMenuSubtitle => 'عرض وتعديل الملف الشخصي';
+
+  @override
+  String get tripsMenuSubtitle => 'عرض سجل الرحلات';
+
+  @override
+  String get serverError => 'خطأ في الخادم';
+
+  @override
+  String get noInternetConnection => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get connectionTimeout => 'انتهت مهلة الاتصال، حاول مجدداً';
 }

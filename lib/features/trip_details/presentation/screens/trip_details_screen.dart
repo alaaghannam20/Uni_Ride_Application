@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class TripDetailsScreen extends StatelessWidget {
@@ -27,7 +29,7 @@ class TripDetailsScreen extends StatelessWidget {
                   color: Color(0xFFF3F4F6),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.arrow_back, color: Color(0xFF101828), size: 20),
+                child: const Icon(Icons.arrow_back, color: AppColors.greyDark, size: 20),
               ),
             ),
           ),
@@ -38,7 +40,7 @@ class TripDetailsScreen extends StatelessWidget {
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
             fontSize: 20,
-            color: Color(0xFF101828),
+            color: AppColors.greyDark,
           ),
         ),
         centerTitle: false,
@@ -163,13 +165,13 @@ class TripDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Mohammed K.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF101828))),
+                    const Text('Mohammed K.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.greyDark)),
                     const SizedBox(height: 4),
                     Row(
                       children: const [
                         Icon(Icons.star, color: Color(0xFFF5A623), size: 14),
                         SizedBox(width: 4),
-                        Text('4.8 • 142 trips', style: TextStyle(color: Color(0xFF6A7282), fontSize: 12)),
+                        Text('4.8 • 142 trips', style: TextStyle(color: AppColors.greySecondary, fontSize: 12)),
                       ],
                     ),
                   ],
@@ -186,14 +188,14 @@ class TripDetailsScreen extends StatelessWidget {
             decoration: BoxDecoration(color: const Color(0xFFF9FAFB), borderRadius: BorderRadius.circular(12)),
             child: Row(
               children: [
-                const Icon(Icons.directions_car_outlined, color: Color(0xFF6A7282), size: 20),
+                const Icon(Icons.directions_car_outlined, color: AppColors.greySecondary, size: 20),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text('Hyundai i10 • White', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFF101828))),
+                    Text('Hyundai i10 • White', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.greyDark)),
                     SizedBox(height: 4),
-                    Text('Plate: AB 1234 • Year: 2021', style: TextStyle(color: Color(0xFF6A7282), fontSize: 12)),
+                    Text('Plate: AB 1234 • Year: 2021', style: TextStyle(color: AppColors.greySecondary, fontSize: 12)),
                   ],
                 ),
               ],
@@ -235,9 +237,9 @@ class TripDetailsScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l.availableSeats, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF101828))),
+              Text(l.availableSeats, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.greyDark)),
               const SizedBox(height: 4),
-              Text('3 of 4 ${l.seats_remaining}', style: const TextStyle(color: Color(0xFF6A7282), fontSize: 12)),
+              Text('3 of 4 ${l.seats_remaining}', style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
             ],
           ),
           Row(
@@ -264,9 +266,9 @@ class TripDetailsScreen extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l.how_many_seats, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF101828))),
+                  Text(l.how_many_seats, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.greyDark)),
                   const SizedBox(height: 4),
-                  Text('3 ${l.seats_available}', style: const TextStyle(color: Color(0xFF6A7282), fontSize: 11)),
+                  Text('3 ${l.seats_available}', style: const TextStyle(color: AppColors.greySecondary, fontSize: 11)),
                 ],
               ),
               Row(
@@ -295,16 +297,16 @@ class TripDetailsScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(l.pricePerSeat, style: const TextStyle(color: Color(0xFF6A7282), fontSize: 12)),
-                    const Text('₪ 8', style: TextStyle(color: Color(0xFF101828), fontSize: 12, fontWeight: FontWeight.w500)),
+                    Text(l.pricePerSeat, style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
+                    const Text('₪ 8', style: TextStyle(color: AppColors.greyDark, fontSize: 12, fontWeight: FontWeight.w500)),
                   ],
                 ),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(l.numberOfSeats, style: const TextStyle(color: Color(0xFF6A7282), fontSize: 12)),
-                    const Text('× 3', style: TextStyle(color: Color(0xFF101828), fontSize: 12, fontWeight: FontWeight.w500)),
+                    Text(l.numberOfSeats, style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
+                    const Text('× 3', style: TextStyle(color: AppColors.greyDark, fontSize: 12, fontWeight: FontWeight.w500)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -313,7 +315,7 @@ class TripDetailsScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(l.total, style: const TextStyle(color: Color(0xFF101828), fontSize: 14, fontWeight: FontWeight.bold)),
+                    Text(l.total, style: const TextStyle(color: AppColors.greyDark, fontSize: 14, fontWeight: FontWeight.bold)),
                     RichText(
                       text: const TextSpan(
                         children: [
@@ -348,7 +350,7 @@ class TripDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(l.total_price, style: const TextStyle(color: Color(0xFF6A7282), fontSize: 11)),
+                Text(l.total_price, style: const TextStyle(color: AppColors.greySecondary, fontSize: 11)),
                 const SizedBox(height: 4),
                 RichText(
                   text: const TextSpan(
@@ -426,7 +428,7 @@ class _CardContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF101828))),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.greyDark)),
           const SizedBox(height: 16),
           child,
         ],
@@ -480,8 +482,8 @@ class _PickupRow extends StatelessWidget {
           child: Text(number, style: const TextStyle(color: Color(0xFFCF8307), fontWeight: FontWeight.bold, fontSize: 11)),
         ),
         const SizedBox(width: 12),
-        Expanded(child: Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF101828)))),
-        Text(time, style: const TextStyle(color: Color(0xFF6A7282), fontSize: 12)),
+        Expanded(child: Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.greyDark))),
+        Text(time, style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
       ],
     );
   }

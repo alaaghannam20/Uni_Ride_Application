@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
@@ -28,7 +31,11 @@ class _AdminSidebarState extends State<AdminSidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context)!;
+    final locale   = AppLocalizations.of(context)!;
+    final user     = context.watch<AuthProvider>().user;
+    final fullName = user?.fullName ?? locale.adminUser;
+    final email    = user?.email    ?? locale.adminEmail;
+    final initial  = fullName.isNotEmpty ? fullName[0].toUpperCase() : 'A';
 
     return Container(
       width: 287,
@@ -164,10 +171,7 @@ class _AdminSidebarState extends State<AdminSidebar> {
                         ),
                       ),
                       alignment: Alignment.center,
-                      child: Text(
-                        locale.adminUser[0],
-                        style: AppStyle.adminSidebarAvatarInitialStyle,
-                      ),
+                      child: Text(initial, style: AppStyle.adminSidebarAvatarInitialStyle),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -175,14 +179,8 @@ class _AdminSidebarState extends State<AdminSidebar> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            locale.adminUser,
-                            style: AppStyle.adminSidebarUserNameStyle,
-                          ),
-                          Text(
-                            locale.adminEmail,
-                            style: AppStyle.adminSidebarUserEmailStyle,
-                          ),
+                          Text(fullName, style: AppStyle.adminSidebarUserNameStyle),
+                          Text(email,    style: AppStyle.adminSidebarUserEmailStyle),
                         ],
                       ),
                     ),
@@ -192,11 +190,16 @@ class _AdminSidebarState extends State<AdminSidebar> {
                 SizedBox(
                   height: 39.5,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await AppPrefs.logout();
+                      if (context.mounted) {
+                        Navigator.pushNamedAndRemoveUntil(context, Routes.signIn, (route) => false);
+                      }
+                    },
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.zero,
                       side: const BorderSide(color: Colors.transparent),
-                      backgroundColor: AppColors.adminBackground,
+                      backgroundColor: AppColors.lightRedBg,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -204,11 +207,11 @@ class _AdminSidebarState extends State<AdminSidebar> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.logout, size: 16, color: AppColors.adminTextSecondary),
+                        const Icon(Icons.logout, size: 16, color: AppColors.errorRed),
                         const SizedBox(width: 8),
                         Text(
                           locale.logOut,
-                          style: AppStyle.adminSidebarLogoutStyle,
+                          style: AppStyle.adminSidebarLogoutStyle.copyWith(color: AppColors.errorRed),
                         ),
                       ],
                     ),

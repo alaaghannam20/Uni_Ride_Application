@@ -12,12 +12,19 @@ class AppEndpoints {
   static const String changePassword = 'auth/change-password';
 
   // Admin Endpoints
-  static const String pendingApprovals = 'Admin/pending-approvals';
-  static const String approve = 'Admin/approve';
-  static const String reject = 'Admin/reject';
+  static const String pendingApprovals  = 'Admin/pending-approvals';
+  static const String approve           = 'Admin/approve';
+  static const String reject            = 'Admin/reject';
+  static const String dashboardStats    = 'Admin/dashboard-stats';
+  static const String adminStudents     = 'admin/students';
+  static const String adminTrips        = 'admin/Trips';
 
   // Trip Endpoints
   static const String availableTrips = 'Trip/available';
   static String tripDetails(int id) => 'Trip/$id/details';
   static const String myTrips = 'Trip/my-trips';
+
+  // Profile Endpoints
+  static const String memberProfile = 'user/member-profile';
+  static const String driverProfile = 'User/driver-profile';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'tabs/find_trips_tab.dart';
 import 'tabs/my_trips_tab.dart';
 import 'tabs/carpool_tab.dart';
@@ -24,9 +25,20 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is Map && args['tabIndex'] is int) {
+        setState(() => _activeTabIndex = args['tabIndex'] as int);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgWhite,
       body: SafeArea(
         child: Column(
           children: [

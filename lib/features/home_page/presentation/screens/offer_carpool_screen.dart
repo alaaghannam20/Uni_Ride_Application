@@ -65,11 +65,11 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF9FAFB),
+                        color: AppColors.greyBackground,
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFF2F4F7)),
+                        border: Border.all(color: AppColors.greyF2F),
                       ),
-                      child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF101828)),
+                      child: const Icon(Icons.arrow_back, size: 20, color: AppColors.greyDark),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -78,11 +78,11 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     children: [
                       Text(
                         l.offer_a_carpool,
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.greyDark),
                       ),
                       Text(
                         l.offer_carpool_sub,
-                        style: const TextStyle(fontSize: 14, color: Color(0xFF667085)),
+                        style: const TextStyle(fontSize: 14, color: AppColors.grey667),
                       ),
                     ],
                   ),
@@ -134,7 +134,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                             label: l.pickup_loc,
                             value: _pickupLocation.isEmpty ? 'City Center' : _pickupLocation,
                             leadingIcon: Icons.location_on,
-                            iconColor: const Color(0xFFF59E0B),
+                            iconColor: AppColors.adminPrice,
                             onTap: () => _updateLocation(true),
                           ),
                           const SizedBox(height: 12), // Gap 12
@@ -142,7 +142,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                             label: l.dropoff_loc,
                             value: _dropoffLocation.isEmpty ? 'PTUK University' : _dropoffLocation,
                             leadingIcon: Icons.location_on,
-                            iconColor: const Color(0xFF98A2B3),
+                            iconColor: AppColors.greyBlueLight,
                             onTap: () => _updateLocation(false),
                           ),
                         ],
@@ -230,7 +230,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               decoration: const BoxDecoration(
                 color: Colors.white,
                 border: Border(
-                  top: BorderSide(color: Color(0xFFF3F4F6), width: 0.62),
+                  top: BorderSide(color: AppColors.greyLight, width: 0.62),
                 ),
               ),
               child: Column(
@@ -239,7 +239,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     width: double.infinity,
                     height: 55.99,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFCF8307), // Specified Color
+                      color: AppColors.orangeprimary, // Specified Color
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: const [
                         // Specified shadows (Image 2)
@@ -283,7 +283,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
 
   Widget _sectionTitle(String text) => Text(
         text,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.greyDark),
       );
 
   Widget _buildPickerField({
@@ -299,7 +299,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 14, color: Color(0xFF344054), fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 14, color: AppColors.grey344, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 6),
         InkWell(
@@ -310,23 +310,23 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFF2F4F7)),
+              border: Border.all(color: AppColors.greyF2F),
             ),
             child: Row(
               children: [
                 if (leadingIcon != null) ...[
-                  Icon(leadingIcon, size: 16, color: iconColor ?? const Color(0xFFF59E0B)),
+                  Icon(leadingIcon, size: 16, color: iconColor ?? AppColors.adminPrice),
                   const SizedBox(width: 8),
                 ],
                 Expanded(
                   child: Text(
                     value ?? '',
-                    style: TextStyle(fontSize: fontSize, color: const Color(0xFF101828), height: 1.2),
+                    style: TextStyle(fontSize: fontSize, color: AppColors.greyDark, height: 1.2),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(Icons.chevron_right, size: 16, color: Color(0xFFD0D5DD)),
+                const Icon(Icons.chevron_right, size: 16, color: AppColors.borderLightGrey),
               ],
             ),
           ),
@@ -346,7 +346,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
       height: 115.97,
       padding: const EdgeInsets.symmetric(horizontal: 19.99),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
+        color: AppColors.greyBackground,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -359,12 +359,12 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.greyDark),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF667085)),
+                  style: const TextStyle(fontSize: 12, color: AppColors.grey667),
                 ),
               ],
             ),
@@ -374,15 +374,15 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               _stepButton(
                 icon: Icons.remove,
                 onTap: value > 1 ? () => onChanged(value - 1) : null,
-                color: const Color(0xFFE5E7EB),
-                iconColor: const Color(0xFF667085),
+                color: AppColors.borderadmincolor,
+                iconColor: AppColors.grey667,
               ),
               const SizedBox(width: 12),
               Container(
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCF8307),
+                  color: AppColors.orangeprimary,
                   borderRadius: BorderRadius.circular(12), // Squircle-like
                 ),
                 child: Center(
@@ -397,7 +397,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                 icon: Icons.add,
                 onTap: () => onChanged(value + 1),
                 color: Colors.white,
-                iconColor: const Color(0xFFCF8307),
+                iconColor: AppColors.orangeprimary,
                 hasShadow: true,
               ),
             ],
@@ -413,7 +413,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
       height: 145.96,
       padding: const EdgeInsets.all(19.99),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
+        color: AppColors.greyBackground,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -427,12 +427,12 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                   children: [
                     Text(
                       l.price_per_seat_label,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.greyDark),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       l.set_price,
-                      style: const TextStyle(fontSize: 12, color: Color(0xFF667085)),
+                      style: const TextStyle(fontSize: 12, color: AppColors.grey667),
                     ),
                   ],
                 ),
@@ -443,7 +443,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     icon: Icons.remove,
                     onTap: _pricePerSeat > 1 ? () => setState(() => _pricePerSeat--) : null,
                     color: Colors.white,
-                    iconColor: const Color(0xFFCF8307),
+                    iconColor: AppColors.orangeprimary,
                     hasShadow: true,
                   ),
                   const SizedBox(width: 12),
@@ -453,7 +453,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFF2F4F7)),
+                      border: Border.all(color: AppColors.greyF2F),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.05),
@@ -465,7 +465,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     child: Center(
                       child: Text(
                         '₪$_pricePerSeat',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFCF8307)),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.orangeprimary),
                       ),
                     ),
                   ),
@@ -474,7 +474,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     icon: Icons.add,
                     onTap: () => setState(() => _pricePerSeat++),
                     color: Colors.white,
-                    iconColor: const Color(0xFFCF8307),
+                    iconColor: AppColors.orangeprimary,
                     hasShadow: true,
                   ),
                 ],
@@ -485,21 +485,21 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: AppColors.adminInfoBG,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(color: Color(0xFFDBEAFE), shape: BoxShape.circle),
-                  child: const Icon(Icons.attach_money, size: 14, color: Color(0xFF1D4ED8)),
+                  decoration: const BoxDecoration(color: AppColors.lightBlueBg, shape: BoxShape.circle),
+                  child: const Icon(Icons.attach_money, size: 14, color: AppColors.infoDarkBlue),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     l.suggested_price_range,
-                    style: const TextStyle(fontSize: 13, color: Color(0xFF1D4ED8), fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontSize: 13, color: AppColors.infoDarkBlue, fontWeight: FontWeight.w500),
                   ),
                 ),
               ],
@@ -535,7 +535,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                 ]
               : null,
         ),
-        child: Icon(icon, size: 18, color: iconColor ?? const Color(0xFF667085)),
+        child: Icon(icon, size: 18, color: iconColor ?? AppColors.grey667),
       ),
     );
   }
@@ -546,7 +546,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF2F4F7)),
+        border: Border.all(color: AppColors.greyF2F),
       ),
       child: Column(
         children: [
@@ -555,7 +555,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
             children: [
               const Padding(
                 padding: EdgeInsets.only(top: 4), // Added padding for baseline alignment
-                child: Icon(Icons.chat_bubble_outline, size: 20, color: Color(0xFF98A2B3)),
+                child: Icon(Icons.chat_bubble_outline, size: 20, color: AppColors.greyBlueLight),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -563,10 +563,10 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                   controller: _notesController,
                   maxLines: 4,
                   maxLength: 200,
-                  style: const TextStyle(fontSize: 15, color: Color(0xFF101828)),
+                  style: const TextStyle(fontSize: 15, color: AppColors.greyDark),
                   decoration: InputDecoration(
                     hintText: l.notes_hint,
-                    hintStyle: const TextStyle(color: Color(0xFF98A2B3), fontSize: 14),
+                    hintStyle: const TextStyle(color: AppColors.greyBlueLight, fontSize: 14),
                     border: InputBorder.none,
                     counterText: '',
                     isDense: true, // Makes content more compact to match icon alignment
@@ -582,7 +582,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
             alignment: Alignment.bottomRight,
             child: Text(
               '${_notesController.text.length}/200',
-              style: const TextStyle(fontSize: 12, color: Color(0xFF98A2B3)),
+              style: const TextStyle(fontSize: 12, color: AppColors.greyBlueLight),
             ),
           ),
         ],
@@ -599,11 +599,11 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFF0FDF4), Color(0xFFECFDF5)],
+          colors: [AppColors.successBGStart, AppColors.successBGEnd],
         ),
         borderRadius: BorderRadius.circular(20),
         border: const Border(
-          top: BorderSide(color: Color(0xFFDCFCE7), width: 0.62),
+          top: BorderSide(color: AppColors.successBorder, width: 0.62),
         ),
       ),
       child: Column(
@@ -612,25 +612,25 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
         children: [
           Text(
             l.estimated_earnings,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF166534)),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.darkGreen),
           ),
           const SizedBox(height: 4), // Reduced from 8
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              const Text('₪', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+              const Text('₪', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.darkGreen)),
               const SizedBox(width: 4),
               Text(
                 '$_estimatedEarnings',
-                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xFF15803D)),
+                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.darkGreen),
               ),
             ],
           ),
           const SizedBox(height: 2), // Reduced from 4
           Text(
             '$_availableSeats ${l.localeName == 'ar' ? (_availableSeats > 1 ? 'مقاعد' : 'مقعد') : (_availableSeats > 1 ? 'seats' : 'seat')} × ₪$_pricePerSeat ${l.per_seat}',
-            style: const TextStyle(fontSize: 12, color: Color(0xFF166534)),
+            style: const TextStyle(fontSize: 12, color: AppColors.darkGreen),
           ),
         ],
       ),
@@ -676,10 +676,10 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
         title: Text(isPickup ? l.pickup_loc : l.dropoff_loc),
         content: TextField(
           controller: controller,
-          decoration: InputDecoration(hintText: isPickup ? "Enter pickup location" : "Enter dropoff location"),
+          decoration: InputDecoration(hintText: isPickup ? l.enterPickupLocation : l.enterDropoffLocation),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
           TextButton(
             onPressed: () {
               setState(() {
@@ -688,7 +688,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               });
               Navigator.pop(ctx);
             },
-            child: const Text("OK"),
+            child: Text(l.oK),
           ),
         ],
       ),
@@ -717,9 +717,9 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel", style: TextStyle(color: Color(0xFF667085))),
+                    child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.grey667)),
                   ),
-                  const Text("Select Date", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF101828))),
+                  Text(AppLocalizations.of(context)!.selectDate, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.greyDark)),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -730,7 +730,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                       });
                       Navigator.pop(context);
                     },
-                    child: const Text("Done", style: TextStyle(color: Color(0xFFCF8307), fontWeight: FontWeight.bold)),
+                    child: Text(AppLocalizations.of(context)!.done, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
@@ -773,9 +773,9 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel", style: TextStyle(color: Color(0xFF667085))),
+                    child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.grey667)),
                   ),
-                  const Text("Select Time", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF101828))),
+                  Text(AppLocalizations.of(context)!.selectTime, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.greyDark)),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -786,7 +786,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                       });
                       Navigator.pop(context);
                     },
-                    child: const Text("Done", style: TextStyle(color: Color(0xFFCF8307), fontWeight: FontWeight.bold)),
+                    child: Text(AppLocalizations.of(context)!.done, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),

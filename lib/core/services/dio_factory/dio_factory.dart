@@ -61,9 +61,11 @@ class DioFactory {
         return 'No internet connection';
       }
       if (e.type == DioExceptionType.badResponse) {
-        final data = e.response?.data;
+        final status = e.response?.statusCode;
+        final data   = e.response?.data;
+        print('❌ HTTP $status | ${e.requestOptions.path} | $data');
         if (data is Map && data['message'] != null) return data['message'] as String;
-        return 'Server error';
+        return 'Server error ($status)';
       }
       if (e.type == DioExceptionType.cancel) {
         return 'Request cancelled';

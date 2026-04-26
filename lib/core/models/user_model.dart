@@ -24,14 +24,15 @@ class UserModel {
   final UserType userType;
   final String token;
   final String status;
+  final String? profileImage;
 
-  UserModel({
+  const UserModel({
     required this.fullName,
     required this.email,
     required this.userType,
     required this.token,
-
     required this.status,
+    this.profileImage,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -41,17 +42,8 @@ class UserModel {
       userType: userTypeFromString(json[ApiKeys.userType] ?? ''),
       token: json[ApiKeys.token] ?? '',
       status: json[ApiKeys.status] ?? '',
+      profileImage: json[ApiKeys.profileImage],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      ApiKeys.fullName: fullName,
-      ApiKeys.email: email,
-      ApiKeys.userType: userType.name,
-      ApiKeys.token: token,
-      ApiKeys.status: status,
-    };
   }
 
   bool get isActive => status.toLowerCase() == 'active';

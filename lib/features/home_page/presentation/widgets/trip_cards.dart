@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/features/home_page/data/models/available_trip_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/my_trip_model.dart';
@@ -45,11 +46,11 @@ class TripCard extends StatelessWidget {
                       const SizedBox(width: 8, child: Icon(Icons.circle, size: 8, color: AppColors.orangeprimary)),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(trip.from, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: Color(0xFF101828))),
+                        child: Text(trip.from, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: AppColors.greyDark)),
                       ),
                       Container(
                         width: 44, height: 44,
-                        decoration: const BoxDecoration(color: Color(0xFFF9FAFB), shape: BoxShape.circle),
+                        decoration: const BoxDecoration(color: AppColors.greyBackground, shape: BoxShape.circle),
                         child: const Icon(Icons.near_me_outlined, size: 20, color: AppColors.orangeprimary),
                       ),
                     ],
@@ -70,16 +71,16 @@ class TripCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        Text('In ${trip.duration} min', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 11, color: Color(0xFF99A1AF))),
+                        Text('In ${trip.duration} min', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 11, color: AppColors.greyHint)),
                       ],
                     ),
                   ),
                   Row(
                     children: [
-                      const SizedBox(width: 8, child: Icon(Icons.circle, size: 8, color: Color(0xFFD1D5DB))),
+                      const SizedBox(width: 8, child: Icon(Icons.circle, size: 8, color: AppColors.dashedLineColor)),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(trip.to, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: Color(0xFF101828))),
+                        child: Text(trip.to, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: AppColors.greyDark)),
                       ),
                       const SizedBox(width: 44),
                     ],
@@ -91,16 +92,16 @@ class TripCard extends StatelessWidget {
             Container(
               height: 46.61,
               decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: Color(0xFFF3F4F6), width: 0.62)),
+                border: Border(top: BorderSide(color: AppColors.greyLight, width: 0.62)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.people_outline, size: 16, color: Color(0xFF4A5565)),
+                      const Icon(Icons.people_outline, size: 16, color: AppColors.adminTextSecondary),
                       const SizedBox(width: 4),
-                      Text('${trip.seats} seats', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 13, color: Color(0xFF4A5565))),
+                      Text('${trip.seats} seats', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 13, color: AppColors.adminTextSecondary)),
                     ],
                   ),
                   Row(
@@ -191,7 +192,7 @@ class MyTripCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right, size: 18, color: Color(0xFFCCCCCC)),
+                const Icon(Icons.chevron_right, size: 18, color: AppColors.greyCCC),
               ],
             ),
             const SizedBox(height: 16),
@@ -217,7 +218,7 @@ class MyTripCard extends StatelessWidget {
                     children: [
                       Text(trip.from, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
                       const SizedBox(height: 2),
-                      Text('15 min', style: const TextStyle(color: Color(0xFF99A1AF), fontSize: 11)),
+                      Text('15 min', style: const TextStyle(color: AppColors.greyHint, fontSize: 11)),
                       const SizedBox(height: 2),
                       Text(trip.to, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
                     ],
@@ -236,17 +237,17 @@ class MyTripCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.calendar_today, size: 13, color: Color(0xFF99A1AF)),
+                        const Icon(Icons.calendar_today, size: 13, color: AppColors.greyHint),
                         const SizedBox(width: 6),
-                        Text(trip.date, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF6A7282))),
+                        Text(trip.date, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.greySecondary)),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.people_outline, size: 14, color: Color(0xFF99A1AF)),
+                        const Icon(Icons.people_outline, size: 14, color: AppColors.greyHint),
                         const SizedBox(width: 6),
-                        Text('${trip.driver} · ${trip.seats} seat', style: const TextStyle(fontSize: 12, color: Color(0xFF6A7282))),
+                        Text('${trip.driver} · ${trip.seats} seat', style: const TextStyle(fontSize: 12, color: AppColors.greySecondary)),
                       ],
                     ),
                   ],
@@ -301,7 +302,7 @@ class CarpoolTripCard extends StatelessWidget {
               children: [
                 Container(
                   width: 48, height: 48,
-                  decoration: const BoxDecoration(color: Color(0xFFE09520), shape: BoxShape.circle),
+                  decoration: const BoxDecoration(color: AppColors.primaryGradientEnd, shape: BoxShape.circle),
                   child: Center(child: Text(trip.driverInitial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))),
                 ),
                 const SizedBox(width: 12),
@@ -309,12 +310,12 @@ class CarpoolTripCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(trip.driver, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF101828))),
+                      Text(trip.driver, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.greyDark)),
                       Row(
                         children: [
                           const Icon(Icons.star, size: 14, color: Colors.orange),
                           const SizedBox(width: 4),
-                          Text('${trip.driverRating}', style: const TextStyle(fontSize: 12, color: Color(0xFF6A7282))),
+                          Text('${trip.driverRating}', style: const TextStyle(fontSize: 12, color: AppColors.greySecondary)),
                         ],
                       ),
                     ],
@@ -368,21 +369,21 @@ class CarpoolTripCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.calendar_today, size: 12, color: Color(0xFF99A1AF)),
+                        const Icon(Icons.calendar_today, size: 12, color: AppColors.greyHint),
                         const SizedBox(width: 6),
-                        Text('Today - ${trip.time}', style: const TextStyle(fontSize: 11, color: Color(0xFF6A7282), fontWeight: FontWeight.w500)),
+                        Text('Today - ${trip.time}', style: const TextStyle(fontSize: 11, color: AppColors.greySecondary, fontWeight: FontWeight.w500)),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.people_outline, size: 14, color: Color(0xFF99A1AF)),
+                        const Icon(Icons.people_outline, size: 14, color: AppColors.greyHint),
                         const SizedBox(width: 6),
-                        Text('${trip.seats}/${trip.totalSeats} seats', style: const TextStyle(fontSize: 11, color: Color(0xFF6A7282))),
+                        Text('${trip.seats}/${trip.totalSeats} seats', style: const TextStyle(fontSize: 11, color: AppColors.greySecondary)),
                         const SizedBox(width: 12),
-                        const Icon(Icons.directions_car_outlined, size: 14, color: Color(0xFF99A1AF)),
+                        const Icon(Icons.directions_car_outlined, size: 14, color: AppColors.greyHint),
                         const SizedBox(width: 6),
-                        Text(trip.carModel, style: const TextStyle(fontSize: 11, color: Color(0xFF6A7282))),
+                        Text(trip.carModel, style: const TextStyle(fontSize: 11, color: AppColors.greySecondary)),
                       ],
                     ),
                   ],
@@ -394,7 +395,7 @@ class CarpoolTripCard extends StatelessWidget {
                     const Text('₪', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
                     const SizedBox(width: 2),
                     Text('${trip.price}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
-                    const Text(' /seats', style: TextStyle(fontSize: 12, color: Color(0xFF99A1AF), fontWeight: FontWeight.w500)),
+                    const Text(' /seats', style: TextStyle(fontSize: 12, color: AppColors.greyHint, fontWeight: FontWeight.w500)),
                   ],
                 ),
               ],
@@ -453,11 +454,11 @@ class AvailableTripApiCard extends StatelessWidget {
                       const SizedBox(width: 8, child: Icon(Icons.circle, size: 8, color: AppColors.orangeprimary)),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(trip.pickupLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: Color(0xFF101828))),
+                        child: Text(trip.pickupLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: AppColors.greyDark)),
                       ),
                       Container(
                         width: 44, height: 44,
-                        decoration: const BoxDecoration(color: Color(0xFFF9FAFB), shape: BoxShape.circle),
+                        decoration: const BoxDecoration(color: AppColors.greyBackground, shape: BoxShape.circle),
                         child: const Icon(Icons.near_me_outlined, size: 20, color: AppColors.orangeprimary),
                       ),
                     ],
@@ -481,7 +482,7 @@ class AvailableTripApiCard extends StatelessWidget {
                           trip.estimatedDurationMinutes > 0
                               ? 'In ${trip.estimatedDurationMinutes} min'
                               : _formatTime(trip.departureTime),
-                          style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 11, color: Color(0xFF99A1AF)),
+                          style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 11, color: AppColors.greyHint),
                         ),
                       ],
                     ),
@@ -491,7 +492,7 @@ class AvailableTripApiCard extends StatelessWidget {
                       SizedBox(width: 8, child: Icon(Icons.circle, size: 8, color: Colors.grey[300])),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(trip.dropoffLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: Color(0xFF101828))),
+                        child: Text(trip.dropoffLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: AppColors.greyDark)),
                       ),
                       const SizedBox(width: 44),
                     ],
@@ -503,16 +504,16 @@ class AvailableTripApiCard extends StatelessWidget {
             Container(
               height: 46.61,
               decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: Color(0xFFF3F4F6), width: 0.62)),
+                border: Border(top: BorderSide(color: AppColors.greyLight, width: 0.62)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.people_outline, size: 16, color: Color(0xFF4A5565)),
+                      const Icon(Icons.people_outline, size: 16, color: AppColors.adminTextSecondary),
                       const SizedBox(width: 4),
-                      Text('${trip.availableSeats} seats', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 13, color: Color(0xFF4A5565))),
+                      Text('${trip.availableSeats} seats', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 13, color: AppColors.adminTextSecondary)),
                     ],
                   ),
                   Row(
@@ -550,6 +551,7 @@ class MyTripApiCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final statusLower = trip.status.toLowerCase();
     final Color statusColor;
     final Color statusBg;
@@ -559,17 +561,17 @@ class MyTripApiCard extends StatelessWidget {
     if (statusLower == 'completed') {
       statusColor = const Color(0xFF00A63E);
       statusBg = const Color(0xFFEFFBF3);
-      statusLabel = 'Completed';
+      statusLabel = l.completed;
       statusIcon = Icons.check_circle_outline;
     } else if (statusLower == 'cancelled') {
       statusColor = const Color(0xFFE7000B);
       statusBg = const Color(0xFFFFF2F2);
-      statusLabel = 'Cancelled';
+      statusLabel = l.cancelled;
       statusIcon = Icons.cancel_outlined;
     } else {
       statusColor = AppColors.orangeprimary;
       statusBg = const Color(0xFFFFFAEE);
-      statusLabel = 'Upcoming';
+      statusLabel = l.upcoming;
       statusIcon = Icons.access_time;
     }
 
@@ -607,7 +609,7 @@ class MyTripApiCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right, size: 18, color: Color(0xFFCCCCCC)),
+                const Icon(Icons.chevron_right, size: 18, color: AppColors.greyCCC),
               ],
             ),
             const SizedBox(height: 16),
@@ -650,17 +652,17 @@ class MyTripApiCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.calendar_today, size: 13, color: Color(0xFF99A1AF)),
+                        const Icon(Icons.calendar_today, size: 13, color: AppColors.greyHint),
                         const SizedBox(width: 6),
-                        Text(_formatDate(trip.departureTime), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF6A7282))),
+                        Text(_formatDate(trip.departureTime), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.greySecondary)),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.person_outline, size: 14, color: Color(0xFF99A1AF)),
+                        const Icon(Icons.person_outline, size: 14, color: AppColors.greyHint),
                         const SizedBox(width: 6),
-                        Text(trip.driverName, style: const TextStyle(fontSize: 12, color: Color(0xFF6A7282))),
+                        Text(trip.driverName, style: const TextStyle(fontSize: 12, color: AppColors.greySecondary)),
                       ],
                     ),
                   ],
@@ -720,7 +722,7 @@ class DetailedTripCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: const BoxDecoration(
-                    color: Color(0xFFCF8307),
+                    color: AppColors.orangeprimary,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -744,7 +746,7 @@ class DetailedTripCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF101828),
+                          color: AppColors.greyDark,
                         ),
                       ),
                       Row(
@@ -755,19 +757,19 @@ class DetailedTripCard extends StatelessWidget {
                             '${trip.driverRating}',
                             style: const TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF667085),
+                              color: AppColors.grey667,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 4),
-                            child: Text('·', style: TextStyle(color: Color(0xFF667085))),
+                            child: Text('·', style: TextStyle(color: AppColors.grey667)),
                           ),
                           Text(
                             trip.carModel,
                             style: const TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF667085),
+                              color: AppColors.grey667,
                             ),
                           ),
                         ],
@@ -778,12 +780,12 @@ class DetailedTripCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: const BoxDecoration(
-                    color: Color(0xFFF9FAFB),
+                    color: AppColors.greyBackground,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.near_me_outlined,
-                    color: Color(0xFFCF8307),
+                    color: AppColors.orangeprimary,
                     size: 18,
                   ),
                 ),
@@ -797,7 +799,7 @@ class DetailedTripCard extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    const Icon(Icons.circle, size: 8, color: Color(0xFFCF8307)),
+                    const Icon(Icons.circle, size: 8, color: AppColors.orangeprimary),
                     const SizedBox(height: 4),
                     Column(
                       children: List.generate(4, (index) => Container(
@@ -808,7 +810,7 @@ class DetailedTripCard extends StatelessWidget {
                       )),
                     ),
                     const SizedBox(height: 4),
-                    const Icon(Icons.circle, size: 8, color: Color(0xFFD1D5DB)),
+                    const Icon(Icons.circle, size: 8, color: AppColors.dashedLineColor),
                   ],
                 ),
                 const SizedBox(width: 12),
@@ -821,7 +823,7 @@ class DetailedTripCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF101828),
+                          color: AppColors.greyDark,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -829,7 +831,7 @@ class DetailedTripCard extends StatelessWidget {
                         'In ${trip.duration} min',
                         style: const TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF99A1AF),
+                          color: AppColors.greyHint,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -838,7 +840,7 @@ class DetailedTripCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF101828),
+                          color: AppColors.greyDark,
                         ),
                       ),
                     ],
@@ -854,24 +856,24 @@ class DetailedTripCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.access_time, size: 16, color: Color(0xFF667085)),
+                    const Icon(Icons.access_time, size: 16, color: AppColors.grey667),
                     const SizedBox(width: 4),
                     Text(
                       '${trip.duration} min',
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF667085),
+                        color: AppColors.grey667,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(width: 16),
-                    const Icon(Icons.people_outline, size: 16, color: Color(0xFF667085)),
+                    const Icon(Icons.people_outline, size: 16, color: AppColors.grey667),
                     const SizedBox(width: 4),
                     Text(
                       '${trip.seats} seats',
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF667085),
+                        color: AppColors.grey667,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

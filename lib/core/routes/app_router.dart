@@ -22,7 +22,7 @@ import 'package:uni_ride_application/features/admin/pages/admin_settings_page.da
 import 'package:uni_ride_application/features/payment/pages/payment_page.dart';
 import 'package:uni_ride_application/features/payment/pages/my_wallet_page.dart';
 import 'package:uni_ride_application/features/rating/pages/rate_driver_page.dart';
-import 'package:uni_ride_application/features/profile/pages/profile_page.dart';
+import 'package:uni_ride_application/features/profile_memberuni/pages/profile_member_uni_page.dart';
 import 'package:uni_ride_application/features/home_page/presentation/screens/home_screen.dart';
 import 'package:uni_ride_application/features/home_page/presentation/screens/all_available_trips_screen.dart';
 import 'package:uni_ride_application/features/home_page/presentation/screens/offer_carpool_screen.dart';

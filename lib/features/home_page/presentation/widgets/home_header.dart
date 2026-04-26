@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/features/home_page/presentation/widgets/user_drawer_sheet.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class HomeHeader extends StatelessWidget {
-  final String userName;
-  const HomeHeader({super.key, this.userName = 'Dua'});
+  const HomeHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
+    final user = context.watch<AuthProvider>().user;
+
+    final fullName = user?.fullName ?? '';
+    final firstName = fullName.split(' ').first;
+    final initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : '?';
+    final imageUrl = user?.profileImage != null
+        ? 'http://uniride.runasp.net/${user!.profileImage}'
+        : null;
 
     return Container(
       width: double.infinity,
@@ -24,7 +34,7 @@ class HomeHeader extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${l.hello_user}$userName 👋',
+                  '${l.hello_user}$firstName 👋',
                   style: const TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w400,
@@ -49,9 +59,9 @@ class HomeHeader extends StatelessWidget {
                   children: [
                     const Icon(Icons.location_on, size: 14, color: AppColors.orangeprimary),
                     const SizedBox(width: 4),
-                    Text(
+                    const Text(
                       'Tulkarm, Kadori St',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
@@ -65,8 +75,7 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            // Profile action can be added via callback later
-            onTap: () {},
+            onTap: () => showUserDrawer(context),
             child: Container(
               width: 48,
               height: 48,
@@ -74,12 +83,32 @@ class HomeHeader extends StatelessWidget {
                 color: AppColors.orangeprimary,
                 shape: BoxShape.circle,
               ),
-              child: const Center(
-                child: Text(
-                  'D',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ),
+              clipBehavior: Clip.antiAlias,
+              child: imageUrl != null
+                  ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Center(
+                        child: Text(
+                          initial,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        initial,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
             ),
           ),
         ],

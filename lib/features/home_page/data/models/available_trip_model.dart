@@ -12,6 +12,7 @@ class AvailableTripModel {
   final int estimatedDurationMinutes;
   final String driverType;
   final String vehicleModel;
+  final String? profilePicturePath;
   final String? description;
   final String status;
 
@@ -27,23 +28,25 @@ class AvailableTripModel {
     required this.estimatedDurationMinutes,
     required this.driverType,
     required this.vehicleModel,
+    this.profilePicturePath,
     this.description,
     required this.status,
   });
 
   factory AvailableTripModel.fromJson(Map<String, dynamic> json) {
     return AvailableTripModel(
-      tripId: json[ApiKeys.tripId] ?? 0,
+      tripId: (json[ApiKeys.tripId] ?? 0).toInt(),
       tripCode: json[ApiKeys.tripCode] ?? '',
       driverName: json[ApiKeys.driverName] ?? '',
       pickupLocation: json[ApiKeys.pickupLocation] ?? '',
       dropoffLocation: json[ApiKeys.dropoffLocation] ?? '',
       departureTime: json[ApiKeys.departureTime] ?? '',
-      pricePerSeat: json[ApiKeys.pricePerSeat] ?? 0,
-      availableSeats: json[ApiKeys.availableSeats] ?? 0,
-      estimatedDurationMinutes: json[ApiKeys.estimatedDurationMinutes] ?? 0,
+      pricePerSeat: (json[ApiKeys.pricePerSeat] ?? 0).toInt(),
+      availableSeats: (json[ApiKeys.availableSeats] ?? 0).toInt(),
+      estimatedDurationMinutes: (json[ApiKeys.estimatedDurationMinutes] ?? 0).toInt(),
       driverType: json[ApiKeys.driverType] ?? '',
       vehicleModel: json[ApiKeys.vehicleModel] ?? '',
+      profilePicturePath: json[ApiKeys.profilePicturePath],
       description: json[ApiKeys.description],
       status: json[ApiKeys.status] ?? '',
     );

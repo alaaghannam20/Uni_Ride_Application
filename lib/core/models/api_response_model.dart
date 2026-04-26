@@ -4,7 +4,7 @@ class ApiResponseModel {
   final bool success;
   final String message;
 
-  ApiResponseModel({
+  const ApiResponseModel({
     required this.success,
     required this.message,
   });

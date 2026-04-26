@@ -13,5 +13,9 @@ class PrefKeys {
   static const String driverLicense = 'driver_license';
   static const String driverPlate = 'driver_plate';
 
-   static const String userType = 'userType';
+  static const String userType = 'userType';
+  static const String userFullName = 'userFullName';
+  static const String userEmail = 'userEmail';
+  static const String userProfileImage = 'userProfileImage';
+  static const String themeMode = 'themeMode';
 }

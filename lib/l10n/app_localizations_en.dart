@@ -380,6 +380,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemSettings => 'System Settings';
 
   @override
+  String get dashboardOverview => 'Dashboard Overview';
+
+  @override
+  String get totalUsers => 'Total Users';
+
+  @override
+  String get activeDrivers => 'Active Drivers';
+
+  @override
+  String get totalTripsCount => 'Total Trips';
+
+  @override
+  String get todayRevenue => 'Today\'s Revenue';
+
+  @override
+  String get activeTripsNow => 'Active Trips Now';
+
+  @override
+  String get realtimeMonitoring => 'Real-time monitoring';
+
+  @override
+  String get recentTrips => 'Recent Trips';
+
+  @override
+  String get noRecentTrips => 'No recent trips';
+
+  @override
+  String get fromYesterday => 'from yesterday';
+
+  @override
   String get systemConfiguration => 'System Configuration';
 
   @override
@@ -1170,4 +1200,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get driverActiveStatus => 'Driver • Active';
+
+  @override
+  String get walletBalance => 'Wallet Balance';
+
+  @override
+  String get myProfile => 'My Profile';
+
+  @override
+  String get viewAndEditProfile => 'View and edit profile';
+
+  @override
+  String get viewTripHistory => 'View trip history';
+
+  @override
+  String get rewardsAndPoints => 'Rewards & Points';
+
+  @override
+  String get noTripsAvailable => 'No trips available';
+
+  @override
+  String get noTripsFound => 'No trips found';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get noPendingApprovals => 'No pending approvals';
+
+  @override
+  String get noStudentsFound => 'No students found';
+
+  @override
+  String get selectDate => 'Select Date';
+
+  @override
+  String get selectTime => 'Select Time';
+
+  @override
+  String get enterPickupLocation => 'Enter pickup location';
+
+  @override
+  String get enterDropoffLocation => 'Enter dropoff location';
+
+  @override
+  String get profileMenuSubtitle => 'View and edit profile';
+
+  @override
+  String get tripsMenuSubtitle => 'View trip history';
+
+  @override
+  String get serverError => 'Server error';
+
+  @override
+  String get noInternetConnection => 'No internet connection';
+
+  @override
+  String get connectionTimeout => 'Connection timeout, try again';
 }

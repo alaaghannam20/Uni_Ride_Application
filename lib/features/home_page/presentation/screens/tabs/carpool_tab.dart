@@ -63,7 +63,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF101828),
+              color: AppColors.greyDark,
             ),
           ),
         ),
@@ -77,7 +77,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
             ],
           ),
         ),
-        const Divider(height: 1, thickness: 1, color: Color(0xFFF2F4F7)),
+        const Divider(height: 1, thickness: 1, color: AppColors.greyF2F),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -112,7 +112,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                color: isActive ? AppColors.orangeprimary : const Color(0xFF667085),
+                color: isActive ? AppColors.orangeprimary : AppColors.grey667,
               ),
             ),
           ),
@@ -143,12 +143,12 @@ class _CarpoolTabState extends State<CarpoolTab> {
           gradient: const LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
-            colors: [Color(0xFFCF8307), Color(0xFFE09520)],
+            colors: [AppColors.orangeprimary, AppColors.primaryGradientEnd],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFCF8307).withOpacity(0.2),
+              color: AppColors.orangeprimary.withValues(alpha: 0.2),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -202,7 +202,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
         Text(
           title,
           style: const TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+              fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.greyDark),
         ),
         Row(
           children: [
@@ -228,11 +228,11 @@ class _CarpoolTabState extends State<CarpoolTab> {
           width: 80,
           height: 80,
           decoration: const BoxDecoration(
-            color: Color(0xFFF9FAFB),
+            color: AppColors.greyBackground,
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.directions_car_filled_outlined,
-              size: 40, color: Color(0xFFD1D5DB)),
+              size: 40, color: AppColors.dashedLineColor),
         ),
         const SizedBox(height: 24),
         Text(
@@ -240,7 +240,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF101828),
+            color: AppColors.greyDark,
           ),
         ),
         const SizedBox(height: 8),
@@ -251,7 +251,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 14,
-              color: Color(0xFF667085),
+              color: AppColors.grey667,
               height: 1.5,
             ),
           ),

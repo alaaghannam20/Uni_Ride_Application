@@ -44,12 +44,12 @@ class HomeNavigation extends StatelessWidget {
           decoration: BoxDecoration(
             color: isActive ? AppColors.orangeprimary : Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isActive ? AppColors.orangeprimary : const Color(0xFFE5E5E5)),
+            border: Border.all(color: isActive ? AppColors.orangeprimary : AppColors.greyE5E),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 20, color: isActive ? Colors.white : const Color(0xFF101828)),
+              Icon(icon, size: 20, color: isActive ? Colors.white : AppColors.greyDark),
               const SizedBox(height: 4),
               Text(
                 label,
@@ -57,7 +57,7 @@ class HomeNavigation extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
-                  color: isActive ? Colors.white : const Color(0xFF101828),
+                  color: isActive ? Colors.white : AppColors.greyDark,
                 ),
               ),
             ],

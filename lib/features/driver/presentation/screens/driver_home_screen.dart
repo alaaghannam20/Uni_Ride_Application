@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class DriverHomeScreen extends StatefulWidget {
@@ -13,10 +17,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: context.bgColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -69,7 +71,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   fontSize: 14,
                   height: 1.5, // 21/14
                   letterSpacing: 0,
-                  color: Color(0xFF6A7282),
+                  color: AppColors.greySecondary,
                 ),
               ),
               Text(
@@ -80,29 +82,60 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   fontSize: 24,
                   height: 1.5, // 36/24
                   letterSpacing: 0,
-                  color: Color(0xFF101828),
+                  color: AppColors.greyDark,
                 ),
               ),
             ],
           ),
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'profile') {
+                Navigator.pushNamed(context, Routes.driverprofile);
+              } else if (value == 'logout') {
+                await AppPrefs.logout();
+                if (mounted) {
+                  Navigator.pushNamedAndRemoveUntil(context, Routes.signIn, (route) => false);
+                }
+              }
+            },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            itemBuilder: (_) => [
+              const PopupMenuItem(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    Icon(Icons.person_outline, size: 18, color: AppColors.greyDark),
+                    SizedBox(width: 10),
+                    Text('Profile', style: TextStyle(fontSize: 14, color: AppColors.greyDark)),
+                  ],
                 ),
-              ],
-            ),
-            child: const Icon(
-              Icons.more_vert,
-              size: 20,
-              color: Color(0xFF101828),
+              ),
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, size: 18, color: AppColors.errorRed),
+                    SizedBox(width: 10),
+                    Text('Log Out', style: TextStyle(fontSize: 14, color: AppColors.errorRed)),
+                  ],
+                ),
+              ),
+            ],
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Icon(Icons.more_vert, size: 20, color: AppColors.greyDark),
             ),
           ),
         ],
@@ -120,16 +153,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         children: [
           _statItem(label: l.today, value: '₪145'),
           const SizedBox(width: 16),
-          Container(width: 1, height: 32, color: const Color(0xFFE5E7EB)),
+          Container(width: 1, height: 32, color: AppColors.borderadmincolor),
           const SizedBox(width: 16),
           _statItem(
             label: l.rating,
             value: '4.8',
             prefix: '★ ',
-            prefixColor: const Color(0xFFF5A623),
+            prefixColor: AppColors.adminPrice,
           ),
           const SizedBox(width: 16),
-          Container(width: 1, height: 32, color: const Color(0xFFE5E7EB)),
+          Container(width: 1, height: 32, color: AppColors.borderadmincolor),
           const SizedBox(width: 16),
           _statItem(label: l.trips, value: '23'),
         ],
@@ -155,7 +188,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             fontSize: 13,
             height: 1.5,
             letterSpacing: 0,
-            color: Color(0xFF6A7282),
+            color: AppColors.greySecondary,
           ),
         ),
         const SizedBox(height: 2),
@@ -170,7 +203,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   fontWeight: FontWeight.w700,
                   fontSize: 20,
                   height: 1,
-                  color: prefixColor ?? const Color(0xFF101828),
+                  color: prefixColor ?? AppColors.greyDark,
                 ),
               ),
             Text(
@@ -181,7 +214,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 fontSize: 24,
                 height: 1,
                 letterSpacing: 0,
-                color: Color(0xFF101828),
+                color: AppColors.greyDark,
               ),
             ),
           ],
@@ -196,9 +229,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFCF8307), width: 1.85),
+        border: Border.all(color: AppColors.orangeprimary, width: 1.85),
         boxShadow: const [
           BoxShadow(
             color: Color(0x1A000000),
@@ -233,7 +266,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     width: 8,
                     height: 8,
                     decoration: const BoxDecoration(
-                      color: Color(0xFFCF8307),
+                      color: AppColors.orangeprimary,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -246,7 +279,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       fontSize: 15,
                       height: 1.5,
                       letterSpacing: 0,
-                      color: Color(0xFF101828),
+                      color: AppColors.greyDark,
                     ),
                   ),
                 ],
@@ -259,7 +292,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   fontSize: 13,
                   height: 1.5,
                   letterSpacing: 0,
-                  color: Color(0xFF6A7282),
+                  color: AppColors.greySecondary,
                 ),
               ),
             ],
@@ -273,13 +306,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF3F4F6),
+                  color: AppColors.greyLight,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
                   Icons.person_outline,
                   size: 20,
-                  color: Color(0xFF6A7282),
+                  color: AppColors.greySecondary,
                 ),
               ),
               const SizedBox(width: 10),
@@ -295,7 +328,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                         fontSize: 16,
                         height: 1.5,
                         letterSpacing: 0,
-                        color: Color(0xFF101828),
+                        color: AppColors.greyDark,
                       ),
                     ),
                     Text(
@@ -306,7 +339,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                         fontSize: 13,
                         height: 1.5,
                         letterSpacing: 0,
-                        color: Color(0xFF6A7282),
+                        color: AppColors.greySecondary,
                       ),
                     ),
                   ],
@@ -321,7 +354,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   fontSize: 20,
                   height: 1,
                   letterSpacing: 0,
-                  color: Color(0xFFCF8307),
+                  color: AppColors.orangeprimary,
                 ),
               ),
             ],
@@ -333,7 +366,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               Icon(
                 Icons.location_on_outlined,
                 size: 16,
-                color: Color(0xFF6A7282),
+                color: AppColors.greySecondary,
               ),
               SizedBox(width: 6),
               Text(
@@ -344,7 +377,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   fontSize: 14,
                   height: 1.5,
                   letterSpacing: 0,
-                  color: Color(0xFF101828),
+                  color: AppColors.greyDark,
                 ),
               ),
             ],
@@ -352,7 +385,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           const SizedBox(height: 10),
           const Padding(
             padding: EdgeInsets.only(left: 22),
-            child: Divider(height: 1, thickness: 1, color: Color(0xFFE5E7EB)),
+            child: Divider(height: 1, thickness: 1, color: AppColors.borderadmincolor),
           ),
           const SizedBox(height: 10),
           const Padding(
@@ -365,7 +398,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 fontSize: 14,
                 height: 1.5,
                 letterSpacing: 0,
-                color: Color(0xFF101828),
+                color: AppColors.greyDark,
               ),
             ),
           ),
@@ -383,7 +416,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFCF8307),
+                    backgroundColor: AppColors.orangeprimary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -404,7 +437,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       fontSize: 14,
                       height: 1.5,
                       letterSpacing: 0,
-                      color: Color(0xFFFFFFFF),
+                      color: AppColors.white,
                     ),
                   ),
                 ),
@@ -423,14 +456,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       child: OutlinedButton.icon(
         onPressed: () {},
         style: OutlinedButton.styleFrom(
-          foregroundColor: const Color(0xFF364153),
-          side: const BorderSide(color: Color(0xFFE5E7EB), width: 1),
+          foregroundColor: AppColors.grey364,
+          side: const BorderSide(color: AppColors.borderadmincolor, width: 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           padding: EdgeInsets.zero,
         ),
-        icon: Icon(icon, size: 16, color: const Color(0xFF364153)),
+        icon: Icon(icon, size: 16, color: AppColors.grey364),
         label: Text(
           label,
           style: const TextStyle(
@@ -439,7 +472,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             fontSize: 14,
             height: 1.5,
             letterSpacing: 0,
-            color: Color(0xFF364153),
+            color: AppColors.grey364,
           ),
         ),
       ),
@@ -469,8 +502,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     height: 22.5 / 15,
                     letterSpacing: 0,
                     color: active
-                        ? const Color(0xFF101828)
-                        : const Color(0xFF99A1AF),
+                        ? AppColors.greyDark
+                        : AppColors.greyHint,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -479,7 +512,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     height: 2,
                     width: tabs[i].length * 8.4,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFCF8307),
+                      color: AppColors.orangeprimary,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),

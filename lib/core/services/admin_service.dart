@@ -1,3 +1,6 @@
+import 'package:uni_ride_application/core/models/admin_dashboard_stats_model.dart';
+import 'package:uni_ride_application/core/models/admin_student_model.dart';
+import 'package:uni_ride_application/core/models/admin_trip_model.dart';
 import 'package:uni_ride_application/core/models/pending_approval_model.dart';
 import 'package:uni_ride_application/core/models/api_response_model.dart';
 import 'package:uni_ride_application/core/network/app_endpoints.dart';
@@ -44,5 +47,22 @@ class AdminService {
     } catch (e) {
       return ApiResponseModel(success: false, message: e.toString());
     }
+  }
+
+  Future<AdminDashboardStatsModel> getDashboardStats() async {
+    final response = await DioFactory.get(AppEndpoints.dashboardStats);
+    return AdminDashboardStatsModel.fromJson(response.data);
+  }
+
+  Future<List<AdminStudentModel>> getStudents() async {
+    final response = await DioFactory.get(AppEndpoints.adminStudents);
+    final list = response.data as List? ?? [];
+    return list.map((e) => AdminStudentModel.fromJson(e)).toList();
+  }
+
+  Future<List<AdminTripModel>> getAdminTrips() async {
+    final response = await DioFactory.get(AppEndpoints.adminTrips);
+    final list = response.data as List? ?? [];
+    return list.map((e) => AdminTripModel.fromJson(e)).toList();
   }
 }

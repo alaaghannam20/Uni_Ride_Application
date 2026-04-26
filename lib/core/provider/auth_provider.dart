@@ -20,6 +20,31 @@ class AuthProvider extends ChangeNotifier {
   UserType _userType = UserType.unauthorized;
   UserType get userType => _userType;
 
+  AuthProvider() {
+    _loadSavedUser();
+  }
+
+  void _loadSavedUser() {
+    final token    = AppPrefs.getToken();
+    final fullName = AppPrefs.getFullName();
+    final email    = AppPrefs.getEmail();
+    final userType = AppPrefs.getUserType();
+
+    final profileImage = AppPrefs.getProfileImage();
+    if (token != null && fullName != null) {
+      _user = UserModel(
+        fullName: fullName,
+        email: email ?? '',
+        userType: userTypeFromString(userType ?? ''),
+        token: token,
+        status: 'Active',
+        profileImage: profileImage,
+      );
+      _userType = _user!.userType;
+      notifyListeners();
+    }
+  }
+
   void _setState(AuthState newState) {
     _state = newState;
     notifyListeners();
@@ -52,6 +77,7 @@ class AuthProvider extends ChangeNotifier {
     required int seatCapacity,
     required String driverLicensePath,
     required String vehicleLicensePath,
+    required String profileImagePath,
   }) async {
     _setState(AuthState.loading);
     final result = await _authService.registerDriver(
@@ -66,6 +92,7 @@ class AuthProvider extends ChangeNotifier {
       seatCapacity: seatCapacity,
       driverLicensePath: driverLicensePath,
       vehicleLicensePath: vehicleLicensePath,
+      profileImagePath: profileImagePath,
     );
     if (result.success) {
       _setState(AuthState.success);
@@ -89,6 +116,7 @@ class AuthProvider extends ChangeNotifier {
     required String licenseNumber,
     required String driverLicensePath,
     required String vehicleLicensePath,
+    required String profileImagePath,
   }) async {
     _setState(AuthState.loading);
     final result = await _authService.registerCarpool(
@@ -102,6 +130,7 @@ class AuthProvider extends ChangeNotifier {
       licenseNumber: licenseNumber,
       driverLicensePath: driverLicensePath,
       vehicleLicensePath: vehicleLicensePath,
+      profileImagePath: profileImagePath,
     );
     if (result.success) {
       _setState(AuthState.success);
@@ -138,6 +167,9 @@ class AuthProvider extends ChangeNotifier {
       _user = userResult;
       await AppPrefs.setToken(userResult.token);
       await AppPrefs.setUserType(userResult.userType.name);
+      await AppPrefs.setFullName(userResult.fullName);
+      await AppPrefs.setEmail(userResult.email);
+      await AppPrefs.setProfileImage(userResult.profileImage);
       _userType = userResult.userType;
       _setState(AuthState.success);
       return true;

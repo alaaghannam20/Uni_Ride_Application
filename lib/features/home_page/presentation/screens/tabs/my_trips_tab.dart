@@ -55,15 +55,15 @@ class _MyTripsTabState extends State<MyTripsTab> {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFE5E5E5)),
-            Expanded(child: _buildBody(provider, filtered)),
+            const Divider(height: 1, color: AppColors.greyE5E),
+            Expanded(child: _buildBody(provider, filtered, l)),
           ],
         );
       },
     );
   }
 
-  Widget _buildBody(TripProvider provider, List<MyTripModel> trips) {
+  Widget _buildBody(TripProvider provider, List<MyTripModel> trips, AppLocalizations l) {
     if (provider.myTripsState == TripState.loading) {
       return const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary));
     }
@@ -73,7 +73,7 @@ class _MyTripsTabState extends State<MyTripsTab> {
       );
     }
     if (trips.isEmpty) {
-      return const Center(child: Text('No trips found', style: TextStyle(color: Color(0xFF99A1AF))));
+      return Center(child: Text(l.noTripsFound, style: const TextStyle(color: AppColors.greyHint)));
     }
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -95,19 +95,19 @@ class _MyTripsTabState extends State<MyTripsTab> {
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  color: isActive ? AppColors.orangeprimary : const Color(0xFF6A7282),
+                  color: isActive ? AppColors.orangeprimary : AppColors.greySecondary,
                 ),
               ),
               const SizedBox(width: 6),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isActive ? AppColors.orangeprimary : const Color(0xFFE5E5E5),
+                  color: isActive ? AppColors.orangeprimary : AppColors.greyE5E,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   '$count',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isActive ? Colors.white : const Color(0xFF6A7282)),
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isActive ? Colors.white : AppColors.greySecondary),
                 ),
               ),
             ],

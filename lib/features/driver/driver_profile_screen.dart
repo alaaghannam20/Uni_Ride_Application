@@ -1,41 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/app_language_provider.dart';
+import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/provider/profile_provider.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Driver Profile Screen
-// Keys used from ARB files:
-//   personalInformation, vehicleInformation, appSettings, support,
-//   fullName, phoneNumber, emailAddress, vehicleDetails, plateNumber,
-//   notifications, manageYourAlerts, privacySecurity, controlYourData,
-//   paymentMethods, manageWithdrawals, helpSupport, faqsAndContactUs,
-//   logOut, rating, totalTrips, earned, driverActiveStatus, version
-// ─────────────────────────────────────────────────────────────────────────────
-
-class DriverProfileScreen extends StatelessWidget {
+class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({super.key});
 
-  // Demo data — replace with real model in production
-  static const String _driverName     = 'Ahmed Mohammed';
-  static const String _driverNameAr   = 'أحمد محمد';
-  static const String _driverInitial  = 'A';
-  static const String _phoneValue     = '+872 59 123 4567';
-  static const String _emailValue     = 'ahmed.m@ptuk.edu';
-  static const String _vehicleValue   = '2022 Toyota Corolla';
-  static const String _vehicleValueAr = '2022 تويوتا كورولا';
-  static const String _plateValue     = 'PS 123456';
-  static const String _ratingValue    = '4.8';
-  static const String _tripsValue     = '23';
-  static const String _earnedValue    = '₪780';
+  @override
+  State<DriverProfileScreen> createState() => _DriverProfileScreenState();
+}
+
+class _DriverProfileScreenState extends State<DriverProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileProvider>().fetchDriverProfile();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final l     = AppLocalizations.of(context)!;
-    final isRtl = Directionality.of(context) == TextDirection.rtl;
-    final name    = isRtl ? _driverNameAr   : _driverName;
-    final vehicle = isRtl ? _vehicleValueAr : _vehicleValue;
+    final l              = AppLocalizations.of(context)!;
+    final languageProvider = context.watch<AppLanguageProvider>();
+    final isArabic         = languageProvider.isArabic;
+    final themeProvider    = context.watch<AppThemeProvider>();
+    final isLightMode      = themeProvider.isLightMode;
+    final profile          = context.watch<ProfileProvider>().driverProfile;
+
+    final name    = profile?.fullName ?? '...';
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+    final phone   = profile?.phoneNumber ?? '...';
+    final email   = profile?.email ?? '...';
+    final vehicle = profile?.vehicleModel ?? '...';
+    final plate   = profile?.plateNumber ?? '...';
+    final rating  = profile?.rating.toStringAsFixed(1) ?? '0.0';
+    final trips   = '${profile?.totalTrips ?? 0}';
+    final earned  = '₪${profile?.earned ?? 0}';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: context.bgColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,14 +53,14 @@ class DriverProfileScreen extends StatelessWidget {
             // ── Header ────────────────────────────────────────────────────
             _HeaderCard(
               name:        name,
-              initial:     _driverInitial,
+              initial:     initial,
               statusLabel: l.driverActiveStatus,
               ratingLabel: l.rating,
               tripsLabel:  l.totalTrips,
               earnedLabel: l.earned,
-              ratingValue: _ratingValue,
-              tripsValue:  _tripsValue,
-              earnedValue: _earnedValue,
+              ratingValue: rating,
+              tripsValue:  trips,
+              earnedValue: earned,
             ),
 
             const SizedBox(height: 16),
@@ -64,21 +74,9 @@ class DriverProfileScreen extends StatelessWidget {
                   _SectionLabel(text: l.personalInformation),
                   const SizedBox(height: 8),
                   _CardGroup(items: [
-                    _InfoItem(
-                      icon:     Icons.person_outline,
-                      title:    l.fullName,
-                      subtitle: name,
-                    ),
-                    _InfoItem(
-                      icon:     Icons.phone_outlined,
-                      title:    l.phoneNumber,
-                      subtitle: _phoneValue,
-                    ),
-                    _InfoItem(
-                      icon:     Icons.email_outlined,
-                      title:    l.emailAddress,
-                      subtitle: _emailValue,
-                    ),
+                    _InfoItem(icon: Icons.person_outline,  title: l.fullName,    subtitle: name),
+                    _InfoItem(icon: Icons.phone_outlined,  title: l.phoneNumber, subtitle: phone),
+                    _InfoItem(icon: Icons.email_outlined,  title: l.emailAddress, subtitle: email),
                   ]),
 
                   const SizedBox(height: 24),
@@ -87,16 +85,8 @@ class DriverProfileScreen extends StatelessWidget {
                   _SectionLabel(text: l.vehicleInformation),
                   const SizedBox(height: 8),
                   _CardGroup(items: [
-                    _InfoItem(
-                      icon:     Icons.directions_car_outlined,
-                      title:    l.vehicleDetails,
-                      subtitle: vehicle,
-                    ),
-                    _InfoItem(
-                      icon:     Icons.location_on_outlined,
-                      title:    l.plateNumber,
-                      subtitle: _plateValue,
-                    ),
+                    _InfoItem(icon: Icons.directions_car_outlined, title: l.vehicleDetails, subtitle: vehicle),
+                    _InfoItem(icon: Icons.location_on_outlined,    title: l.plateNumber,    subtitle: plate),
                   ]),
 
                   const SizedBox(height: 24),
@@ -119,6 +109,25 @@ class DriverProfileScreen extends StatelessWidget {
                       icon:     Icons.credit_card_outlined,
                       title:    l.paymentMethods,
                       subtitle: l.manageWithdrawals,
+                    ),
+                    _InfoItem(
+                      icon:     Icons.language,
+                      title:    l.languageLabel,
+                      subtitle: isArabic ? l.ar : l.en,
+                      trailing: _buildLanguageToggle(context, isArabic),
+                    ),
+                    _InfoItem(
+                      icon:     isLightMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                      title:    l.theme,
+                      subtitle: isLightMode ? l.lightMode : l.darkMode,
+                      trailing: Switch(
+                        value:              isLightMode,
+                        onChanged:          (val) => themeProvider.setLightMode(val),
+                        activeThumbColor:   Colors.white,
+                        activeTrackColor:   AppColors.orangeprimary,
+                        inactiveThumbColor: Colors.white,
+                        inactiveTrackColor: AppColors.borderadmincolor,
+                      ),
                     ),
                   ]),
 
@@ -149,7 +158,7 @@ class DriverProfileScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 12,
-                        color: Color(0xFF6A7282),
+                        color: AppColors.greySecondary,
                       ),
                     ),
                   ),
@@ -160,6 +169,56 @@ class DriverProfileScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageToggle(BuildContext context, bool isArabic) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.greyLight,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: () => context.read<AppLanguageProvider>().setLocale('en'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: !isArabic ? AppColors.orangeprimary : Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'EN',
+                style: TextStyle(
+                  color:      !isArabic ? Colors.white : AppColors.greySecondary,
+                  fontWeight: FontWeight.w600,
+                  fontSize:   10,
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => context.read<AppLanguageProvider>().setLocale('ar'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: isArabic ? AppColors.orangeprimary : Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'AR',
+                style: TextStyle(
+                  color:      isArabic ? Colors.white : AppColors.greySecondary,
+                  fontWeight: FontWeight.w600,
+                  fontSize:   10,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -196,9 +255,9 @@ class _HeaderCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFFFFFFFF),
+        color: AppColors.white,
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF3F4F6), width: 0.62),
+          bottom: BorderSide(color: AppColors.greyLight, width: 0.62),
         ),
       ),
       padding: const EdgeInsets.fromLTRB(24, 56, 24, 24),
@@ -208,14 +267,17 @@ class _HeaderCard extends StatelessWidget {
           // Back arrow + Avatar + Name/Status
           Row(
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF9FAFB),
-                  shape: BoxShape.circle,
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: AppColors.greyBackground,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.arrow_back, size: 20, color: AppColors.greyDark),
                 ),
-                child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF101828)),
               ),
               const SizedBox(width: 16),
               Container(
@@ -226,11 +288,11 @@ class _HeaderCard extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0xFFCF8307), Color(0xFFE09520)],
+                    colors: [AppColors.orangeprimary, AppColors.primaryGradientEnd],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFCF8307).withOpacity(0.3),
+                      color: AppColors.orangeprimary.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -259,7 +321,7 @@ class _HeaderCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
                       height: 1.5,
-                      color: Color(0xFF101828),
+                      color: AppColors.greyDark,
                     ),
                   ),
                   // Status — Regular 14px #6A7282
@@ -270,7 +332,7 @@ class _HeaderCard extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       fontSize: 14,
                       height: 1.5,
-                      color: Color(0xFF6A7282),
+                      color: AppColors.greySecondary,
                     ),
                   ),
                 ],
@@ -307,7 +369,7 @@ class _StatCell extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: const Color(0xFFF9FAFB),
+          color: AppColors.greyBackground,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -321,7 +383,7 @@ class _StatCell extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 fontSize: 18,
                 height: 1.5,
-                color: Color(0xFF101828),
+                color: AppColors.greyDark,
               ),
             ),
             const SizedBox(height: 4),
@@ -334,7 +396,7 @@ class _StatCell extends StatelessWidget {
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
                 height: 1.5,
-                color: Color(0xFF6A7282),
+                color: AppColors.greySecondary,
               ),
             ),
           ],
@@ -361,7 +423,7 @@ class _SectionLabel extends StatelessWidget {
         fontSize: 13,
         height: 19.5 / 13,
         letterSpacing: 0.32,
-        color: Color(0xFF6A7282),
+        color: AppColors.greySecondary,
       ),
     );
   }
@@ -380,7 +442,7 @@ class _CardGroup extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF3F4F6), width: 0.62),
+        border: Border.all(color: AppColors.greyLight, width: 0.62),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),
@@ -394,7 +456,7 @@ class _CardGroup extends StatelessWidget {
           for (int i = 0; i < items.length; i++) ...[
             _InfoRow(item: items[i]),
             if (i < items.length - 1)
-              const Divider(indent: 68, height: 1, thickness: 0.62, color: Color(0xFFF3F4F6)),
+              const Divider(indent: 68, height: 1, thickness: 0.62, color: AppColors.greyLight),
           ],
         ],
       ),
@@ -406,13 +468,15 @@ class _CardGroup extends StatelessWidget {
 // Data model + row widget
 // ─────────────────────────────────────────────────────────────────────────────
 class _InfoItem {
-  final IconData icon;
-  final String   title;
-  final String   subtitle;
+  final IconData  icon;
+  final String    title;
+  final String    subtitle;
+  final Widget?   trailing;
   const _InfoItem({
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.trailing,
   });
 }
 
@@ -430,10 +494,10 @@ class _InfoRow extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: const BoxDecoration(
-              color: Color(0xFFF9FAFB),
+              color: AppColors.greyBackground,
               shape: BoxShape.circle,
             ),
-            child: Icon(item.icon, size: 20, color: const Color(0xFF364153)),
+            child: Icon(item.icon, size: 20, color: AppColors.grey364),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -448,7 +512,7 @@ class _InfoRow extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                     height: 1.5,
-                    color: Color(0xFF101828),
+                    color: AppColors.greyDark,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -460,13 +524,13 @@ class _InfoRow extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                     fontSize: 13,
                     height: 1.5,
-                    color: Color(0xFF6A7282),
+                    color: AppColors.greySecondary,
                   ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, size: 20, color: Color(0xFF9CA3AF)),
+          item.trailing ?? const Icon(Icons.chevron_right, size: 20, color: AppColors.adminTextMuted),
         ],
       ),
     );
@@ -487,7 +551,7 @@ class _LogOutButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFE2E2), width: 0.62),
+        border: Border.all(color: AppColors.lightRedBorder, width: 0.62),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),
@@ -497,7 +561,12 @@ class _LogOutButton extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () async {
+        await AppPrefs.logout();
+        if (context.mounted) {
+          Navigator.pushNamedAndRemoveUntil(context, Routes.signIn, (route) => false);
+        }
+      },
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -507,10 +576,10 @@ class _LogOutButton extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFFEF3F2),
+                  color: AppColors.adminErrorBG,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.logout, color: Color(0xFFE7000B), size: 20),
+                child: const Icon(Icons.logout, color: AppColors.errorRed, size: 20),
               ),
               const SizedBox(width: 16),
               Text(
@@ -520,7 +589,7 @@ class _LogOutButton extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                   height: 1.5,
-                  color: Color(0xFFE7000B),
+                  color: AppColors.errorRed,
                 ),
               ),
             ],

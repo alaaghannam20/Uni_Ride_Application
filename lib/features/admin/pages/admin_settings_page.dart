@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/app_language_provider.dart';
+import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/responsive.dart';
@@ -29,8 +32,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final locale = AppLocalizations.of(context)!;
-    final bool isDesktop = Responsive.isDesktop(context);
+    final locale         = AppLocalizations.of(context)!;
+    final isDesktop      = Responsive.isDesktop(context);
+    final langProvider   = context.watch<AppLanguageProvider>();
+    final themeProvider  = context.watch<AppThemeProvider>();
+    final isArabic       = langProvider.isArabic;
+    final isLightMode    = themeProvider.isLightMode;
 
     return AdminLayout(
       activeRoute: '/AdminSettings',
@@ -73,6 +80,92 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                             description: locale.smsNotificationsDesc,
                             value: _smsNotifications,
                             onChanged: (val) => setState(() => _smsNotifications = val),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      _SettingsSection(
+                        title: locale.preferences,
+                        children: [
+                          // Language
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(locale.languageLabel, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 4),
+                                      Text(isArabic ? locale.ar : locale.en, style: AppStyle.adminCardContactStyle),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.adminBackground,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () => langProvider.setLocale('en'),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: !isArabic ? AppColors.orangeprimary : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          child: Text('EN', style: TextStyle(color: !isArabic ? Colors.white : AppColors.greySecondary, fontWeight: FontWeight.w600, fontSize: 13)),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => langProvider.setLocale('ar'),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: isArabic ? AppColors.orangeprimary : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          child: Text('AR', style: TextStyle(color: isArabic ? Colors.white : AppColors.greySecondary, fontWeight: FontWeight.w600, fontSize: 13)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(height: 1, color: AppColors.adminDivider),
+                          // Theme
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(locale.theme, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w500)),
+                                      const SizedBox(height: 4),
+                                      Text(isLightMode ? locale.lightMode : locale.darkMode, style: AppStyle.adminCardContactStyle),
+                                    ],
+                                  ),
+                                ),
+                                Switch(
+                                  value: isLightMode,
+                                  onChanged: (val) => themeProvider.setLightMode(val),
+                                  activeThumbColor:   Colors.white,
+                                  activeTrackColor:   AppColors.orangeprimary,
+                                  inactiveThumbColor: Colors.white,
+                                  inactiveTrackColor: AppColors.adminDivider,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),

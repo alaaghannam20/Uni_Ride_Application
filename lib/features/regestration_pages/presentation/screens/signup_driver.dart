@@ -177,6 +177,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             licenseNumber: licenseNumberController.text.trim(),
             driverLicensePath: _driverLicensePath!,
             vehicleLicensePath: _vehicleLicensePath!,
+            profileImagePath: _profileImagePath!,
           )
         : await provider.registerDriver(
             fullName: fullNameController.text.trim(),
@@ -190,6 +191,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             seatCapacity: int.tryParse(carSeatsController.text.trim()) ?? 0,
             driverLicensePath: _driverLicensePath!,
             vehicleLicensePath: _vehicleLicensePath!,
+            profileImagePath: _profileImagePath!,
           );
 
     if (!mounted) return;

@@ -17,6 +17,22 @@ class ApiKeys {
   static const String newPassword = 'newPassword';
   static const String oldPassword = 'oldPassword';
 
+  // User Model Keys (Login response)
+  static const String profileImage = 'profileImage';
+
+  // Profile Keys
+  static const String phoneNumber = 'phoneNumber';
+  static const String totalTrips = 'totalTrips';
+  static const String rating = 'rating';
+  static const String licenseNumber = 'licenseNumber';
+  static const String profilePicturePath = 'profilePicturePath';
+  static const String earned = 'earned';
+  static const String seatCapacity = 'seatCapacity';
+  static const String memberSince = 'memberSince';
+  static const String memberType = 'memberType';
+  static const String rewardPoints = 'rewardPoints';
+  static const String walletBalanceKey = 'walletBalance';
+
   // Trip Keys
   static const String tripId = 'tripId';
   static const String tripCode = 'tripCode';
@@ -42,6 +58,28 @@ class ApiKeys {
   static const String data = 'data';
   static const String type = 'type';
 
+  // Admin Trip / Student Keys
+  static const String route          = 'route';
+  static const String price          = 'price';
+  static const String timeAgo        = 'timeAgo';
+  static const String id             = 'id';
+  static const String joined         = 'joined';
+
+  // Admin Dashboard Stats Keys
+  static const String totalUsersCount         = 'totalUsersCount';
+  static const String activeDriversCount      = 'activeDriversCount';
+  static const String totalTripsCount         = 'totalTripsCount';
+  static const String pendingApprovalsCount   = 'pendingApprovalsCount';
+  static const String todayTotalRevenue       = 'todayTotalRevenue';
+  static const String todayCommission         = 'todayCommission';
+  static const String revenueChangePercentage = 'revenueChangePercentage';
+  static const String activeTripsNowCount     = 'activeTripsNowCount';
+  static const String recentTrips             = 'recentTrips';
+
+  // Pending Approval Keys
+  static const String appliedAt      = 'appliedAt';
+  static const String appliedAtAlt   = 'AppliedAt';
+
   // Driver Provider Keys (Backend requested them capitalized)
   static const String driverFullName = 'FullName';
   static const String driverEmail = 'Email';
@@ -54,4 +92,5 @@ class ApiKeys {
   static const String driverSeatCapacity = 'SeatCapacity';
   static const String driverLicenseImage = 'DriverLicenseImage';
   static const String driverVehicleLicenseImage = 'VehicleLicenseImage';
+  static const String driverProfileImage = 'ProfileImage';
 }

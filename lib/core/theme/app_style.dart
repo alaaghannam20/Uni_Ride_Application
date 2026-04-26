@@ -106,7 +106,7 @@ class AppStyle {
     fontSize: 28,
     height: 42 / 28,
     letterSpacing: 0,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle adminHeaderDateStyle = const TextStyle(
@@ -115,20 +115,20 @@ class AppStyle {
     fontSize: 14,
     height: 21 / 14,
     letterSpacing: 0,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle adminSearchInputStyle = const TextStyle(
     fontFamily: 'Inter',
     fontSize: 14,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle adminSearchHintStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 14,
-    color: Color(0xFF99A1AF),
+    color: AppColors.greyHint,
     height: 1,
   );
 
@@ -137,21 +137,21 @@ class AppStyle {
     fontWeight: FontWeight.w500,
     fontSize: 14,
     height: 21 / 14,
-    color: Color(0xFF4A5565),
+    color: AppColors.adminTextSecondary,
   );
 
   static TextStyle adminSidebarLogoTitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w700,
     fontSize: 16,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle adminSidebarLogoSubtitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle adminSidebarMenuItemStyle(bool isActive) => TextStyle(
@@ -159,7 +159,7 @@ class AppStyle {
     fontWeight: FontWeight.w500,
     fontSize: 14,
     height: 21 / 14,
-    color: isActive ? const Color(0xFFCF8307) : const Color(0xFF4A5565),
+    color: isActive ? AppColors.orangeprimary : AppColors.adminTextSecondary,
   );
 
   static TextStyle adminSidebarBadgeStyle = const TextStyle(
@@ -181,7 +181,7 @@ class AppStyle {
     fontWeight: FontWeight.w400,
     fontSize: 14,
     height: 21 / 14,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle adminSidebarUserEmailStyle = const TextStyle(
@@ -189,7 +189,7 @@ class AppStyle {
     fontWeight: FontWeight.w400,
     fontSize: 12,
     height: 18 / 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle adminSidebarLogoutStyle = const TextStyle(
@@ -197,7 +197,7 @@ class AppStyle {
     fontWeight: FontWeight.w500,
     fontSize: 13,
     height: 19.5 / 13,
-    color: Color(0xFF4A5565),
+    color: AppColors.adminTextSecondary,
   );
 
   // ── Admin Card Styles (Approvals, Drivers, etc.) ──
@@ -205,42 +205,42 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w700,
     fontSize: 16,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle adminCardTimeStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 12,
-    color: Color(0xFF99A1AF),
+    color: AppColors.greyHint,
   );
 
   static TextStyle adminCardContactStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle adminCardSectionTitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w500,
     fontSize: 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle adminCardInfoLabelStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle adminCardInfoValueStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w500,
     fontSize: 14,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle adminCardActionButtonStyle = const TextStyle(
@@ -285,7 +285,7 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 13,
-    color: Color(0xFF4A5565),
+    color: AppColors.adminTextSecondary,
     height: 19.5 / 13,
   );
 
@@ -293,7 +293,7 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w500,
     fontSize: 13,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
     height: 19.5 / 13,
   );
 
@@ -317,7 +317,7 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w500,
     fontSize: 15,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
     height: 22.5 / 15,
   );
 
@@ -325,7 +325,7 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
     height: 18 / 12,
   );
 
@@ -335,7 +335,7 @@ class AppStyle {
     fontWeight: FontWeight.w400,
     fontSize: 15,
     height: 1.5,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle transactionAmountStyle = const TextStyle(
@@ -344,7 +344,7 @@ class AppStyle {
     fontWeight: FontWeight.w700,
     fontSize: 16,
     height: 1.5,
-    color: Color(0xFFE7000B),
+    color: AppColors.errorRed,
   );
 
   static TextStyle transactionSubtitleStyle = const TextStyle(
@@ -352,7 +352,7 @@ class AppStyle {
     fontWeight: FontWeight.w400,
     fontSize: 13,
     height: 1.5,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle transactionDateStyle = const TextStyle(
@@ -360,7 +360,7 @@ class AppStyle {
     fontWeight: FontWeight.w400,
     fontSize: 12,
     height: 1.5,
-    color: Color(0xFF99A1AF),
+    color: AppColors.greyHint,
   );
 
   static TextStyle transactionStatusStyle = const TextStyle(
@@ -368,7 +368,7 @@ class AppStyle {
     fontWeight: FontWeight.w400,
     fontSize: 11,
     height: 1.5,
-    color: Color(0xFF00A63E),
+    color: AppColors.successSolid,
   );
 
   // ── Rating Screen Styles ──
@@ -376,7 +376,7 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w700,
     fontSize: 20,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
     height: 30 / 20,
   );
 
@@ -384,7 +384,7 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 14,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
     height: 21 / 14,
   );
 
@@ -392,21 +392,21 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w700,
     fontSize: 16,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
 
   static TextStyle ratingDriverRoleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
 
   static TextStyle ratingSectionTitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w500,
     fontSize: 14,
-    color: Color(0xFF101828),
+    color: AppColors.greyDark,
   );
   
   static TextStyle ratingResultTextStyle = const TextStyle(
@@ -420,35 +420,35 @@ class AppStyle {
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 14,
-    color: Color(0xFF99A1AF),
+    color: AppColors.greyHint,
   );
 
   static TextStyle ratingCharacterCountStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 12,
-    color: Color(0xFF99A1AF),
+    color: AppColors.greyHint,
   );
 
   static TextStyle ratingChipTextStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w500,
     fontSize: 12,
-    color: Color(0xFF00A63E),
+    color: AppColors.successSolid,
   );
 
   static TextStyle ratingChipUnselectedTextStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w500,
     fontSize: 12,
-    color: Color(0xFF6A7282),
+    color: AppColors.greySecondary,
   );
   
   static TextStyle ratingFooterTextStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
     fontSize: 10,
-    color: Color(0xFF99A1AF),
+    color: AppColors.greyHint,
   );
 
   // ── Profile Screen Styles ──
@@ -499,5 +499,104 @@ class AppStyle {
     fontWeight: FontWeight.w700,
     fontSize: 15,
     color: AppColors.redColor,
+  );
+
+  // ── Common Body Styles ──
+  static const TextStyle headingLarge = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w700,
+    fontSize: 28,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle headingMedium = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle headingSmall = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w600,
+    fontSize: 15,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle bodyLarge = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w500,
+    fontSize: 15,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle bodyMedium = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle bodySmall = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w400,
+    fontSize: 13,
+    color: AppColors.greySecondary,
+  );
+
+  static const TextStyle caption = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+    color: AppColors.greyHint,
+  );
+
+  static const TextStyle captionMedium = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    color: AppColors.greySecondary,
+  );
+
+  static const TextStyle priceStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+    color: AppColors.orangeprimary,
+  );
+
+  static const TextStyle priceLarge = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w700,
+    fontSize: 24,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle labelStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle sectionTitle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w600,
+    fontSize: 15,
+    color: AppColors.greyDark,
+  );
+
+  static const TextStyle errorStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    color: Colors.red,
+  );
+
+  static const TextStyle emptyStateStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    color: AppColors.greyHint,
   );
 }

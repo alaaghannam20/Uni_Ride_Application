@@ -37,9 +37,12 @@ class AppPrefs {
 }
 
   static Future<void> logout() async {
-  await _prefs.remove(PrefKeys.token);
-  await _prefs.remove(PrefKeys.userType);
-}
+    await _prefs.remove(PrefKeys.token);
+    await _prefs.remove(PrefKeys.userType);
+    await _prefs.remove(PrefKeys.userFullName);
+    await _prefs.remove(PrefKeys.userEmail);
+    await _prefs.remove(PrefKeys.userProfileImage);
+  }
 
     static Future<void> saveDriverProgress({
     required int currentStep,
@@ -105,8 +108,29 @@ static Future<void> setUserType(String userType) async {
   await _prefs.setString(PrefKeys.userType, userType);
 }
 
-static Future<void> clearUserType() async {
-  await _prefs.remove(PrefKeys.userType);
-}
+  static String? getFullName() => _prefs.getString(PrefKeys.userFullName);
+  static Future<void> setFullName(String name) async =>
+      _prefs.setString(PrefKeys.userFullName, name);
+
+  static String? getEmail() => _prefs.getString(PrefKeys.userEmail);
+  static Future<void> setEmail(String email) async =>
+      _prefs.setString(PrefKeys.userEmail, email);
+
+  static String? getProfileImage() => _prefs.getString(PrefKeys.userProfileImage);
+  static Future<void> setProfileImage(String? path) async {
+    if (path != null) {
+      await _prefs.setString(PrefKeys.userProfileImage, path);
+    } else {
+      await _prefs.remove(PrefKeys.userProfileImage);
+    }
+  }
+
+  static Future<void> clearUserType() async {
+    await _prefs.remove(PrefKeys.userType);
+  }
+
+  static bool getIsLightMode() => _prefs.getBool(PrefKeys.themeMode) ?? true;
+  static Future<void> setIsLightMode(bool isLight) async =>
+      _prefs.setBool(PrefKeys.themeMode, isLight);
 
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
+import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
@@ -13,19 +16,28 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isLightMode = true;
   bool _pushNotifications = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileProvider>().fetchMemberProfile();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final languageProvider = context.watch<AppLanguageProvider>();
     final isArabic = languageProvider.isArabic;
+    final themeProvider = context.watch<AppThemeProvider>();
+    final isLightMode = themeProvider.isLightMode;
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
+      backgroundColor: context.bgColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: context.appBarBg,
         elevation: 0,
         centerTitle: false,
         titleSpacing: 0,
@@ -133,27 +145,32 @@ class _ProfilePageState extends State<ProfilePage> {
 
                         // Details Section
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Ahmed Mohammed',
-                                style: AppStyle.profileNameStyle,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${l10n.memberSince} January 2026',
-                                style: AppStyle.profileMemberSinceStyle,
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
+                          child: Consumer<ProfileProvider>(
+                            builder: (context, provider, _) {
+                              final profile = provider.memberProfile;
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildStatChip('45 ${l10n.tripsCount}'),
-                                  const SizedBox(width: 8),
-                                  _buildStatChip('★ 4.9'),
+                                  Text(
+                                    profile?.fullName ?? '...',
+                                    style: AppStyle.profileNameStyle,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${l10n.memberSince} ${profile?.memberSince ?? ''}',
+                                    style: AppStyle.profileMemberSinceStyle,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      _buildStatChip('${profile?.totalTrips ?? 0} ${l10n.tripsCount}'),
+                                      const SizedBox(width: 8),
+                                      _buildStatChip('★ ${profile?.rewardPoints ?? 0} pts'),
+                                    ],
+                                  ),
                                 ],
-                              ),
-                            ],
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -169,47 +186,46 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
 
                   const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildInfoTile(
-                          iconData: Icons.email_outlined,
-                          iconColor: const Color(0xFF3B82F6),
-                          iconBgColor: const Color(0xFFEFF6FF),
-                          label: l10n.email,
-                          value: 'ahmed.m@ptuk.edu',
-                          showChevron: true,
+                  Consumer<ProfileProvider>(
+                    builder: (context, provider, _) {
+                      final profile = provider.memberProfile;
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        const Divider(
-                          height: 1,
-                          color: AppColors.borderadmincolor,
+                        child: Column(
+                          children: [
+                            _buildInfoTile(
+                              iconData: Icons.email_outlined,
+                              iconColor: AppColors.adminInfoText,
+                              iconBgColor: AppColors.adminInfoBG,
+                              label: l10n.email,
+                              value: profile?.email ?? '...',
+                              showChevron: true,
+                            ),
+                            const Divider(height: 1, color: AppColors.borderadmincolor),
+                            _buildInfoTile(
+                              iconData: Icons.phone_outlined,
+                              iconColor: AppColors.emeraldGreen,
+                              iconBgColor: AppColors.emeraldGreenBg,
+                              label: l10n.phone,
+                              value: profile?.phoneNumber ?? '...',
+                              showChevron: true,
+                            ),
+                            const Divider(height: 1, color: AppColors.borderadmincolor),
+                            _buildInfoTile(
+                              iconData: Icons.school_outlined,
+                              iconColor: AppColors.adminPrice,
+                              iconBgColor: AppColors.amberWarningBg,
+                              label: l10n.universityMember,
+                              value: profile?.memberType ?? '...',
+                              showChevron: true,
+                            ),
+                          ],
                         ),
-                        _buildInfoTile(
-                          iconData: Icons.phone_outlined,
-                          iconColor: const Color(0xFF10B981),
-                          iconBgColor: const Color(0xFFECFDF5),
-                          label: l10n.phone,
-                          value: '+972 59 123 4567',
-                          showChevron: true,
-                        ),
-                        const Divider(
-                          height: 1,
-                          color: AppColors.borderadmincolor,
-                        ),
-                        _buildInfoTile(
-                          iconData: Icons.location_on_outlined,
-                          iconColor: const Color(0xFFF59E0B),
-                          iconBgColor: const Color(0xFFFFFBEB),
-                          label: l10n.location,
-                          value: 'Tulkarm, Kadori Street',
-                          showChevron: true,
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 32),
@@ -229,8 +245,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         _buildPreferenceTile(
                           iconData: Icons.language,
-                          iconColor: const Color(0xFF8B5CF6),
-                          iconBgColor: const Color(0xFFF5F3FF),
+                          iconColor: AppColors.purpleAccent,
+                          iconBgColor: AppColors.purpleAccentBg,
                           label: l10n.languageLabel,
                           value: isArabic ? l10n.ar : l10n.en,
                           trailing: _buildLanguageToggle(context, isArabic),
@@ -240,21 +256,20 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: AppColors.borderadmincolor,
                         ),
                         _buildPreferenceTile(
-                          iconData: _isLightMode
+                          iconData: isLightMode
                               ? Icons.light_mode_outlined
                               : Icons.dark_mode_outlined,
-                          iconColor: const Color(0xFF3B82F6),
-                          iconBgColor: const Color(0xFFEFF6FF),
+                          iconColor: AppColors.adminInfoText,
+                          iconBgColor: AppColors.adminInfoBG,
                           label: l10n.theme,
-                          value: _isLightMode ? l10n.lightMode : l10n.darkMode,
+                          value: isLightMode ? l10n.lightMode : l10n.darkMode,
                           trailing: Switch(
-                            value: _isLightMode,
-                            onChanged: (val) =>
-                                setState(() => _isLightMode = val),
-                            activeColor: Colors.white,
+                            value: isLightMode,
+                            onChanged: (val) => themeProvider.setLightMode(val),
+                            activeThumbColor: Colors.white,
                             activeTrackColor: AppColors.orangeprimary,
                             inactiveThumbColor: Colors.white,
-                            inactiveTrackColor: const Color(0xFFE5E7EB),
+                            inactiveTrackColor: AppColors.borderadmincolor,
                           ),
                         ),
                         const Divider(
@@ -263,8 +278,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         _buildPreferenceTile(
                           iconData: Icons.notifications_none_outlined,
-                          iconColor: const Color(0xFFF59E0B),
-                          iconBgColor: const Color(0xFFFFFBEB),
+                          iconColor: AppColors.adminPrice,
+                          iconBgColor: AppColors.amberWarningBg,
                           label: l10n.notifications,
                           value: l10n.pushNotifications,
                           trailing: Switch(
@@ -274,10 +289,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 _pushNotifications = val;
                               });
                             },
-                            activeColor: Colors.white,
+                            activeThumbColor: Colors.white,
                             activeTrackColor: AppColors.orangeprimary,
                             inactiveThumbColor: Colors.white,
-                            inactiveTrackColor: const Color(0xFFE5E7EB),
+                            inactiveTrackColor: AppColors.borderadmincolor,
                           ),
                         ),
                       ],
@@ -301,8 +316,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         _buildInfoTile(
                           iconData: Icons.security_outlined,
-                          iconColor: const Color(0xFFEF4444),
-                          iconBgColor: const Color(0xFFFEF2F2),
+                          iconColor: AppColors.adminErrorText,
+                          iconBgColor: AppColors.adminErrorBG,
                           label: l10n.privacySecurity,
                           value: l10n.managePrivacySettings,
                           showChevron: true,
@@ -313,8 +328,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         _buildInfoTile(
                           iconData: Icons.help_outline,
-                          iconColor: const Color(0xFF3B82F6),
-                          iconBgColor: const Color(0xFFEFF6FF),
+                          iconColor: AppColors.adminInfoText,
+                          iconBgColor: AppColors.adminInfoBG,
                           label: l10n.helpSupport,
                           value: l10n.getHelpOrContact,
                           showChevron: true,
@@ -400,7 +415,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(text, style: AppStyle.profileStatStyle),
@@ -493,7 +508,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildLanguageToggle(BuildContext context, bool isArabic) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F4F6),
+        color: AppColors.greyLight,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -510,7 +525,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Text(
                 'EN',
                 style: TextStyle(
-                  color: !isArabic ? Colors.white : const Color(0xFF6A7282),
+                  color: !isArabic ? Colors.white : AppColors.greySecondary,
                   fontWeight: FontWeight.w600,
                   fontSize: 10,
                 ),
@@ -528,7 +543,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Text(
                 'AR',
                 style: TextStyle(
-                  color: isArabic ? Colors.white : const Color(0xFF6A7282),
+                  color: isArabic ? Colors.white : AppColors.greySecondary,
                   fontWeight: FontWeight.w600,
                   fontSize: 10,
                 ),
