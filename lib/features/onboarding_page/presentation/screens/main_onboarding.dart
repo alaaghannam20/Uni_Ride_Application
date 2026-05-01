@@ -110,7 +110,7 @@ class _MainOnboardingState extends State<MainOnboarding> {
                 },
               ),
             ),
-            SizedBox(height: screenHeight * 0.14),
+            SizedBox(height: (screenHeight * 0.06).clamp(16.0, 60.0)),
           ],
         ),
       ),

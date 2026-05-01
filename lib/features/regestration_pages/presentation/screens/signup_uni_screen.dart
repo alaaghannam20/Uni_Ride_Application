@@ -103,6 +103,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                 });
                               },
                               onDriverTap: () {
+                                // ✅ التعديل هون بس
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -116,7 +117,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                             CustomTextfiled(
                               controller: uniEmailController,
                               labelText: AppLocalizations.of(context)!.emailAddress,
-                              hintText: 'a.m.ghannam@student.ptuk.edu.ps',
+                              hintText: '@student.ptuk.edu.ps',
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(
                                 Icons.email_sharp,
@@ -164,7 +165,6 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                   ),
                             ),
                             const SizedBox(height: 24),
-
                             SizedBox(
                               height: 56,
                               child: isLoading

@@ -6,6 +6,7 @@ import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -48,16 +49,20 @@ class _SignInScreenState extends State<SignInScreen> {
     if (success) {
       final userType = provider.userType;
       if (userType == UserType.admin) {
-        Navigator.pushReplacementNamed(context, Routes.home); //admin home
+        Navigator.pushReplacementNamed(context, Routes.adminOverview);
       } else if (userType == UserType.driver) {
-        Navigator.pushReplacementNamed(context, Routes.home); //driver home
+        Navigator.pushReplacementNamed(context, Routes.driverhome);
       } else {
-        Navigator.pushReplacementNamed(context, Routes.home); //member home
+        Navigator.pushReplacementNamed(context, Routes.home);
       }
     } else {
+      String message = provider.errorMessage;
+      if (message == 'ACCOUNT_PENDING') {
+        message = AppLocalizations.of(context)!.underReview;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(provider.errorMessage),
+          content: Text(message),
           backgroundColor: Colors.red,
         ),
       );
@@ -70,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
     final isLoading = authProvider.state == AuthState.loading;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: context.bgWhite,
       body: SafeArea(
         child: Column(
           children: [
@@ -123,7 +128,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 CustomTextfiled(
                                   controller: emailOrPhoneController,
                                   labelText: AppLocalizations.of(context)!.emailOrPhone,
-                                  hintText: 'a.m.ghannam@student.ptuk.edu.ps',
+                                  hintText: '@student.ptuk.edu.ps',
                                   keyboardType: TextInputType.emailAddress,
                                   prefixIcon: const Icon(
                                     Icons.badge,
