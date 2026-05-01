@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/admin_trip_model.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/responsive.dart';
 import 'package:uni_ride_application/features/admin/widgets/admin_layout.dart';
@@ -56,9 +57,9 @@ class _AdminTripsPageState extends State<AdminTripsPage> {
                   child: Container(
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.bgCard,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.borderadmincolor),
+                      border: Border.all(color: context.borderColor),
                     ),
                     child: trips.isEmpty
                         ? Padding(
@@ -119,9 +120,9 @@ class _TripCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(trip.driverName, style: AppStyle.adminCardNameStyle.copyWith(fontSize: isDesktop ? 15 : 14)),
+                Text(trip.driverName, style: AppStyle.adminCardName(context,fontSize: isDesktop ? 15 : 14)),
                 const SizedBox(height: 4),
-                Text(trip.route, style: AppStyle.adminCardContactStyle.copyWith(fontSize: isDesktop ? 13 : 11)),
+                Text(trip.route, style: AppStyle.adminCardContact(context).copyWith(fontSize: isDesktop ? 13 : 11)),
                 if (!isDesktop) ...[
                   const SizedBox(height: 4),
                   Text(trip.timeAgo, style: const TextStyle(color: AppColors.adminTextMuted, fontSize: 11)),

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/admin_student_model.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/responsive.dart';
 import 'package:uni_ride_application/features/admin/widgets/admin_layout.dart';
@@ -55,9 +56,9 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
                   padding: EdgeInsets.symmetric(horizontal: isDesktop ? 25 : 12, vertical: 25),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.bgCard,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.borderadmincolor),
+                      border: Border.all(color: context.borderColor),
                     ),
                     child: Column(
                       children: [
@@ -70,12 +71,12 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
                             ),
                             child: Row(
                               children: [
-                                Expanded(flex: 3, child: Text(locale.student.toUpperCase(),     style: AppStyle.adminCardSectionTitleStyle)),
-                                Expanded(flex: 3, child: Text(locale.emailAddress.toUpperCase(), style: AppStyle.adminCardSectionTitleStyle)),
-                                Expanded(flex: 2, child: Text(locale.totalTrips.toUpperCase(),   style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
-                                Expanded(flex: 2, child: Text(locale.joined.toUpperCase(),       style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
-                                Expanded(flex: 2, child: Text(locale.status.toUpperCase(),       style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
-                                Expanded(flex: 2, child: Text(locale.actions.toUpperCase(),      style: AppStyle.adminCardSectionTitleStyle, textAlign: TextAlign.center)),
+                                Expanded(flex: 3, child: Text(locale.student.toUpperCase(),     style: AppStyle.adminCardSection(context))),
+                                Expanded(flex: 3, child: Text(locale.emailAddress.toUpperCase(), style: AppStyle.adminCardSection(context))),
+                                Expanded(flex: 2, child: Text(locale.totalTrips.toUpperCase(),   style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.joined.toUpperCase(),       style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.status.toUpperCase(),       style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.actions.toUpperCase(),      style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
                               ],
                             ),
                           ),
@@ -143,8 +144,8 @@ class _StudentRow extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(student.fullName, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 16)),
-                      Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContactStyle),
+                      Text(student.fullName, style: AppStyle.adminCardName(context, fontSize: 16)),
+                      Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContact(context)),
                     ],
                   ),
                 ),
@@ -152,9 +153,9 @@ class _StudentRow extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            _infoRow(locale.emailAddress, student.email),
-            _infoRow(locale.totalTrips, '${student.totalTrips}'),
-            _infoRow(locale.joined, student.joined),
+            _infoRow(context, locale.emailAddress, student.email),
+            _infoRow(context, locale.totalTrips, '${student.totalTrips}'),
+            _infoRow(context, locale.joined, student.joined),
           ],
         ),
       );
@@ -183,16 +184,16 @@ class _StudentRow extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(student.fullName, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 14)),
-                    Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContactStyle),
+                    Text(student.fullName, style: AppStyle.adminCardName(context, fontSize: 14)),
+                    Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContact(context)),
                   ],
                 ),
               ],
             ),
           ),
-          Expanded(flex: 3, child: Text(student.email,              style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w400))),
-          Expanded(flex: 2, child: Text('${student.totalTrips}',    style: AppStyle.adminCardInfoValueStyle, textAlign: TextAlign.center)),
-          Expanded(flex: 2, child: Text(student.joined,             style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.center)),
+          Expanded(flex: 3, child: Text(student.email,              style: AppStyle.adminCardValue(context))),
+          Expanded(flex: 2, child: Text('${student.totalTrips}',    style: AppStyle.adminCardValue(context), textAlign: TextAlign.center)),
+          Expanded(flex: 2, child: Text(student.joined,             style: AppStyle.adminCardValue(context), textAlign: TextAlign.center)),
           Expanded(flex: 2, child: Center(child: _statusBadge(isActive, locale))),
           Expanded(
             flex: 2,
@@ -223,14 +224,14 @@ class _StudentRow extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(String label, String value) {
+  Widget _infoRow(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppStyle.adminCardSectionTitleStyle.copyWith(fontSize: 12)),
-          Text(value, style: AppStyle.adminCardInfoValueStyle.copyWith(fontSize: 12, fontWeight: FontWeight.w400)),
+          Text(label, style: AppStyle.adminCardSection(context).copyWith(fontSize: 12)),
+          Text(value, style: AppStyle.adminCardValue(context, fontSize: 12)),
         ],
       ),
     );

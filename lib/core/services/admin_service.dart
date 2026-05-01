@@ -27,7 +27,7 @@ class AdminService {
 
   Future<ApiResponseModel> approveApplication(String id, String type) async {
     try {
-      final response = await DioFactory.post(
+      final response = await DioFactory.put(
         '${AppEndpoints.approve}/$id',
         queryParameters: {'type': type},
       );
@@ -39,7 +39,7 @@ class AdminService {
 
   Future<ApiResponseModel> rejectApplication(String id, String type) async {
     try {
-      final response = await DioFactory.post(
+      final response = await DioFactory.put(
         '${AppEndpoints.reject}/$id',
         queryParameters: {'type': type},
       );
@@ -58,6 +58,15 @@ class AdminService {
     final response = await DioFactory.get(AppEndpoints.adminStudents);
     final list = response.data as List? ?? [];
     return list.map((e) => AdminStudentModel.fromJson(e)).toList();
+  }
+
+  Future<ApiResponseModel> toggleDriverStatus(String id) async {
+    try {
+      final response = await DioFactory.put(AppEndpoints.toggleDriverStatus(id));
+      return ApiResponseModel.fromJson(response.data);
+    } catch (e) {
+      return ApiResponseModel(success: false, message: e.toString());
+    }
   }
 
   Future<List<AdminTripModel>> getAdminTrips() async {

@@ -18,6 +18,8 @@ import 'package:uni_ride_application/features/admin/pages/admin_pending_approval
 import 'package:uni_ride_application/features/admin/pages/admin_drivers_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_students_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_trips_page.dart';
+import 'package:uni_ride_application/core/models/pending_approval_model.dart';
+import 'package:uni_ride_application/features/admin/pages/admin_driver_details_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_settings_page.dart';
 import 'package:uni_ride_application/features/payment/pages/payment_page.dart';
 import 'package:uni_ride_application/features/payment/pages/my_wallet_page.dart';
@@ -29,7 +31,9 @@ import 'package:uni_ride_application/features/home_page/presentation/screens/off
 import 'package:uni_ride_application/features/home_page/presentation/screens/preview_carpool_screen.dart';
 import 'package:uni_ride_application/features/home_page/presentation/screens/offer_confirmation_screen.dart';
 import 'package:uni_ride_application/features/driver/presentation/screens/driver_home_screen.dart';
+import 'package:uni_ride_application/features/carpool/carpool_profile_screen.dart';
 import 'package:uni_ride_application/features/driver/driver_profile_screen.dart';
+import 'package:uni_ride_application/core/models/booking_model.dart';
 import 'package:uni_ride_application/features/trip_details/presentation/screens/trip_details_screen.dart';
 import 'package:uni_ride_application/features/trip_details/presentation/screens/booking_confirmed_screen.dart';
 
@@ -207,6 +211,12 @@ class AppRouter {
           builder: (_) => const AdminSettingsPage(),
         );
 
+      case Routes.adminDriverDetails:
+        final driver = settings.arguments as PendingApprovalModel;
+        return MaterialPageRoute(
+          builder: (_) => AdminDriverDetailsPage(driver: driver),
+        );
+
       case Routes.payment:
         return MaterialPageRoute(
           builder: (_) => const PaymentPage(),
@@ -273,10 +283,14 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const DriverHomeScreen());
       case Routes.driverprofile:
         return MaterialPageRoute(builder: (_) => const DriverProfileScreen());
+      case Routes.carpoolProfile:
+        return MaterialPageRoute(builder: (_) => const CarpoolProfileScreen());
       case Routes.tripDetails:
-        return MaterialPageRoute(builder: (_) => const TripDetailsScreen());
+        final tripId = settings.arguments as int;
+        return MaterialPageRoute(builder: (_) => TripDetailsScreen(tripId: tripId));
       case Routes.bookingConfirmed:
-        return MaterialPageRoute(builder: (_) => const BookingConfirmedScreen());
+        final booking = settings.arguments as BookingModel;
+        return MaterialPageRoute(builder: (_) => BookingConfirmedScreen(booking: booking));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

@@ -290,6 +290,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pendingApprovals => 'Pending Approvals';
 
   @override
+  String get driverDetails => 'Driver Details';
+
+  @override
+  String get applicationInfo => 'Application Info';
+
+  @override
+  String get applicationType => 'Application Type';
+
+  @override
+  String get appliedDate => 'Applied Date';
+
+  @override
+  String get rejectApplication => 'Reject';
+
+  @override
+  String get approveApplication => 'Approve';
+
+  @override
+  String get approvedSuccessfully => 'Application approved successfully';
+
+  @override
+  String get uploadedDocuments => 'Uploaded Documents';
+
+  @override
+  String get rejectedSuccessfully => 'Application rejected successfully';
+
+  @override
   String get drivers => 'Drivers';
 
   @override
@@ -351,6 +378,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inactive => 'Inactive';
+
+  @override
+  String get activate => 'Activate';
+
+  @override
+  String get deactivate => 'Deactivate';
 
   @override
   String get studentManagement => 'Student Management';
@@ -441,6 +474,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveChanges => 'Save Changes';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get editPhoneNumber => 'Edit Phone Number';
+
+  @override
+  String get profileUpdatedSuccess => 'Profile updated successfully';
 
   @override
   String get vehicle => 'Vehicle';
@@ -1200,6 +1242,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get driverActiveStatus => 'Driver • Active';
+
+  @override
+  String get carpoolActiveStatus => 'Carpool • Active';
 
   @override
   String get walletBalance => 'Wallet Balance';

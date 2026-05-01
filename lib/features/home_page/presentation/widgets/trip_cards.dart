@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
-import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/features/home_page/data/models/available_trip_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/my_trip_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/trip_model.dart';
-import 'package:uni_ride_application/features/trip_details/presentation/screens/trip_details_screen.dart';
 
 class TripCard extends StatelessWidget {
   final TripModel trip;
@@ -17,10 +13,7 @@ class TripCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const TripDetailsScreen()),
-      ),
+      onTap: () => Navigator.pushNamed(context, Routes.tripDetails, arguments: 0),
       child: Container(
         width: 398,
         height: 193.6,
@@ -31,8 +24,8 @@ class TripCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: const Color(0xFFE5E5E5), width: 0.62),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 2, offset: const Offset(0, 1), spreadRadius: -1),
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 3, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 2, offset: const Offset(0, 1), spreadRadius: -1),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 3, offset: const Offset(0, 1)),
           ],
         ),
         child: Column(
@@ -157,10 +150,7 @@ class MyTripCard extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const TripDetailsScreen()),
-      ),
+      onTap: () => Navigator.pushNamed(context, Routes.tripDetails, arguments: 0),
       child: Container(
         width: 398,
         height: 253.08,
@@ -170,8 +160,8 @@ class MyTripCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2, offset: const Offset(0, 1)),
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 3, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 2, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 3, offset: const Offset(0, 1)),
           ],
         ),
         child: Column(
@@ -278,10 +268,7 @@ class CarpoolTripCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const TripDetailsScreen()),
-      ),
+      onTap: () => Navigator.pushNamed(context, Routes.tripDetails, arguments: 0),
       child: Container(
         width: 398,
         height: 256.57,
@@ -291,8 +278,8 @@ class CarpoolTripCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2, offset: const Offset(0, 1)),
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 3, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 2, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 3, offset: const Offset(0, 1)),
           ],
         ),
         child: Column(
@@ -413,120 +400,130 @@ class AvailableTripApiCard extends StatelessWidget {
   final AvailableTripModel trip;
   const AvailableTripApiCard({super.key, required this.trip});
 
-  String _formatTime(String iso) {
-    try {
-      final dt = DateTime.parse(iso);
-      final hour = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-      final period = dt.hour < 12 ? 'AM' : 'PM';
-      return '$hour:${dt.minute.toString().padLeft(2, '0')} $period';
-    } catch (_) {
-      return iso;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final initial = trip.driverName.isNotEmpty ? trip.driverName[0].toUpperCase() : '?';
+    final duration = trip.estimatedDurationMinutes > 0
+        ? '${trip.estimatedDurationMinutes} min'
+        : '';
+
     return GestureDetector(
-      onTap: () {
-        context.read<TripProvider>().fetchTripDetails(trip.tripId);
-        Navigator.pushNamed(context, Routes.tripDetails);
-      },
+      onTap: () => Navigator.pushNamed(context, Routes.tripDetails, arguments: trip.tripId),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 24),
-        padding: const EdgeInsets.all(21),
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: const Color(0xFFE5E5E5), width: 0.62),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 2, offset: const Offset(0, 1), spreadRadius: -1),
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 3, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2)),
           ],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 88.99,
-              child: Column(
-                children: [
-                  Row(
+            // ── Driver row ───────────────────────────────────────
+            Row(
+              children: [
+                // Avatar
+                Container(
+                  width: 40, height: 40,
+                  decoration: const BoxDecoration(color: AppColors.orangeprimary, shape: BoxShape.circle),
+                  alignment: Alignment.center,
+                  child: trip.profilePicturePath != null
+                      ? ClipOval(child: Image.network('http://uniride.runasp.net/${trip.profilePicturePath}', fit: BoxFit.cover, errorBuilder: (ctx, e, s) => Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16))))
+                      : Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 8, child: Icon(Icons.circle, size: 8, color: AppColors.orangeprimary)),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(trip.pickupLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: AppColors.greyDark)),
-                      ),
-                      Container(
-                        width: 44, height: 44,
-                        decoration: const BoxDecoration(color: AppColors.greyBackground, shape: BoxShape.circle),
-                        child: const Icon(Icons.near_me_outlined, size: 20, color: AppColors.orangeprimary),
+                      Text(trip.driverName, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, color: AppColors.greyDark)),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, size: 13, color: Color(0xFFF5A623)),
+                          const SizedBox(width: 3),
+                          const Text('4.8', style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+                          const Text(' · ', style: TextStyle(color: AppColors.greySecondary)),
+                          Text(trip.vehicleModel, style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+                        ],
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 8,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(width: 1, height: 4, color: Colors.grey[300]),
-                              const SizedBox(height: 2),
-                              Container(width: 1, height: 4, color: Colors.grey[300]),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          trip.estimatedDurationMinutes > 0
-                              ? 'In ${trip.estimatedDurationMinutes} min'
-                              : _formatTime(trip.departureTime),
-                          style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 11, color: AppColors.greyHint),
-                        ),
-                      ],
+                ),
+                Container(
+                  width: 36, height: 36,
+                  decoration: const BoxDecoration(color: AppColors.greyBackground, shape: BoxShape.circle),
+                  child: const Icon(Icons.near_me_outlined, size: 18, color: AppColors.orangeprimary),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+
+            // ── Route ────────────────────────────────────────────
+            // Pickup row
+            Row(
+              children: [
+                const Icon(Icons.circle, size: 10, color: AppColors.orangeprimary),
+                const SizedBox(width: 10),
+                Expanded(child: Text(trip.pickupLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.greyDark))),
+              ],
+            ),
+            // Dots + duration
+            Row(
+              children: [
+                SizedBox(
+                  width: 10,
+                  child: Center(
+                    child: Column(
+                      children: List.generate(4, (_) => Container(
+                        width: 1.5, height: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 2),
+                        color: AppColors.greySecondary,
+                      )),
                     ),
                   ),
-                  Row(
-                    children: [
-                      SizedBox(width: 8, child: Icon(Icons.circle, size: 8, color: Colors.grey[300])),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(trip.dropoffLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: AppColors.greyDark)),
-                      ),
-                      const SizedBox(width: 44),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 10),
+                if (duration.isNotEmpty)
+                  Text(duration, style: const TextStyle(fontFamily: 'Inter', fontSize: 11, color: AppColors.greyHint)),
+              ],
             ),
-            const Spacer(),
-            Container(
-              height: 46.61,
-              decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.greyLight, width: 0.62)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.people_outline, size: 16, color: AppColors.adminTextSecondary),
-                      const SizedBox(width: 4),
-                      Text('${trip.availableSeats} seats', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 13, color: AppColors.adminTextSecondary)),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      const Text('₪', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
-                      const SizedBox(width: 2),
-                      Text('${trip.pricePerSeat}', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 20, color: AppColors.orangeprimary)),
-                    ],
-                  ),
-                ],
-              ),
+            // Dropoff row
+            Row(
+              children: [
+                Icon(Icons.circle, size: 10, color: Colors.grey[400]),
+                const SizedBox(width: 10),
+                Expanded(child: Text(trip.dropoffLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.greyDark))),
+              ],
+            ),
+            const SizedBox(height: 14),
+
+            // ── Footer ───────────────────────────────────────────
+            const Divider(height: 1, color: AppColors.greyLight),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.people_outline, size: 15, color: AppColors.adminTextSecondary),
+                    const SizedBox(width: 4),
+                    Text('${trip.availableSeats} seats', style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.adminTextSecondary)),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    const Text('₪', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
+                    const SizedBox(width: 2),
+                    Text('${trip.pricePerSeat}', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 18, color: AppColors.orangeprimary)),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
@@ -576,10 +573,7 @@ class MyTripApiCard extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () {
-        context.read<TripProvider>().fetchTripDetails(trip.tripId);
-        Navigator.pushNamed(context, Routes.tripDetails);
-      },
+      onTap: () => Navigator.pushNamed(context, Routes.tripDetails, arguments: trip.tripId),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(21),
@@ -587,8 +581,8 @@ class MyTripApiCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2, offset: const Offset(0, 1)),
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 3, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 2, offset: const Offset(0, 1)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 3, offset: const Offset(0, 1)),
           ],
         ),
         child: Column(
@@ -694,10 +688,7 @@ class DetailedTripCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const TripDetailsScreen()),
-      ),
+      onTap: () => Navigator.pushNamed(context, Routes.tripDetails, arguments: 0),
       child: Container(
         padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.only(bottom: 16),
@@ -707,7 +698,7 @@ class DetailedTripCard extends StatelessWidget {
           border: Border.all(color: const Color(0xFFF3F4F6), width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

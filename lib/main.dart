@@ -5,6 +5,7 @@ import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
+import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/routes/app_router.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
@@ -22,6 +23,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => TripProvider()),
+        ChangeNotifierProvider(create: (_) => BookingProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: const MainApp(),
@@ -58,16 +60,17 @@ class MainApp extends StatelessWidget {
           darkTheme: ThemeData(
             useMaterial3: false,
             brightness: Brightness.dark,
-            scaffoldBackgroundColor: const Color(0xFF121212),
-            cardColor: const Color(0xFF1E1E1E),
+            scaffoldBackgroundColor: const Color(0xFF1A1D2E),
+            cardColor: const Color(0xFF252836),
             appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFF1A1A1A),
-              foregroundColor: Color(0xFFFFFFFF),
+              backgroundColor: Color(0xFF1E2235),
+              foregroundColor: Color(0xFFE8ECF4),
               elevation: 0,
             ),
             colorScheme: const ColorScheme.dark(
               primary: Color(0xFFCF8307),
-              surface: Color(0xFF1E1E1E),
+              surface: Color(0xFF252836),
+              onSurface: Color(0xFFE8ECF4),
             ),
           ),
           initialRoute: Routes.splash,

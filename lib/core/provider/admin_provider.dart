@@ -64,6 +64,12 @@ class AdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> toggleDriverStatus(String id) async {
+    final result = await _adminService.toggleDriverStatus(id);
+    if (!result.success) _errorMessage = result.message;
+    return result.success;
+  }
+
   Future<void> fetchAdminTrips() async {
     _tripsState = AdminState.loading;
     notifyListeners();

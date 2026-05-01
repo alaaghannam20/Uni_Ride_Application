@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
-import 'package:uni_ride_application/features/home_page/data/models/trip_model.dart';
 import 'package:uni_ride_application/features/home_page/presentation/widgets/trip_cards.dart';
 import 'package:uni_ride_application/features/regestration_pages/presentation/screens/signup_driver.dart';
 
@@ -19,7 +19,17 @@ class CarpoolTab extends StatefulWidget {
 class _CarpoolTabState extends State<CarpoolTab> {
   int _carpoolSubTab = 0;
 
-  // ✅ حذفنا _isRegistered و _isApproved المزيفين
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TripProvider>().fetchAvailableTrips();
+      final userType = context.read<AuthProvider>().userType;
+      if (userType == UserType.carpool) {
+        context.read<TripProvider>().fetchMyTrips();
+      }
+    });
+  }
 
   void _handleOfferClick() {
     final userType = context.read<AuthProvider>().userType;
@@ -88,9 +98,53 @@ class _CarpoolTabState extends State<CarpoolTab> {
                 const SizedBox(height: 32),
                 _buildSectionLabel(l.available_rides, l.filter_label),
                 const SizedBox(height: 16),
-                ...mockCarpoolTrips.map((trip) => CarpoolTripCard(trip: trip)),
+                Consumer<TripProvider>(
+                  builder: (context, provider, _) {
+                    if (provider.availableTripsState == TripState.loading) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Center(child: CircularProgressIndicator(color: AppColors.orangeprimary)),
+                      );
+                    }
+                    if (provider.availableTripsState == TripState.error) {
+                      return Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red)));
+                    }
+                    if (provider.availableTrips.isEmpty) {
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 40),
+                        child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint)),
+                      ));
+                    }
+                    final carpoolTrips = provider.availableTrips
+                        .where((t) => t.driverType == 'Carpool')
+                        .toList();
+                    if (carpoolTrips.isEmpty) {
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 40),
+                        child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint)),
+                      ));
+                    }
+                    return Column(
+                      children: carpoolTrips
+                          .map((trip) => AvailableTripApiCard(trip: trip))
+                          .toList(),
+                    );
+                  },
+                ),
               ] else ...[
-                _buildMyRidesEmptyState(l),
+                Consumer<TripProvider>(
+                  builder: (context, provider, _) {
+                    final userType = context.read<AuthProvider>().userType;
+                    if (userType != UserType.carpool) return _buildMyRidesEmptyState(l);
+                    if (provider.myTripsState == TripState.loading) {
+                      return const Padding(padding: EdgeInsets.symmetric(vertical: 40), child: Center(child: CircularProgressIndicator(color: AppColors.orangeprimary)));
+                    }
+                    if (provider.myTrips.isEmpty) return _buildMyRidesEmptyState(l);
+                    return Column(
+                      children: provider.myTrips.map((t) => MyTripApiCard(trip: t)).toList(),
+                    );
+                  },
+                ),
               ],
             ],
           ),
@@ -173,7 +227,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
                   Text(
                     l.offer_ride_sub,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 12,
                     ),
                   ),
@@ -184,7 +238,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.add, color: Colors.white, size: 28),

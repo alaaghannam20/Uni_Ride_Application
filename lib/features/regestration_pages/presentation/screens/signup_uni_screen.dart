@@ -117,7 +117,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                             CustomTextfiled(
                               controller: uniEmailController,
                               labelText: AppLocalizations.of(context)!.emailAddress,
-                              hintText: 'a.m.ghannam@student.ptuk.edu.ps',
+                              hintText: '@student.ptuk.edu.ps',
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(
                                 Icons.email_sharp,

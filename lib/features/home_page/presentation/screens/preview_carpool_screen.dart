@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
-import 'offer_confirmation_screen.dart';
 
-class PreviewCarpoolScreen extends StatelessWidget {
+class PreviewCarpoolScreen extends StatefulWidget {
   final String pickupLocation;
   final String dropoffLocation;
   final String date;
@@ -14,15 +15,71 @@ class PreviewCarpoolScreen extends StatelessWidget {
 
   const PreviewCarpoolScreen({
     super.key,
-    this.pickupLocation = 'City Center',
+    this.pickupLocation  = 'City Center',
     this.dropoffLocation = 'PTUK University',
-    this.date = 'Saturday, December 11, 2024',
-    this.time = '4:40 AM',
-    this.availableSeats = 1,
-    this.pricePerSeat = 8,
+    this.date            = 'Saturday, December 11, 2024',
+    this.time            = '4:40 AM',
+    this.availableSeats  = 1,
+    this.pricePerSeat    = 8,
   });
 
-  int get _totalEarnings => availableSeats * pricePerSeat;
+  @override
+  State<PreviewCarpoolScreen> createState() => _PreviewCarpoolScreenState();
+}
+
+class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
+  int get _totalEarnings => widget.availableSeats * widget.pricePerSeat;
+
+  String _buildDepartureTime() {
+    try {
+      // date format: "yyyy-MM-dd" or "Saturday, Dec 11"
+      // time format: "08:30 AM" or "4:40 AM"
+      final timeParts = widget.time.trim().split(RegExp(r'[\s:]'));
+      int hour   = int.tryParse(timeParts[0]) ?? 8;
+      int minute = int.tryParse(timeParts[1]) ?? 0;
+      final isPM = widget.time.toUpperCase().contains('PM');
+      if (isPM && hour != 12) hour += 12;
+      if (!isPM && hour == 12) hour = 0;
+
+      DateTime? dt;
+      try { dt = DateTime.parse(widget.date); } catch (_) {}
+      dt ??= DateTime.now();
+
+      return '${dt.year}-${dt.month.toString().padLeft(2,'0')}-${dt.day.toString().padLeft(2,'0')}T${hour.toString().padLeft(2,'0')}:${minute.toString().padLeft(2,'0')}:00';
+    } catch (_) {
+      return '${widget.date}T${widget.time}';
+    }
+  }
+
+  Future<void> _onConfirm() async {
+    final provider = context.read<TripProvider>();
+    final ok = await provider.createTrip(
+      pickupLocation:  widget.pickupLocation,
+      dropoffLocation: widget.dropoffLocation,
+      departureTime:   _buildDepartureTime(),
+      pricePerSeat:    widget.pricePerSeat.toDouble(),
+      totalSeats:      widget.availableSeats,
+    );
+    if (!mounted) return;
+    if (ok) {
+      Navigator.pushReplacementNamed(
+        context,
+        Routes.offerConfirmation,
+        arguments: {
+          'pickupLocation':  widget.pickupLocation,
+          'dropoffLocation': widget.dropoffLocation,
+          'date':            widget.date,
+          'time':            widget.time,
+          'availableSeats':  widget.availableSeats,
+          'pricePerSeat':    widget.pricePerSeat,
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(provider.errorMessage), backgroundColor: AppColors.errorRed),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +123,13 @@ class PreviewCarpoolScreen extends StatelessWidget {
                           _detailRow(
                             Icons.calendar_today_outlined,
                             l.date,
-                            date,
+                            widget.date,
                           ),
                           const Divider(height: 1, color: Color(0xFFF3F4F6), indent: 72),
                           _detailRow(
                             Icons.access_time_rounded,
                             l.departure_time,
-                            time,
+                            widget.time,
                           ),
                         ],
                       ),
@@ -125,8 +182,8 @@ class PreviewCarpoolScreen extends StatelessWidget {
                                         const SizedBox(height: 2),
                                         Text(
                                           l.localeName == 'ar'
-                                              ? '$availableSeats ${availableSeats > 1 ? 'مقاعد' : 'مقعد'}'
-                                              : '$availableSeats seat${availableSeats > 1 ? 's' : ''}',
+                                              ? '$widget.availableSeats ${widget.availableSeats > 1 ? 'مقاعد' : 'مقعد'}'
+                                              : '$widget.availableSeats seat${widget.availableSeats > 1 ? 's' : ''}',
                                           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
                                         ),
                                       ],
@@ -139,7 +196,7 @@ class PreviewCarpoolScreen extends StatelessWidget {
                                     Text(l.price_per_seat_label, style: const TextStyle(fontSize: 12, color: Color(0xFF667085))),
                                     const SizedBox(height: 2),
                                     Text(
-                                      '₪ $pricePerSeat',
+                                      '₪ $widget.pricePerSeat',
                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFCF8307)),
                                     ),
                                   ],
@@ -250,21 +307,9 @@ class PreviewCarpoolScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: 52, 
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          Routes.offerConfirmation,
-                          arguments: {
-                            'pickupLocation': pickupLocation,
-                            'dropoffLocation': dropoffLocation,
-                            'date': date,
-                            'time': time,
-                            'availableSeats': availableSeats,
-                            'pricePerSeat': pricePerSeat,
-                          },
-                        );
-                      },
+                    child: Consumer<TripProvider>(
+                      builder: (context, provider, _) => ElevatedButton(
+                      onPressed: provider.createState == TripState.loading ? null : _onConfirm,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFCF8307),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -275,6 +320,7 @@ class PreviewCarpoolScreen extends StatelessWidget {
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
+                  ),
                   ),
                 ],
               ),
@@ -364,7 +410,7 @@ class PreviewCarpoolScreen extends StatelessWidget {
                 child: Container(
                   width: 34,
                   height: 34,
-                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
                   child: const Icon(Icons.edit_outlined, size: 16, color: Colors.white),
                 ),
               ),
@@ -398,12 +444,12 @@ class PreviewCarpoolScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                pickupLocation,
+                                widget.pickupLocation,
                                 style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, height: 1.2),
                               ),
                               Text(
                                 l.pickup_loc,
-                                style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
+                                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12),
                               ),
                             ],
                           ),
@@ -416,7 +462,7 @@ class PreviewCarpoolScreen extends StatelessWidget {
                         const SizedBox(width: 28),
                         Text(
                           '${l.approx_drive} 15 min drive',
-                          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 11),
+                          style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 11),
                         ),
                       ],
                     ),
@@ -430,12 +476,12 @@ class PreviewCarpoolScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                dropoffLocation,
+                                widget.dropoffLocation,
                                 style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, height: 1.2),
                               ),
                               Text(
                                 l.dropoff_loc,
-                                style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12),
+                                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12),
                               ),
                             ],
                           ),
@@ -455,16 +501,6 @@ class PreviewCarpoolScreen extends StatelessWidget {
   Widget _sectionTitle(String text) => Text(
         text,
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
-      );
-
-  Widget _buildWhiteCard({required Widget child}) => Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFF2F4F7)),
-        ),
-        child: child,
       );
 
   Widget _detailRow(IconData icon, String label, String value) => Padding(
@@ -498,7 +534,7 @@ class DashLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     double dashHeight = 5, dashSpace = 3, startY = 0;
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = Colors.white.withValues(alpha: 0.3)
       ..strokeWidth = 1.2; // Thinner for design match
     while (startY < size.height) {
       canvas.drawLine(Offset(size.width / 2, startY), Offset(size.width / 2, startY + dashHeight), paint);

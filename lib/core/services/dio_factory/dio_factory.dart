@@ -39,6 +39,16 @@ class DioFactory {
     }
   }
 
+  // PUT method
+  static Future<Response> put(String endpoint, {dynamic data, Map<String, dynamic>? queryParameters}) async {
+    try {
+      final response = await dio.put(endpoint, data: data, queryParameters: queryParameters);
+      return response;
+    } catch (e) {
+      throw Exception(_handleError(e));
+    }
+  }
+
   // GET method
   static Future<Response> get(String endpoint, {Map<String, dynamic>? queryParameters}) async {
     try {

@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/pending_approval_model.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/features/admin/widgets/admin_layout.dart';
 import 'package:uni_ride_application/features/admin/widgets/admin_header.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
@@ -49,7 +51,7 @@ class _AdminPendingApprovalsPageState extends State<AdminPendingApprovalsPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(provider.errorMessage, style: AppStyle.adminCardContactStyle),
+                        Text(provider.errorMessage, style: AppStyle.adminCardContact(context)),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () => provider.fetchPendingApprovals(),
@@ -67,7 +69,7 @@ class _AdminPendingApprovalsPageState extends State<AdminPendingApprovalsPage> {
                       children: [
                         const Icon(Icons.check_circle_outline, size: 64, color: Colors.grey),
                         const SizedBox(height: 16),
-                        Text(locale.noPendingApprovals, style: AppStyle.adminCardSectionTitleStyle.copyWith(color: Colors.grey)),
+                        Text(locale.noPendingApprovals, style: AppStyle.adminCardSection(context).copyWith(color: Colors.grey)),
                       ],
                     ),
                   );
@@ -105,9 +107,9 @@ class _ApprovalCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgCard,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.borderadmincolor),
+        border: Border.all(color: context.borderColor),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.02),
@@ -129,14 +131,14 @@ class _ApprovalCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundColor: AppColors.adminDivider,
+                    backgroundColor: context.bgSubtle,
                     backgroundImage: approval.profileImage != null
                         ? NetworkImage('http://uniride.runasp.net/${approval.profileImage}')
                         : null,
                     child: approval.profileImage == null
                         ? Text(
                             approval.fullName.isNotEmpty ? approval.fullName[0].toUpperCase() : '?',
-                            style: const TextStyle(color: AppColors.adminIcon, fontWeight: FontWeight.bold, fontSize: 18),
+                            style: TextStyle(color: context.textSecondary, fontWeight: FontWeight.bold, fontSize: 18),
                           )
                         : null,
                   ),
@@ -144,13 +146,13 @@ class _ApprovalCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(approval.fullName, style: AppStyle.adminCardNameStyle),
+                      Text(approval.fullName, style: AppStyle.adminCardName(context)),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           const Icon(Icons.phone_android, size: 14, color: AppColors.adminIcon),
                           const SizedBox(width: 6),
-                          Text(approval.phoneNumber, style: AppStyle.adminCardContactStyle),
+                          Text(approval.phoneNumber, style: AppStyle.adminCardContact(context)),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -158,7 +160,7 @@ class _ApprovalCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.email_outlined, size: 14, color: AppColors.adminIcon),
                           const SizedBox(width: 6),
-                          Text(approval.email, style: AppStyle.adminCardContactStyle),
+                          Text(approval.email, style: AppStyle.adminCardContact(context)),
                         ],
                       ),
                     ],
@@ -167,7 +169,7 @@ class _ApprovalCard extends StatelessWidget {
               ),
               Text(
                 '${locale.applied} ${approval.appliedAt}',
-                style: AppStyle.adminCardTimeStyle,
+                style: AppStyle.adminCardContact(context),
               ),
             ],
           ),
@@ -178,14 +180,14 @@ class _ApprovalCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.adminBackground,
+              color: context.bgSubtle,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.borderadmincolor, width: 0.5),
+              border: Border.all(color: context.borderColor, width: 0.5),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(locale.vehicleInformation, style: AppStyle.adminCardSectionTitleStyle),
+                Text(locale.vehicleInformation, style: AppStyle.adminCardSection(context)),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -193,9 +195,9 @@ class _ApprovalCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(locale.vehicle, style: AppStyle.adminCardInfoLabelStyle),
+                          Text(locale.vehicle, style: AppStyle.adminCardSection(context)),
                           const SizedBox(height: 4),
-                          Text('${approval.vehicleType} ${approval.vehicleModel}', style: AppStyle.adminCardInfoValueStyle),
+                          Text('${approval.vehicleType} ${approval.vehicleModel}', style: AppStyle.adminCardValue(context)),
                         ],
                       ),
                     ),
@@ -203,9 +205,9 @@ class _ApprovalCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(locale.plateNumber, style: AppStyle.adminCardInfoLabelStyle),
+                          Text(locale.plateNumber, style: AppStyle.adminCardSection(context)),
                           const SizedBox(height: 4),
-                          Text(approval.plateNumber, style: AppStyle.adminCardInfoValueStyle),
+                          Text(approval.plateNumber, style: AppStyle.adminCardValue(context)),
                         ],
                       ),
                     ),
@@ -225,11 +227,15 @@ class _ApprovalCard extends StatelessWidget {
                   icon: Icons.visibility_outlined,
                   label: locale.viewDetails,
                   onPressed: () {
-                    // TODO: Implement View Details
+                    Navigator.pushNamed(
+                      context,
+                      Routes.adminDriverDetails,
+                      arguments: approval,
+                    );
                   },
-                  color: AppColors.adminTextSecondary,
-                  bgColor: AppColors.adminBackground,
-                  borderColor: AppColors.borderadmincolor,
+                  color: context.textSecondary,
+                  bgColor: context.bgSubtle,
+                  borderColor: context.borderColor,
                 ),
               ),
               const SizedBox(width: 12),

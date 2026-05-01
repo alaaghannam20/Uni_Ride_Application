@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 
 class AppStyle {
   static TextStyle skipstyle = TextStyle(
@@ -248,6 +249,50 @@ class AppStyle {
     fontWeight: FontWeight.w500,
     fontSize: 14,
   );
+
+  // ── Context-aware Admin Styles (Dark / Light Mode) ──────────────────────
+  static TextStyle adminHeaderTitle(BuildContext ctx, {double fontSize = 28}) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: fontSize, color: ctx.textPrimary);
+
+  static TextStyle adminHeaderDate(BuildContext ctx, {double fontSize = 14}) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: fontSize, color: ctx.textSecondary);
+
+  static TextStyle adminCardName(BuildContext ctx, {double fontSize = 14}) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: fontSize, color: ctx.textPrimary);
+
+  static TextStyle adminCardContact(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, color: ctx.textSecondary);
+
+  static TextStyle adminCardSection(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 12, letterSpacing: 0.5, color: ctx.textSecondary);
+
+  static TextStyle adminCardValue(BuildContext ctx, {double fontSize = 14}) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: fontSize, color: ctx.textPrimary);
+
+  static TextStyle adminSidebarTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 16, color: ctx.textPrimary);
+
+  static TextStyle adminSidebarSubtitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, color: ctx.textSecondary);
+
+  static TextStyle adminSidebarMenuItem(BuildContext ctx, bool isActive) => TextStyle(
+      fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14,
+      color: isActive ? AppColors.orangeprimary : ctx.textSecondary);
+
+  static TextStyle adminSidebarUsername(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 14, color: ctx.textPrimary);
+
+  static TextStyle adminSidebarEmail(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, color: ctx.textSecondary);
+
+  static TextStyle adminSettingsSectionTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 18, color: ctx.textPrimary);
+
+  static TextStyle adminSettingsItemTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14, color: ctx.textPrimary);
+
+  static TextStyle adminSettingsItemDesc(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 13, color: ctx.textSecondary);
 
   // ── Payment & Wallet Styles ──
   static TextStyle paymentTitleStyle = const TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
@@ -26,9 +27,11 @@ class UserDrawerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final auth = context.watch<AuthProvider>();
-    final profile = context.watch<ProfileProvider>().memberProfile;
+    final l        = AppLocalizations.of(context)!;
+    final auth     = context.watch<AuthProvider>();
+    final profile  = context.watch<ProfileProvider>().memberProfile;
+    final isCarpool = auth.userType == UserType.carpool;
+    final profileRoute = isCarpool ? Routes.carpoolProfile : Routes.profile;
 
     final String fullName = profile?.fullName ?? auth.user?.fullName ?? '...';
     final String email = profile?.email ?? auth.user?.email ?? '...';
@@ -64,7 +67,7 @@ class UserDrawerSheet extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, Routes.profile);
+                        Navigator.pushNamed(context, profileRoute);
                       },
                       child: Container(
                         width: 56,
@@ -183,7 +186,7 @@ class UserDrawerSheet extends StatelessWidget {
             subtitle: l.viewAndEditProfile,
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, Routes.profile);
+              Navigator.pushNamed(context, profileRoute);
             },
           ),
           _menuItem(

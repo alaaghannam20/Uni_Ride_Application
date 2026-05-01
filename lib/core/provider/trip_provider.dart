@@ -10,8 +10,10 @@ class TripProvider extends ChangeNotifier {
   final TripService _tripService = TripService();
 
   TripState _availableTripsState = TripState.idle;
-  TripState _tripDetailsState = TripState.idle;
-  TripState _myTripsState = TripState.idle;
+  TripState _tripDetailsState    = TripState.idle;
+  TripState _myTripsState        = TripState.idle;
+  TripState _createState         = TripState.idle;
+  TripState _actionState         = TripState.idle; // cancel / complete / update
 
   List<AvailableTripModel> _availableTrips = [];
   TripDetailModel? _tripDetails;
@@ -20,12 +22,14 @@ class TripProvider extends ChangeNotifier {
   String _errorMessage = '';
 
   TripState get availableTripsState => _availableTripsState;
-  TripState get tripDetailsState => _tripDetailsState;
-  TripState get myTripsState => _myTripsState;
+  TripState get tripDetailsState    => _tripDetailsState;
+  TripState get myTripsState        => _myTripsState;
+  TripState get createState         => _createState;
+  TripState get actionState         => _actionState;
   List<AvailableTripModel> get availableTrips => _availableTrips;
-  TripDetailModel? get tripDetails => _tripDetails;
-  List<MyTripModel> get myTrips => _myTrips;
-  String get errorMessage => _errorMessage;
+  TripDetailModel? get tripDetails  => _tripDetails;
+  List<MyTripModel> get myTrips     => _myTrips;
+  String get errorMessage           => _errorMessage;
 
   Future<void> fetchAvailableTrips({String? type}) async {
     _availableTripsState = TripState.loading;
@@ -51,6 +55,98 @@ class TripProvider extends ChangeNotifier {
       _tripDetailsState = TripState.error;
     }
     notifyListeners();
+  }
+
+  Future<bool> createTrip({
+    required String pickupLocation,
+    required String dropoffLocation,
+    required String departureTime,
+    required double pricePerSeat,
+    required int totalSeats,
+    String description = '',
+  }) async {
+    _createState = TripState.loading;
+    notifyListeners();
+    try {
+      await _tripService.createTrip(
+        pickupLocation: pickupLocation,
+        dropoffLocation: dropoffLocation,
+        departureTime: departureTime,
+        pricePerSeat: pricePerSeat,
+        totalSeats: totalSeats,
+        description: description,
+      );
+      _createState = TripState.success;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _createState  = TripState.error;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> updateTrip(int tripId, {
+    required String pickupLocation,
+    required String dropoffLocation,
+    required String departureTime,
+    required double pricePerSeat,
+    required int totalSeats,
+    String description = '',
+  }) async {
+    _actionState = TripState.loading;
+    notifyListeners();
+    try {
+      await _tripService.updateTrip(tripId,
+        pickupLocation: pickupLocation,
+        dropoffLocation: dropoffLocation,
+        departureTime: departureTime,
+        pricePerSeat: pricePerSeat,
+        totalSeats: totalSeats,
+        description: description,
+      );
+      _actionState = TripState.success;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _actionState  = TripState.error;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> completeTrip(int tripId) async {
+    _actionState = TripState.loading;
+    notifyListeners();
+    try {
+      await _tripService.completeTrip(tripId);
+      _actionState = TripState.success;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _actionState  = TripState.error;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> cancelTrip(int tripId) async {
+    _actionState = TripState.loading;
+    notifyListeners();
+    try {
+      await _tripService.cancelTrip(tripId);
+      _actionState = TripState.success;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _actionState  = TripState.error;
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<void> fetchMyTrips() async {

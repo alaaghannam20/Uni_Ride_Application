@@ -212,6 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               label: l10n.phone,
                               value: profile?.phoneNumber ?? '...',
                               showChevron: true,
+                              onTap: () => _showEditPhoneDialog(context, profile?.phoneNumber ?? ''),
                             ),
                             const Divider(height: 1, color: AppColors.borderadmincolor),
                             _buildInfoTile(
@@ -422,6 +423,57 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _showEditPhoneDialog(BuildContext context, String current) {
+    final controller = TextEditingController(text: current);
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(l10n.editPhoneNumber, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.phone,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: '059XXXXXXX',
+            prefixIcon: const Icon(Icons.phone_outlined, color: AppColors.emeraldGreen),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.orangeprimary),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel, style: const TextStyle(color: AppColors.greyHint)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.orangeprimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () async {
+              final phone = controller.text.trim();
+              if (phone.isEmpty) return;
+              Navigator.pop(context);
+              final success = await context.read<ProfileProvider>().updateProfile(phoneNumber: phone);
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(success ? l10n.profileUpdatedSuccess : context.read<ProfileProvider>().errorMessage),
+                backgroundColor: success ? AppColors.emeraldGreen : AppColors.errorRed,
+              ));
+            },
+            child: Text(l10n.save, style: const TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildInfoTile({
     required IconData iconData,
     required Color iconColor,
@@ -429,37 +481,39 @@ class _ProfilePageState extends State<ProfilePage> {
     required String label,
     required String value,
     bool showChevron = false,
+    VoidCallback? onTap,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              shape: BoxShape.circle,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: iconBgColor, shape: BoxShape.circle),
+              child: Icon(iconData, color: iconColor, size: 20),
             ),
-            child: Icon(iconData, color: iconColor, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: AppStyle.profileItemLabelStyle),
-                const SizedBox(height: 2),
-                Text(value, style: AppStyle.profileItemValueStyle),
-              ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: AppStyle.profileItemLabelStyle),
+                  const SizedBox(height: 2),
+                  Text(value, style: AppStyle.profileItemValueStyle),
+                ],
+              ),
             ),
-          ),
-          if (showChevron)
-            const Icon(
-              Icons.chevron_right,
-              color: AppColors.greyHint,
-              size: 20,
-            ),
-        ],
+            if (showChevron)
+              Icon(
+                onTap != null ? Icons.edit_outlined : Icons.chevron_right,
+                color: onTap != null ? AppColors.orangeprimary : AppColors.greyHint,
+                size: 20,
+              ),
+          ],
+        ),
       ),
     );
   }

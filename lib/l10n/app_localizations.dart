@@ -650,6 +650,60 @@ abstract class AppLocalizations {
   /// **'Pending Approvals'**
   String get pendingApprovals;
 
+  /// No description provided for @driverDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Details'**
+  String get driverDetails;
+
+  /// No description provided for @applicationInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Application Info'**
+  String get applicationInfo;
+
+  /// No description provided for @applicationType.
+  ///
+  /// In en, this message translates to:
+  /// **'Application Type'**
+  String get applicationType;
+
+  /// No description provided for @appliedDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied Date'**
+  String get appliedDate;
+
+  /// No description provided for @rejectApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get rejectApplication;
+
+  /// No description provided for @approveApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approveApplication;
+
+  /// No description provided for @approvedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Application approved successfully'**
+  String get approvedSuccessfully;
+
+  /// No description provided for @uploadedDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded Documents'**
+  String get uploadedDocuments;
+
+  /// No description provided for @rejectedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Application rejected successfully'**
+  String get rejectedSuccessfully;
+
   /// No description provided for @drivers.
   ///
   /// In en, this message translates to:
@@ -775,6 +829,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Inactive'**
   String get inactive;
+
+  /// No description provided for @activate.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate'**
+  String get activate;
+
+  /// No description provided for @deactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivate;
 
   /// No description provided for @studentManagement.
   ///
@@ -955,6 +1021,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Changes'**
   String get saveChanges;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @editPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Phone Number'**
+  String get editPhoneNumber;
+
+  /// No description provided for @profileUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccess;
 
   /// No description provided for @vehicle.
   ///
@@ -2437,6 +2521,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Driver • Active'**
   String get driverActiveStatus;
+
+  /// No description provided for @carpoolActiveStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Carpool • Active'**
+  String get carpoolActiveStatus;
 
   /// No description provided for @walletBalance.
   ///

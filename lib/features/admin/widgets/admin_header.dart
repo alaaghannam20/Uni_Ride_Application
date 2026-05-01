@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/responsive.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
@@ -31,10 +32,10 @@ class AdminHeader extends StatelessWidget {
     return Container(
       height: height ?? (showSearchAndFilter ? (isDesktop ? 187 : 210) : (isDesktop ? 140 : 120)),
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: AppColors.white,
+      decoration: BoxDecoration(
+        color: context.appBarBg,
         border: Border(
-          bottom: BorderSide(color: AppColors.borderadmincolor, width: 1),
+          bottom: BorderSide(color: context.borderColor, width: 1),
         ),
       ),
       padding: EdgeInsets.only(
@@ -63,15 +64,11 @@ class AdminHeader extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: AppStyle.adminHeaderTitleStyle.copyWith(
-                        fontSize: isDesktop ? 28 : 22,
-                      ),
+                      style: AppStyle.adminHeaderTitle(context, fontSize: isDesktop ? 28 : 22),
                     ),
                     Text(
                       currentDate,
-                      style: AppStyle.adminHeaderDateStyle.copyWith(
-                        fontSize: isDesktop ? 14 : 12,
-                      ),
+                      style: AppStyle.adminHeaderDate(context, fontSize: isDesktop ? 14 : 12),
                     ),
                   ],
                 ),
@@ -88,9 +85,9 @@ class AdminHeader extends StatelessWidget {
                     child: Container(
                       height: 47,
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: context.bgSubtle,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.borderadmincolor),
+                        border: Border.all(color: context.borderColor),
                       ),
                       child: TextField(
                         onChanged: onSearch,
@@ -118,9 +115,9 @@ class AdminHeader extends StatelessWidget {
                     height: 47,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color:  AppColors.adminBackground,
+                      color: context.bgSubtle,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color:  AppColors.borderadmincolor, width: 1),
+                      border: Border.all(color: context.borderColor, width: 1),
                     ),
                     child:  Row(
                       mainAxisAlignment: MainAxisAlignment.center,

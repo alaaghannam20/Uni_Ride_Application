@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/responsive.dart';
 import 'package:uni_ride_application/features/admin/widgets/admin_layout.dart';
@@ -97,9 +98,9 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(locale.languageLabel, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w500)),
+                                      Text(locale.languageLabel, style: AppStyle.adminSettingsItemTitle(context)),
                                       const SizedBox(height: 4),
-                                      Text(isArabic ? locale.ar : locale.en, style: AppStyle.adminCardContactStyle),
+                                      Text(isArabic ? locale.ar : locale.en, style: AppStyle.adminSettingsItemDesc(context)),
                                     ],
                                   ),
                                 ),
@@ -150,9 +151,9 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(locale.theme, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w500)),
+                                      Text(locale.theme, style: AppStyle.adminSettingsItemTitle(context)),
                                       const SizedBox(height: 4),
-                                      Text(isLightMode ? locale.lightMode : locale.darkMode, style: AppStyle.adminCardContactStyle),
+                                      Text(isLightMode ? locale.lightMode : locale.darkMode, style: AppStyle.adminSettingsItemDesc(context)),
                                     ],
                                   ),
                                 ),
@@ -228,14 +229,14 @@ class _SettingsSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(isDesktop ? 24 : 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgCard,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color:  AppColors.borderadmincolor),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: AppStyle.adminCardNameStyle.copyWith(fontSize: 18)),
+          Text(title, style: AppStyle.adminSettingsSectionTitle(context)),
           const SizedBox(height: 24),
           ...children,
         ],
@@ -268,9 +269,9 @@ class _SwitchSettingRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppStyle.adminCardInfoValueStyle.copyWith(fontWeight: FontWeight.w500)),
+                Text(title, style: AppStyle.adminSettingsItemTitle(context)),
                 const SizedBox(height: 4),
-                Text(description, style: AppStyle.adminCardContactStyle),
+                Text(description, style: AppStyle.adminSettingsItemDesc(context)),
               ],
             ),
           ),

@@ -41,6 +41,70 @@ class TripService {
     }
   }
 
+  Future<void> createTrip({
+    required String pickupLocation,
+    required String dropoffLocation,
+    required String departureTime,
+    required double pricePerSeat,
+    required int totalSeats,
+    String description = '',
+    List<Map<String, dynamic>> stops = const [],
+  }) async {
+    try {
+      await DioFactory.post(AppEndpoints.createTrip, data: {
+        'pickupLocation': pickupLocation,
+        'dropoffLocation': dropoffLocation,
+        'departureTime': departureTime,
+        'pricePerSeat': pricePerSeat,
+        'totalSeats': totalSeats,
+        'description': description,
+        'stops': stops,
+      });
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
+  Future<void> updateTrip(int tripId, {
+    required String pickupLocation,
+    required String dropoffLocation,
+    required String departureTime,
+    required double pricePerSeat,
+    required int totalSeats,
+    String description = '',
+    List<Map<String, dynamic>> stops = const [],
+  }) async {
+    try {
+      await DioFactory.put(AppEndpoints.updateTrip(tripId), data: {
+        'pickupLocation': pickupLocation,
+        'dropoffLocation': dropoffLocation,
+        'departureTime': departureTime,
+        'pricePerSeat': pricePerSeat,
+        'totalSeats': totalSeats,
+        'description': description,
+        'stops': stops,
+      });
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
+  Future<void> completeTrip(int tripId) async {
+    try {
+      await DioFactory.post(AppEndpoints.completeTrip(tripId));
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
+  Future<void> cancelTrip(int tripId) async {
+    try {
+      await DioFactory.put(AppEndpoints.cancelTrip(tripId));
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
   Future<List<MyTripModel>> getMyTrips() async {
     try {
       final response = await DioFactory.get(AppEndpoints.myTrips);

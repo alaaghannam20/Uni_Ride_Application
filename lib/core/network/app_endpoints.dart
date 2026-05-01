@@ -17,14 +17,26 @@ class AppEndpoints {
   static const String reject            = 'Admin/reject';
   static const String dashboardStats    = 'Admin/dashboard-stats';
   static const String adminStudents     = 'admin/students';
-  static const String adminTrips        = 'admin/Trips';
+  static const String adminTrips         = 'admin/Trips';
+  static String toggleDriverStatus(String id) => 'admin/drivers/$id/toggle-status';
 
   // Trip Endpoints
   static const String availableTrips = 'Trip/available';
   static String tripDetails(int id) => 'Trip/$id/details';
-  static const String myTrips = 'Trip/my-trips';
+  static const String myTrips        = 'Trip/my-trips';
+  static const String createTrip     = 'Trip/create';
+  static String updateTrip(int id)   => 'Trip/$id';
+  static String cancelTrip(int id)   => 'Trip/$id/cancel';
+  static String completeTrip(int id) => 'Trip/$id/complete';
+
+  // Booking Endpoints
+  static const String bookingCreate = 'booking/create';
+  static String bookingCancel(int id) => 'booking/cancel/$id';
+  static const String myBookings = 'booking/my-trips';
 
   // Profile Endpoints
-  static const String memberProfile = 'user/member-profile';
-  static const String driverProfile = 'User/driver-profile';
+  static const String memberProfile  = 'user/member-profile';
+  static const String driverProfile   = 'User/driver-profile';
+  static const String carpoolProfile  = 'User/carpool-profile';
+  static const String updateProfile  = 'user/update-profile';
 }

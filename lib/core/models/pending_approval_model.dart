@@ -11,6 +11,10 @@ class PendingApprovalModel {
   final String  plateNumber;
   final String  type;
   final String? profileImage;
+  final String? licenseNumber;
+  final int?    seatCapacity;
+  final String? driverLicenseImage;
+  final String? vehicleLicenseImage;
 
   const PendingApprovalModel({
     required this.id,
@@ -23,6 +27,10 @@ class PendingApprovalModel {
     required this.plateNumber,
     required this.type,
     this.profileImage,
+    this.licenseNumber,
+    this.seatCapacity,
+    this.driverLicenseImage,
+    this.vehicleLicenseImage,
   });
 
   factory PendingApprovalModel.fromJson(Map<String, dynamic> json) {
@@ -31,12 +39,16 @@ class PendingApprovalModel {
       fullName:     json[ApiKeys.driverFullName]    ?? json[ApiKeys.fullName]              ?? '',
       email:        json[ApiKeys.driverEmail]        ?? json[ApiKeys.email]                ?? '',
       phoneNumber:  json[ApiKeys.driverPhoneNumber]  ?? json[ApiKeys.phoneNumber]          ?? '',
-      appliedAt:    json[ApiKeys.appliedAt]           ?? json[ApiKeys.appliedAtAlt]        ?? '',
+      appliedAt:    json['createdAt']  ?? json[ApiKeys.appliedAt] ?? json[ApiKeys.appliedAtAlt] ?? '',
       vehicleType:  json[ApiKeys.driverVehicleType]  ?? json[ApiKeys.vehicleType]          ?? '',
       vehicleModel: json[ApiKeys.driverVehicleModel] ?? json[ApiKeys.vehicleModel]         ?? '',
       plateNumber:  json[ApiKeys.driverPlateNumber]  ?? json[ApiKeys.plateNumber]          ?? '',
-      type:         json[ApiKeys.type]               ?? json['Type']                       ?? 'Driver',
-      profileImage: json[ApiKeys.profileImage]       ?? json[ApiKeys.driverProfileImage],
+      type:               json[ApiKeys.type]                ?? json['Type']              ?? 'Driver',
+      profileImage:       json[ApiKeys.profileImage]       ?? json[ApiKeys.driverProfileImage],
+      licenseNumber:      json[ApiKeys.licenseNumber]      ?? json['LicenseNumber'],
+      seatCapacity:       json[ApiKeys.seatCapacity] != null ? (json[ApiKeys.seatCapacity]).toInt() : null,
+      driverLicenseImage:  json['licenseImagePath']        ?? json[ApiKeys.driverLicenseImageUrl]  ?? json['DriverLicenseImage'],
+      vehicleLicenseImage: json['vehicleLicenseImagePath'] ?? json[ApiKeys.vehicleLicenseImageUrl] ?? json['VehicleLicenseImage'],
     );
   }
 

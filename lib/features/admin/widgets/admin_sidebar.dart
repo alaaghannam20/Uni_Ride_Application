@@ -5,6 +5,7 @@ import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
@@ -39,10 +40,10 @@ class _AdminSidebarState extends State<AdminSidebar> {
 
     return Container(
       width: 287,
-      decoration: const BoxDecoration(
-        color: AppColors.white,
+      decoration: BoxDecoration(
+        color: context.bgCard,
         border: Border(
-          right: BorderSide(color: AppColors.borderadmincolor, width: 1),
+          right: BorderSide(color: context.borderColor, width: 1),
         ),
       ),
       child: Column(
@@ -50,9 +51,9 @@ class _AdminSidebarState extends State<AdminSidebar> {
         children: [
           Container(
             height: 97,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: AppColors.borderadmincolor, width: 1),
+                bottom: BorderSide(color: context.borderColor, width: 1),
               ),
             ),
             padding: const EdgeInsets.only(top: 24, right: 24, bottom: 1, left: 24),
@@ -74,11 +75,11 @@ class _AdminSidebarState extends State<AdminSidebar> {
                   children: [
                     Text(
                       locale.ptukAdmin,
-                      style: AppStyle.adminSidebarLogoTitleStyle,
+                      style: AppStyle.adminSidebarTitle(context),
                     ),
                     Text(
                       locale.ptukTransport,
-                      style: AppStyle.adminSidebarLogoSubtitleStyle,
+                      style: AppStyle.adminSidebarSubtitle(context),
                     ),
                   ],
                 ),
@@ -148,9 +149,9 @@ class _AdminSidebarState extends State<AdminSidebar> {
           ),
           Container(
             height: 124.5,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: AppColors.borderadmincolor, width: 1),
+                top: BorderSide(color: context.borderColor, width: 1),
               ),
             ),
             padding: const EdgeInsets.only(top: 17, right: 16, left: 16),
@@ -179,8 +180,8 @@ class _AdminSidebarState extends State<AdminSidebar> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(fullName, style: AppStyle.adminSidebarUserNameStyle),
-                          Text(email,    style: AppStyle.adminSidebarUserEmailStyle),
+                          Text(fullName, style: AppStyle.adminSidebarUsername(context)),
+                          Text(email,    style: AppStyle.adminSidebarEmail(context)),
                         ],
                       ),
                     ),
@@ -199,7 +200,7 @@ class _AdminSidebarState extends State<AdminSidebar> {
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.zero,
                       side: const BorderSide(color: Colors.transparent),
-                      backgroundColor: AppColors.lightRedBg,
+                      backgroundColor: context.isDark ? AppColors.errorRed.withValues(alpha: 0.15) : AppColors.lightRedBg,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -261,7 +262,7 @@ class _AdminSidebarState extends State<AdminSidebar> {
                 Expanded(
                   child: Text(
                     title,
-                    style: AppStyle.adminSidebarMenuItemStyle(isActive),
+                    style: AppStyle.adminSidebarMenuItem(context, isActive),
                   ),
                 ),
                 if (badge != null)

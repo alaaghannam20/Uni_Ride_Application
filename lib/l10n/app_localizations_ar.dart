@@ -288,6 +288,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pendingApprovals => 'طلبات الموافقة';
 
   @override
+  String get driverDetails => 'تفاصيل السائق';
+
+  @override
+  String get applicationInfo => 'معلومات الطلب';
+
+  @override
+  String get applicationType => 'نوع الطلب';
+
+  @override
+  String get appliedDate => 'تاريخ التقديم';
+
+  @override
+  String get rejectApplication => 'رفض';
+
+  @override
+  String get approveApplication => 'قبول';
+
+  @override
+  String get approvedSuccessfully => 'تم قبول الطلب بنجاح';
+
+  @override
+  String get uploadedDocuments => 'الوثائق المرفوعة';
+
+  @override
+  String get rejectedSuccessfully => 'تم رفض الطلب بنجاح';
+
+  @override
   String get drivers => 'السائقون';
 
   @override
@@ -349,6 +376,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get inactive => 'غير نشط';
+
+  @override
+  String get activate => 'تفعيل';
+
+  @override
+  String get deactivate => 'إلغاء التفعيل';
 
   @override
   String get studentManagement => 'إدارة الطلاب';
@@ -440,6 +473,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get editPhoneNumber => 'تعديل رقم الهاتف';
+
+  @override
+  String get profileUpdatedSuccess => 'تم تحديث الملف الشخصي بنجاح';
 
   @override
   String get vehicle => 'المركبة';
@@ -1195,6 +1237,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get driverActiveStatus => 'السائق • نشط';
+
+  @override
+  String get carpoolActiveStatus => 'كاربول • نشط';
 
   @override
   String get walletBalance => 'رصيد المحفظة';

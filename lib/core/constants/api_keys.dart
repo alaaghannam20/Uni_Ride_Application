@@ -58,6 +58,14 @@ class ApiKeys {
   static const String data = 'data';
   static const String type = 'type';
 
+  // Booking Keys
+  static const String bookingId                = 'bookingId';
+  static const String bookingCode              = 'bookingCode';
+  static const String seatCount               = 'seatCount';
+  static const String totalAmount             = 'totalAmount';
+  static const String paymentStatus           = 'paymentStatus';
+  static const String driverPhone             = 'driverPhone';
+
   // Admin Trip / Student Keys
   static const String route          = 'route';
   static const String price          = 'price';
@@ -77,8 +85,10 @@ class ApiKeys {
   static const String recentTrips             = 'recentTrips';
 
   // Pending Approval Keys
-  static const String appliedAt      = 'appliedAt';
-  static const String appliedAtAlt   = 'AppliedAt';
+  static const String appliedAt             = 'appliedAt';
+  static const String appliedAtAlt          = 'AppliedAt';
+  static const String driverLicenseImageUrl = 'driverLicenseImage';
+  static const String vehicleLicenseImageUrl= 'vehicleLicenseImage';
 
   // Driver Provider Keys (Backend requested them capitalized)
   static const String driverFullName = 'FullName';
