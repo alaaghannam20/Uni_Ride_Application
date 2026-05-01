@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
-import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -20,7 +21,6 @@ class OtbVerificationScreen extends StatefulWidget {
 
 class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
   String otpCode = '';
-
   int _secondsRemaining = 50;
 
   @override
@@ -41,8 +41,62 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
     });
   }
 
+  Future<void> _handleVerify() async {
+    if (otpCode.length != 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.enterCode),
+        ),
+      );
+      return;
+    }
+
+    final provider = context.read<AuthProvider>();
+    final success = await provider.verifyOtp(widget.email, otpCode);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.home,
+        (route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleResend() async {
+    final provider = context.read<AuthProvider>();
+    final success = await provider.sendOtp(widget.email);
+
+    if (!mounted) return;
+
+    if (success) {
+      setState(() {
+        _secondsRemaining = 50;
+      });
+      _startTimer();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -52,7 +106,6 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: TobbarRegestrationWidget(
                 title: AppLocalizations.of(context)!.otpVerification,
-               
               ),
             ),
             Expanded(
@@ -72,9 +125,7 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.enterVerificationCode,
+                                  AppLocalizations.of(context)!.enterVerificationCode,
                                   style: AppStyle.custombuttonstyle.copyWith(
                                     height: 24 / 18,
                                     color: AppColors.skiptextcolor,
@@ -98,25 +149,17 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                               ],
                             ),
                           ),
-
                           const SizedBox(height: 24),
-
                           OtpPinFieldWidget(
-                            onChanged: (value) {
-                              otpCode = value;
-                            },
-                            onCompleted: (value) {
-                              otpCode = value;
-                            },
+                            onChanged: (value) => otpCode = value,
+                            onCompleted: (value) => otpCode = value,
                           ),
-
                           const SizedBox(height: 12),
+
                           _secondsRemaining > 0
                               ? RichText(
                                   text: TextSpan(
-                                    text: AppLocalizations.of(
-                                      context,
-                                    )!.resendCodeIn,
+                                    text: AppLocalizations.of(context)!.resendCodeIn,
                                     style: AppStyle.accountQuestionStyle,
                                     children: [
                                       TextSpan(
@@ -129,27 +172,17 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
                                   ),
                                 )
                               : GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _secondsRemaining = 50;
-                                    });
-                                    _startTimer();
-                                  },
+                                  onTap: _handleResend,
                                   child: RichText(
                                     text: TextSpan(
-                                      text: AppLocalizations.of(
-                                        context,
-                                      )!.didntReceiveCode,
+                                      text: AppLocalizations.of(context)!.didntReceiveCode,
                                       style: AppStyle.accountQuestionStyle,
                                       children: [
                                         TextSpan(
-                                          text: AppLocalizations.of(
-                                            context,
-                                          )!.sendAgain,
-                                          style: AppStyle.loginNowStyle
-                                              .copyWith(
-                                                color: AppColors.orangeprimary,
-                                              ),
+                                          text: AppLocalizations.of(context)!.sendAgain,
+                                          style: AppStyle.loginNowStyle.copyWith(
+                                            color: AppColors.orangeprimary,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -160,41 +193,24 @@ class _OtbVerificationScreenState extends State<OtbVerificationScreen> {
 
                           SizedBox(
                             height: 56,
-                            child: CustomButton(
-                              text: AppLocalizations.of(context)!.verify,
-                              backgroundColor: AppColors.orangeprimary,
-                              onPressed: () async {
-                                if (otpCode.length == 4) {
-                                  // API
-                                  String fakeToken = "123456_token";
-
-                                  await AppPrefs.setToken(fakeToken);
-
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    Routes.home,
-                                    (route) => false,
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(context)!.enterCode,
-                                      ),
+                            child: isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.orangeprimary,
                                     ),
-                                  );
-                                }
-                              },
-                              textColor: AppColors.white,
-                            ),
+                                  )
+                                : CustomButton(
+                                    text: AppLocalizations.of(context)!.verify,
+                                    backgroundColor: AppColors.orangeprimary,
+                                    onPressed: _handleVerify,
+                                    textColor: AppColors.white,
+                                  ),
                           ),
 
                           const SizedBox(height: 24),
 
                           GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
+                            onTap: () => Navigator.pop(context),
                             child: Text(
                               AppLocalizations.of(context)!.changeEmailAddress,
                               textAlign: TextAlign.center,

@@ -57,7 +57,7 @@ class AppRouter {
           },
         );
 
-          case Routes.signUpDriver:
+      case Routes.signUpDriver:
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 1200),
           pageBuilder: (_, _, _) => SignUpDriverScreen(),
@@ -71,7 +71,7 @@ class AppRouter {
         );
 
       case Routes.OtbVerification:
-      final email = settings.arguments as String;
+        final email = settings.arguments as String;
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 1200),
           pageBuilder: (_, _, _) => OtbVerificationScreen(email: email),
@@ -110,9 +110,10 @@ class AppRouter {
           },
         );
       case Routes.codeVerification:
+        final email = settings.arguments as String;
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 1200),
-          pageBuilder: (_, _, _) => CodeVerificationScreen(),
+          pageBuilder: (_, _, _) => CodeVerificationScreen(email: email),
           transitionsBuilder: (_, animation, _, child) {
             final offsetAnimation = Tween<Offset>(
               begin: const Offset(1, 0),
@@ -136,9 +137,13 @@ class AppRouter {
         );
 
       case Routes.resetPassword:
+        final args = settings.arguments as Map<String, String>;
         return PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 1200),
-          pageBuilder: (_, _, _) => ResetPasswordScreen(),
+          pageBuilder: (_, _, _) => ResetPasswordScreen(
+            email: args['email']!,
+            otpCode: args['otpCode']!,
+          ),
           transitionsBuilder: (_, animation, _, child) {
             final offsetAnimation = Tween<Offset>(
               begin: const Offset(1, 0),

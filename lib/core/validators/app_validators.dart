@@ -62,7 +62,7 @@ class AppValidators {
 
   static String? validateCarModel(BuildContext context, String? value) {
     if (value == null || value.trim().isEmpty) {
-      return AppLocalizations.of(context)!.enterCarModel;
+      return AppLocalizations.of(context)!.enterVehicleModel;
     }
     return null;
   }

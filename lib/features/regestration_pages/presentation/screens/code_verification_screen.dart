@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -10,7 +12,8 @@ import 'package:uni_ride_application/features/regestration_pages/presentation/wi
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class CodeVerificationScreen extends StatefulWidget {
-  const CodeVerificationScreen({super.key});
+  final String email; 
+  const CodeVerificationScreen({super.key, required this.email});
 
   @override
   State<CodeVerificationScreen> createState() => _CodeVerificationScreenState();
@@ -18,7 +21,6 @@ class CodeVerificationScreen extends StatefulWidget {
 
 class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
   String otpCode = '';
-
   int _secondsRemaining = 50;
 
   @override
@@ -39,8 +41,46 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
     });
   }
 
+  Future<void> _handleVerify() async {
+    if (otpCode.length != 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.enterCode)),
+      );
+      return;
+    }
+
+    Navigator.pushNamed(
+      context,
+      Routes.resetPassword,
+      arguments: {'email': widget.email, 'otpCode': otpCode},
+    );
+  }
+
+  Future<void> _handleResend() async {
+    final provider = context.read<AuthProvider>();
+    final success = await provider.forgetPassword(widget.email);
+
+    if (!mounted) return;
+
+    if (success) {
+      setState(() {
+        _secondsRemaining = 50;
+      });
+      _startTimer();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -50,15 +90,11 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: TobbarRegestrationWidget(
                 title: AppLocalizations.of(context)!.otpVerification,
-                
               ),
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 40,
-                  horizontal: 22,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 22),
                 child: Column(
                   children: [
                     CustomCardContainer(
@@ -70,9 +106,7 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!.enterVerificationCode,
+                                  AppLocalizations.of(context)!.enterVerificationCode,
                                   style: AppStyle.custombuttonstyle.copyWith(
                                     height: 24 / 18,
                                     color: AppColors.skiptextcolor,
@@ -87,7 +121,7 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'a.m.ghannam@student.ptuk.edu.ps',
+                                  widget.email,
                                   style: AppStyle.loginNowStyle.copyWith(
                                     color: AppColors.skiptextcolor,
                                   ),
@@ -96,26 +130,16 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                               ],
                             ),
                           ),
-
                           const SizedBox(height: 24),
-
                           OtpPinFieldWidget(
-                            onChanged: (value) {
-                              otpCode = value;
-                            },
-                            onCompleted: (value) {
-                              otpCode = value;
-                            },
+                            onChanged: (value) => otpCode = value,
+                            onCompleted: (value) => otpCode = value,
                           ),
-
                           const SizedBox(height: 12),
-
                           _secondsRemaining > 0
                               ? RichText(
                                   text: TextSpan(
-                                    text: AppLocalizations.of(
-                                      context,
-                                    )!.resendCodeIn,
+                                    text: AppLocalizations.of(context)!.resendCodeIn,
                                     style: AppStyle.accountQuestionStyle,
                                     children: [
                                       TextSpan(
@@ -128,60 +152,38 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                                   ),
                                 )
                               : GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _secondsRemaining = 50;
-                                    });
-                                    _startTimer();
-                                  },
+                                  onTap: _handleResend,
                                   child: RichText(
                                     text: TextSpan(
-                                      text: AppLocalizations.of(
-                                        context,
-                                      )!.didntReceiveCode,
+                                      text: AppLocalizations.of(context)!.didntReceiveCode,
                                       style: AppStyle.accountQuestionStyle,
                                       children: [
                                         TextSpan(
-                                          text: AppLocalizations.of(
-                                            context,
-                                          )!.sendAgain,
-                                          style: AppStyle.loginNowStyle
-                                              .copyWith(
-                                                color: AppColors.orangeprimary,
-                                              ),
+                                          text: AppLocalizations.of(context)!.sendAgain,
+                                          style: AppStyle.loginNowStyle.copyWith(
+                                            color: AppColors.orangeprimary,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-
                           const SizedBox(height: 24),
-
                           SizedBox(
                             height: 56,
-                            child: CustomButton(
-                              text: AppLocalizations.of(context)!.resetPassword,
-                              backgroundColor: AppColors.orangeprimary,
-                              onPressed: () {
-                                if (otpCode.length == 4) {
-                                  Navigator.pushNamed(
-                                    context,
-                                    Routes.resetPassword,
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(context)!.enterCode,
-                                      ),
+                            child: isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.orangeprimary,
                                     ),
-                                  );
-                                }
-                              },
-                              textColor: AppColors.white,
-                            ),
+                                  )
+                                : CustomButton(
+                                    text: AppLocalizations.of(context)!.resetPassword,
+                                    backgroundColor: AppColors.orangeprimary,
+                                    onPressed: _handleVerify,
+                                    textColor: AppColors.white,
+                                  ),
                           ),
-
                           const SizedBox(height: 24),
                         ],
                       ),

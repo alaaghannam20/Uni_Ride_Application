@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -27,8 +29,36 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     super.dispose();
   }
 
+  Future<void> _handleForgetPassword() async {
+    if (!formKey.currentState!.validate()) return;
+
+    final provider = context.read<AuthProvider>();
+    final email = emailOrPhoneController.text.trim();
+
+    final success = await provider.forgetPassword(email);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.pushNamed(
+        context,
+        Routes.codeVerification,
+        arguments: email,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(provider.errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -53,23 +83,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         key: formKey,
                         child: Column(
                           children: [
-                            SizedBox(height: 30),
+                            const SizedBox(height: 30),
                             Text(
-                              AppLocalizations.of(
-                                context,
-                              )!.enteryouremailtoresetyourpassword,
+                              AppLocalizations.of(context)!.enteryouremailtoresetyourpassword,
                               style: AppStyle.hintstyle.copyWith(
                                 color: AppColors.titlecolor,
                                 fontSize: 15,
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 40),
                             CustomTextfiled(
                               controller: emailOrPhoneController,
-                              labelText: AppLocalizations.of(
-                                context,
-                              )!.emailAddress,
+                              labelText: AppLocalizations.of(context)!.emailAddress,
                               hintText: 'a.m.ghannam@student.ptuk.edu.ps',
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(
@@ -81,19 +107,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                   AppValidators.validateEmail(context, value),
                             ),
                             const SizedBox(height: 30),
-                            CustomButton(
-                              text: AppLocalizations.of(context)!.sendCode,
-                              backgroundColor: AppColors.orangeprimary,
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  Navigator.pushNamed(
-                                    context,
-                                    Routes.codeVerification,
-                                  );
-                                }
-                              },
-                              textColor: AppColors.white,
-                            ),
+
+                            isLoading
+                                ? const CircularProgressIndicator(
+                                    color: AppColors.orangeprimary,
+                                  )
+                                : CustomButton(
+                                    text: AppLocalizations.of(context)!.sendCode,
+                                    backgroundColor: AppColors.orangeprimary,
+                                    onPressed: _handleForgetPassword,
+                                    textColor: AppColors.white,
+                                  ),
                           ],
                         ),
                       ),

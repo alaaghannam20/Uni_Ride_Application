@@ -278,17 +278,11 @@ abstract class AppLocalizations {
   /// **'Phone Number'**
   String get phoneNumber;
 
-  /// No description provided for @carDetails.
+  /// No description provided for @vehicleDetails.
   ///
   /// In en, this message translates to:
-  /// **'Car Details'**
-  String get carDetails;
-
-  /// No description provided for @carType.
-  ///
-  /// In en, this message translates to:
-  /// **'Car Type'**
-  String get carType;
+  /// **'Vehicle Details'**
+  String get vehicleDetails;
 
   /// No description provided for @numberOfSeats.
   ///
@@ -602,17 +596,17 @@ abstract class AppLocalizations {
   /// **'Bus'**
   String get bus;
 
-  /// No description provided for @carModel.
+  /// No description provided for @vehicleModel.
   ///
   /// In en, this message translates to:
-  /// **'Car Model'**
-  String get carModel;
+  /// **'Vehicle Model'**
+  String get vehicleModel;
 
-  /// No description provided for @enterCarModel.
+  /// No description provided for @enterVehicleModel.
   ///
   /// In en, this message translates to:
-  /// **'Enter Car Model'**
-  String get enterCarModel;
+  /// **'Enter Vehicle Model'**
+  String get enterVehicleModel;
 }
 
 class _AppLocalizationsDelegate

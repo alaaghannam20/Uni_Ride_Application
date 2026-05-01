@@ -20,6 +20,8 @@ dependencies:
   intl: any
   provider: ^6.1.5+1
   pin_code_fields: ^9.1.0
+  dio: ^5.9.2
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:

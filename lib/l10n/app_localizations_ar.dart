@@ -100,10 +100,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get phoneNumber => 'رقم الهاتف';
 
   @override
-  String get carDetails => 'تفاصيل السيارة';
-
-  @override
-  String get carType => 'نوع السيارة';
+  String get vehicleDetails => 'تفاصيل المركبة';
 
   @override
   String get numberOfSeats => 'عدد المقاعد';
@@ -264,8 +261,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bus => 'باص';
 
   @override
-  String get carModel => 'موديل السيارة';
+  String get vehicleModel => 'Vehicle Model';
 
   @override
-  String get enterCarModel => 'أدخل موديل السيارة';
+  String get enterVehicleModel => 'Enter Vehicle Model';
 }

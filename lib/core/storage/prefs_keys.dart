@@ -12,4 +12,6 @@ class PrefKeys {
   static const String driverCarSeats = 'driver_car_seats';
   static const String driverLicense = 'driver_license';
   static const String driverPlate = 'driver_plate';
+
+   static const String userType = 'userType';
 }
