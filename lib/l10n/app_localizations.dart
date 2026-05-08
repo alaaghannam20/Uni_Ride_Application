@@ -2588,6 +2588,78 @@ abstract class AppLocalizations {
   /// **'No students found'**
   String get noStudentsFound;
 
+  /// No description provided for @noDriversFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No drivers found'**
+  String get noDriversFound;
+
+  /// No description provided for @scheduleATrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule a Trip'**
+  String get scheduleATrip;
+
+  /// No description provided for @scheduleTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule Trip'**
+  String get scheduleTrip;
+
+  /// No description provided for @newTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'New Trip'**
+  String get newTrip;
+
+  /// No description provided for @dateAndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get dateAndTime;
+
+  /// No description provided for @tripDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Duration'**
+  String get tripDuration;
+
+  /// No description provided for @estimatedTripTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated trip time'**
+  String get estimatedTripTime;
+
+  /// No description provided for @howManyPassengers.
+  ///
+  /// In en, this message translates to:
+  /// **'How many passengers can you take?'**
+  String get howManyPassengers;
+
+  /// No description provided for @setPriceInILS.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your price in ILS (₪)'**
+  String get setPriceInILS;
+
+  /// No description provided for @pleaseSelectDateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select date and time'**
+  String get pleaseSelectDateTime;
+
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom...'**
+  String get custom;
+
+  /// No description provided for @publish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get publish;
+
   /// No description provided for @selectDate.
   ///
   /// In en, this message translates to:

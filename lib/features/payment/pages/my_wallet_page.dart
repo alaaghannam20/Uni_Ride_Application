@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/payment_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/features/payment/widgets/transaction_tile.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
@@ -12,60 +15,102 @@ class MyWalletPage extends StatefulWidget {
 }
 
 class _MyWalletPageState extends State<MyWalletPage> {
-  int _selectedTabIndex = 0; 
+  int _selectedTabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<PaymentProvider>().fetchWalletBalance();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBarBg,
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.greyDark),
+            icon: Icon(Icons.arrow_back, color: context.textPrimary),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.myWallet, style: AppStyle.paymentTitleStyle),
-            Text(l10n.transactionHistory, style: AppStyle.paymentSubtitleStyle),
+            Text(l10n.myWallet, style: AppStyle.paymentTitle(context)),
+            Text(l10n.transactionHistory, style: AppStyle.paymentSubtitle(context)),
           ],
         ),
         titleSpacing: 0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: _buildWalletBalanceCard(context, l10n),
-            ),
-            _buildSearchAndFilters(l10n),
-            Container(
-              color: AppColors.greyBackground,
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+      body: Consumer<PaymentProvider>(
+        builder: (context, provider, _) {
+          if (provider.walletState == PaymentState.loading && provider.wallet == null) {
+            return const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary));
+          }
+
+          if (provider.walletState == PaymentState.error && provider.wallet == null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(provider.errorMessage, style: const TextStyle(color: Colors.red)),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => provider.fetchWalletBalance(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          final wallet = provider.wallet;
+
+          return RefreshIndicator(
+            onRefresh: () => provider.fetchWalletBalance(),
+            color: AppColors.orangeprimary,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  _buildTransactionList(l10n),
-                  const SizedBox(height: 32),
-                  _buildPoweredBy(l10n),
-                  const SizedBox(height: 32),
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: _buildWalletBalanceCard(context, l10n, wallet?.balance ?? 0.0),
+                  ),
+                  _buildSearchAndFilters(l10n),
+                  Container(
+                    color: context.bgColor,
+                    constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height * 0.5),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+                    child: Column(
+                      children: [
+                        _buildTransactionList(l10n, provider),
+                        const SizedBox(height: 32),
+                        _buildPoweredBy(l10n),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildWalletBalanceCard(BuildContext context, AppLocalizations l10n) {
+  Widget _buildWalletBalanceCard(BuildContext context, AppLocalizations l10n, double balance) {
+    const textColor = Colors.white;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -74,7 +119,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.orangeprimary.withOpacity(0.3),
+            color: AppColors.orangeprimary.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -89,19 +134,19 @@ class _MyWalletPageState extends State<MyWalletPage> {
               Text(
                 l10n.currentBalance,
                 style: AppStyle.accountQuestionStyle.copyWith(
-                  color: Colors.white.withOpacity(0.9),
+                  color: textColor.withValues(alpha: 0.9),
                 ),
               ),
               Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: textColor.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.account_balance_wallet_outlined,
-                  color: Colors.white,
+                  color: textColor,
                   size: 20,
                 ),
               ),
@@ -113,11 +158,11 @@ class _MyWalletPageState extends State<MyWalletPage> {
               children: [
                 TextSpan(
                   text: l10n.ils,
-                  style: AppStyle.walletBalanceStyle.copyWith(fontSize: 24),
+                  style: AppStyle.walletBalanceStyle.copyWith(fontSize: 24, color: textColor),
                 ),
                 TextSpan(
-                  text: '245.50',
-                  style: AppStyle.walletBalanceStyle,
+                  text: balance.toStringAsFixed(2),
+                  style: AppStyle.walletBalanceStyle.copyWith(color: textColor),
                 ),
               ],
             ),
@@ -125,30 +170,70 @@ class _MyWalletPageState extends State<MyWalletPage> {
           const SizedBox(height: 24),
           InkWell(
             onTap: () {
-              // Handle Top up
+              _showTopUpDialog(context);
             },
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: textColor.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.add, color: Colors.white, size: 18),
+                  Icon(Icons.add, color: textColor, size: 18),
                   const SizedBox(width: 8),
                   Text(
                     l10n.topUpWallet,
                     style: AppStyle.lablestyle.copyWith(
-                      color: Colors.white,
+                      color: textColor,
                       fontSize: 14,
                     ),
                   ),
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showTopUpDialog(BuildContext context) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.bgCard,
+        title: Text('Top-up Wallet', style: TextStyle(color: context.textPrimary)),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: context.textPrimary),
+          decoration: InputDecoration(
+            hintText: 'Enter amount (ILS)',
+            hintStyle: TextStyle(color: context.textHint),
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text('Cancel', style: TextStyle(color: context.textSecondary))),
+          ElevatedButton(
+            onPressed: () async {
+              final amount = double.tryParse(controller.text);
+              if (amount != null && amount > 0) {
+                Navigator.pop(ctx);
+                final paymentProvider = context.read<PaymentProvider>();
+                final session = await paymentProvider.startTopUp(amount: amount);
+                if (session != null && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Opening Checkout: ${session.checkoutUrl}')),
+                  );
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.orangeprimary),
+            child: const Text('Top-up', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -167,12 +252,12 @@ class _MyWalletPageState extends State<MyWalletPage> {
                   height: 42,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    color: AppColors.greyBackground,
+                    color: context.bgSubtle,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search, color: AppColors.greyHint, size: 20),
+                      Icon(Icons.search, color: context.textHint, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
@@ -180,7 +265,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                             border: InputBorder.none,
                             hintText: l10n.searchTransactions,
                             hintStyle: AppStyle.accountQuestionStyle.copyWith(
-                              color: AppColors.greyHint,
+                              color: context.textHint,
                             ),
                           ),
                         ),
@@ -194,10 +279,10 @@ class _MyWalletPageState extends State<MyWalletPage> {
                 height: 42,
                 width: 42,
                 decoration: BoxDecoration(
-                  color: AppColors.greyBackground,
+                  color: context.bgSubtle,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.filter_alt_outlined, color: AppColors.greyDark, size: 20),
+                child: Icon(Icons.filter_alt_outlined, color: context.textPrimary, size: 20),
               ),
             ],
           ),
@@ -229,59 +314,53 @@ class _MyWalletPageState extends State<MyWalletPage> {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.orangeprimary : AppColors.greyBackground,
+          color: isSelected ? AppColors.orangeprimary : context.bgSubtle,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           title,
           style: AppStyle.lablestyle.copyWith(
             fontSize: 14,
-            color: isSelected ? Colors.white : AppColors.greySecondary,
+            color: isSelected ? Colors.white : context.textSecondary,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTransactionList(AppLocalizations l10n) {
-    // Dummy data based on the provided images
-    final transactions = [
-      TransactionTile(
-        title: l10n.tripPayment,
-        subtitle: "PTUK University → City Center",
-        dateTime: "2026-04-11 • 14:30",
-        amount: "-${l10n.ils}8",
-        status: "completed",
-        type: TransactionType.payment,
-      ),
-      TransactionTile(
-        title: l10n.walletTopUp,
-        subtitle: "Credit Card ****4532",
-        dateTime: "2026-04-10 • 10:15",
-        amount: "+${l10n.ils}100",
-        status: "completed",
-        type: TransactionType.topUp,
-      ),
-      TransactionTile(
-        title: l10n.tripPayment,
-        subtitle: "City Center → Rafidia Street",
-        dateTime: "2026-04-10 • 09:45",
-        amount: "-${l10n.ils}10",
-        status: "completed",
-        type: TransactionType.payment,
-      ),
-      TransactionTile(
-        title: l10n.tripCancellationRefund,
-        subtitle: "PTUK University → Main Square",
-        dateTime: "2026-04-09 • 18:20",
-        amount: "+${l10n.ils}8",
-        status: "completed",
-        type: TransactionType.refund,
-      ),
-    ];
+  Widget _buildTransactionList(AppLocalizations l10n, PaymentProvider provider) {
+    final wallet = provider.wallet;
+    if (wallet == null || wallet.transactions.isEmpty) {
+      return Center(child: Text(l10n.noTripsFound)); // Reusing localization or use a generic one
+    }
+
+    // Filter transactions based on tab
+    final filtered = wallet.transactions.where((t) {
+      if (_selectedTabIndex == 1) return t.type == 'Payment';
+      if (_selectedTabIndex == 3) return t.type == 'Recharge';
+      return true;
+    }).toList();
 
     return Column(
-      children: transactions,
+      children: filtered.map((t) {
+        TransactionType type;
+        if (t.type == 'Payment') {
+          type = TransactionType.payment;
+        } else if (t.type == 'Recharge') {
+          type = TransactionType.topUp;
+        } else {
+          type = TransactionType.refund;
+        }
+
+        return TransactionTile(
+          title: t.title,
+          subtitle: t.subTitle,
+          dateTime: t.createdAt.split('T').first, // Simple format for now
+          amount: '${t.amount > 0 ? "+" : ""}${l10n.ils}${t.amount.abs().toStringAsFixed(2)}',
+          status: t.status.toLowerCase(),
+          type: type,
+        );
+      }).toList(),
     );
   }
 
@@ -296,7 +375,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
             color: AppColors.orangeprimary,
             shape: BoxShape.circle,
           ),
-          child: const Center(
+          child: Center(
             child: Text(
               "P",
               style: TextStyle(
@@ -311,7 +390,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
         Text(
           "${l10n.poweredBy} ${l10n.ptukEngineering}",
           style: AppStyle.accountQuestionStyle.copyWith(
-            color: AppColors.greyHint,
+            color: context.textHint,
             fontSize: 12,
           ),
         ),

@@ -129,8 +129,13 @@ static Future<void> setUserType(String userType) async {
     await _prefs.remove(PrefKeys.userType);
   }
 
-  static bool getIsLightMode() => _prefs.getBool(PrefKeys.themeMode) ?? true;
+  // Returns null if user never set a preference (use system default)
+  static bool? getSavedTheme() => _prefs.containsKey(PrefKeys.themeMode)
+      ? _prefs.getBool(PrefKeys.themeMode)
+      : null;
   static Future<void> setIsLightMode(bool isLight) async =>
       _prefs.setBool(PrefKeys.themeMode, isLight);
+  static Future<void> clearTheme() async =>
+      _prefs.remove(PrefKeys.themeMode);
 
 }

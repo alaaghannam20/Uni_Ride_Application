@@ -13,21 +13,26 @@ class AppEndpoints {
 
   // Admin Endpoints
   static const String pendingApprovals  = 'Admin/pending-approvals';
+  static String pendingApprovalDetails(String id) => 'Admin/pending-approvals/$id';
   static const String approve           = 'Admin/approve';
   static const String reject            = 'Admin/reject';
   static const String dashboardStats    = 'Admin/dashboard-stats';
   static const String adminStudents     = 'admin/students';
   static const String adminTrips         = 'admin/Trips';
+  static const String adminDrivers = 'admin/drivers';
   static String toggleDriverStatus(String id) => 'admin/drivers/$id/toggle-status';
 
   // Trip Endpoints
   static const String availableTrips = 'Trip/available';
   static String tripDetails(int id) => 'Trip/$id/details';
-  static const String myTrips        = 'Trip/my-trips';
+  static const String myTrips          = 'Trip/my-trips';
+  static const String driverScheduled  = 'Trip/driver/scheduled';
+  static const String driverHistory    = 'Trip/driver/history';
   static const String createTrip     = 'Trip/create';
   static String updateTrip(int id)   => 'Trip/$id';
   static String cancelTrip(int id)   => 'Trip/$id/cancel';
   static String completeTrip(int id) => 'Trip/$id/complete';
+  static String publishTrip(int id)  => 'Trip/$id/publish';
 
   // Booking Endpoints
   static const String bookingCreate = 'booking/create';
@@ -38,5 +43,20 @@ class AppEndpoints {
   static const String memberProfile  = 'user/member-profile';
   static const String driverProfile   = 'User/driver-profile';
   static const String carpoolProfile  = 'User/carpool-profile';
-  static const String updateProfile  = 'user/update-profile';
+  static const String updateProfile       = 'user/update-profile';
+  static const String updateProfileImage  = 'user/update-profile-image';
+
+  // Wallet & Payment Endpoints
+  static const String walletBalance = 'Wallet/balance';
+  static const String checkoutBookTrip = 'Checkout/book-trip';
+  static String checkoutConfirmBooking(String sessionId) => 'Checkout/confirm-booking?session_id=$sessionId';
+  static const String checkoutTopUp = 'Checkout/top-up';
+  static String checkoutConfirmTopUp(String sessionId) => 'Checkout/confirm-top-up?session_id=$sessionId';
+
+  // Rating Endpoints
+  static const String ratingSubmit = 'Rating/submit';
+
+  // Reward Endpoints
+  static const String myRewards = 'Reward/my-rewards';
+  static const String redeemReward = 'Reward/redeem';
 }

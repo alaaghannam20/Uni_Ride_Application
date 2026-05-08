@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/rating_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 
 class RateDriverPage extends StatefulWidget {
-  const RateDriverPage({Key? key}) : super(key: key);
+  final int bookingId;
+  final String driverName;
+
+  const RateDriverPage({
+    Key? key,
+    required this.bookingId,
+    this.driverName = 'Ali M.',
+  }) : super(key: key);
 
   @override
   State<RateDriverPage> createState() => _RateDriverPageState();
@@ -62,11 +72,11 @@ class _RateDriverPageState extends State<RateDriverPage> {
           vertical: 10,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.successBGStart : Colors.white,
+          color: isSelected ? (context.isDark ? const Color(0xFF064E3B).withValues(alpha: 0.3) : AppColors.successBGStart) : context.bgCard,
           border: Border.all(
             color: isSelected
-                ? AppColors.successBorder
-                : AppColors.borderadmincolor,
+                ? (context.isDark ? const Color(0xFF059669) : AppColors.successBorder)
+                : context.borderColor,
           ),
           borderRadius: BorderRadius.circular(24),
         ),
@@ -74,8 +84,8 @@ class _RateDriverPageState extends State<RateDriverPage> {
           child: Text(
             option,
             style: isSelected
-                ? AppStyle.ratingChipTextStyle
-                : AppStyle.ratingChipUnselectedTextStyle,
+                ? TextStyle(color: context.isDark ? const Color(0xFF34D399) : Colors.green, fontWeight: FontWeight.bold)
+                : TextStyle(color: context.textSecondary),
             textAlign: TextAlign.center,
           ),
         ),
@@ -85,10 +95,13 @@ class _RateDriverPageState extends State<RateDriverPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ratingProvider = context.watch<RatingProvider>();
+    final isLoading = ratingProvider.state == RatingState.loading;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBarBg,
         elevation: 0,
         centerTitle: false,
         titleSpacing: 0,
@@ -96,12 +109,12 @@ class _RateDriverPageState extends State<RateDriverPage> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.greyLight,
+              color: context.borderColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.arrow_back,
-              color: AppColors.greyDark,
+              color: context.textPrimary,
               size: 20,
             ),
           ),
@@ -112,18 +125,18 @@ class _RateDriverPageState extends State<RateDriverPage> {
           children: [
             Text(
               'Rate Your Driver',
-              style: AppStyle.ratingTitleStyle,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: context.textPrimary),
             ),
             Text(
               'How was your experience?',
-              style: AppStyle.ratingSubtitleStyle,
+              style: TextStyle(color: context.textSecondary, fontSize: 14),
             ),
           ],
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(
-            color: AppColors.greyLight,
+            color: context.borderColor,
             height: 1.0,
           ),
         ),
@@ -156,13 +169,13 @@ class _RateDriverPageState extends State<RateDriverPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Ali M.',
-                      style: AppStyle.ratingDriverNameStyle,
+                      widget.driverName,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: context.textPrimary),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Driver',
-                      style: AppStyle.ratingDriverRoleStyle,
+                      style: TextStyle(color: context.textSecondary, fontSize: 12),
                     ),
                   ],
                 ),
@@ -173,13 +186,13 @@ class _RateDriverPageState extends State<RateDriverPage> {
             // Rating Stars
             Text(
               'Rating',
-              style: AppStyle.ratingSectionTitleStyle,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: context.textPrimary),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 24),
               decoration: BoxDecoration(
-                color: AppColors.greyBackground,
+                color: context.bgSubtle,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -203,7 +216,7 @@ class _RateDriverPageState extends State<RateDriverPage> {
                                 : Icons.star_outline_rounded,
                             color: isSelected
                                 ? AppColors.orangeprimary
-                                : AppColors.greyHint.withOpacity(0.5),
+                                : context.textHint.withValues(alpha: 0.5),
                             size: 48,
                           ),
                         ),
@@ -213,7 +226,7 @@ class _RateDriverPageState extends State<RateDriverPage> {
                   const SizedBox(height: 16),
                   Text(
                     getRatingText(),
-                    style: AppStyle.ratingResultTextStyle,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.orangeprimary),
                   ),
                 ],
               ),
@@ -223,29 +236,30 @@ class _RateDriverPageState extends State<RateDriverPage> {
             // Additional Comments
             Text(
               'Additional Comments',
-              style: AppStyle.ratingSectionTitleStyle,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: context.textPrimary),
             ),
             const SizedBox(height: 4),
             Text(
               'Share more details about your experience (optional)',
-              style: AppStyle.ratingSubtitleStyle.copyWith(fontSize: 12),
+              style: TextStyle(color: context.textSecondary, fontSize: 12),
             ),
             const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
-                color: AppColors.greyBackground,
+                color: context.bgSubtle,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: TextField(
                 controller: _commentController,
                 maxLines: 4,
                 maxLength: 500,
+                style: TextStyle(color: context.textPrimary),
                 decoration: InputDecoration(
                   hintText: 'What did you like or dislike about this trip?',
-                  hintStyle: AppStyle.ratingCommentHintStyle,
+                  hintStyle: TextStyle(color: context.textHint),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(16),
-                  counterText: '', // Hide default counter
+                  counterText: '',
                 ),
                 onChanged: (text) => setState(() {}),
               ),
@@ -253,14 +267,14 @@ class _RateDriverPageState extends State<RateDriverPage> {
             const SizedBox(height: 8),
             Text(
               '${_commentController.text.length}/500 characters',
-              style: AppStyle.ratingCharacterCountStyle,
+              style: TextStyle(color: context.textHint, fontSize: 11),
             ),
             const SizedBox(height: 32),
 
-            // Quick Feedback
+            // Quick Feedback (Note: The API doesn't currently support these tags, so they are UI-only)
             Text(
               'Quick Feedback',
-              style: AppStyle.ratingSectionTitleStyle,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: context.textPrimary),
             ),
             const SizedBox(height: 12),
             Column(
@@ -289,9 +303,24 @@ class _RateDriverPageState extends State<RateDriverPage> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: () {
-                  // Submit logic here
-                  Navigator.pop(context);
+                onPressed: isLoading ? null : () async {
+                  final ratingProvider = context.read<RatingProvider>();
+                  final success = await ratingProvider.submitRating(
+                    bookingId: widget.bookingId,
+                    score: _rating,
+                    comment: _commentController.text.trim(),
+                  );
+                  if (!mounted) return;
+                  if (success) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Rating submitted successfully!'), backgroundColor: Colors.green),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(ratingProvider.errorMessage), backgroundColor: Colors.red),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.orangeprimary,
@@ -300,13 +329,15 @@ class _RateDriverPageState extends State<RateDriverPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text(
-                  'Submit Rating',
-                  style: AppStyle.custombuttonstyle.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
+                child: isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Text(
+                      'Submit Rating',
+                      style: AppStyle.custombuttonstyle.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
               ),
             ),
             const SizedBox(height: 24),
@@ -318,11 +349,11 @@ class _RateDriverPageState extends State<RateDriverPage> {
                 Container(
                   width: 16,
                   height: 16,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.orangeprimary,
                     shape: BoxShape.circle,
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       'P',
                       style: TextStyle(
@@ -333,10 +364,10 @@ class _RateDriverPageState extends State<RateDriverPage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6),
                 Text(
                   'Powered by PTUK Engineering',
-                  style: AppStyle.ratingFooterTextStyle,
+                  style: TextStyle(color: context.textSecondary, fontSize: 12),
                 ),
               ],
             ),

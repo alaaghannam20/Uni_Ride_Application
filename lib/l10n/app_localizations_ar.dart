@@ -1272,6 +1272,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStudentsFound => 'لا يوجد طلاب';
 
   @override
+  String get noDriversFound => 'لا يوجد سائقون';
+
+  @override
+  String get scheduleATrip => 'جدولة رحلة';
+
+  @override
+  String get scheduleTrip => 'جدول الرحلة';
+
+  @override
+  String get newTrip => 'رحلة جديدة';
+
+  @override
+  String get dateAndTime => 'التاريخ والوقت';
+
+  @override
+  String get tripDuration => 'مدة الرحلة';
+
+  @override
+  String get estimatedTripTime => 'الوقت المتوقع للرحلة';
+
+  @override
+  String get howManyPassengers => 'كم راكباً تستطيع استيعابه؟';
+
+  @override
+  String get setPriceInILS => 'حدد سعرك بالشيكل (₪)';
+
+  @override
+  String get pleaseSelectDateTime => 'الرجاء تحديد التاريخ والوقت';
+
+  @override
+  String get custom => 'مخصص...';
+
+  @override
+  String get publish => 'نشر';
+
+  @override
   String get selectDate => 'اختر التاريخ';
 
   @override

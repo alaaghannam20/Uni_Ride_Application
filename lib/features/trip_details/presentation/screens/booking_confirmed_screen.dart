@@ -1,18 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/booking_model.dart';
+import 'package:uni_ride_application/core/provider/payment_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
-class BookingConfirmedScreen extends StatelessWidget {
-  final BookingModel booking;
-  const BookingConfirmedScreen({super.key, required this.booking});
+class BookingConfirmedScreen extends StatefulWidget {
+  final String sessionId;
+  const BookingConfirmedScreen({super.key, required this.sessionId});
+
+  @override
+  State<BookingConfirmedScreen> createState() => _BookingConfirmedScreenState();
+}
+
+class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
+  BookingModel? _confirmedBooking;
+  bool _isLoading = true;
+  String _error = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _confirm();
+  }
+
+  Future<void> _confirm() async {
+    try {
+      final provider = context.read<PaymentProvider>();
+      final success  = await provider.confirmBooking(widget.sessionId);
+      if (mounted) {
+        setState(() {
+          _confirmedBooking = success ? provider.confirmedBooking : null;
+          _error     = success ? '' : provider.errorMessage;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error     = e.toString();
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
 
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(color: AppColors.orangeprimary),
+              const SizedBox(height: 20),
+              Text(l.booking_confirmed_sub, style: TextStyle(color: context.textSecondary)),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_error.isNotEmpty || _confirmedBooking == null) {
+      return Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 64),
+              const SizedBox(height: 16),
+              Text('Confirmation Failed', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Text(_error, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final booking = _confirmedBooking!;
     String formattedTime = booking.departureTime;
     try {
       final dt = DateTime.parse(booking.departureTime);
@@ -40,9 +118,9 @@ class BookingConfirmedScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            Text(l.booking_confirmed, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 24, color: AppColors.greyDark)),
+            Text(l.booking_confirmed, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: context.textPrimary)),
             const SizedBox(height: 8),
-            Text(l.booking_confirmed_sub, style: const TextStyle(color: AppColors.greySecondary, fontSize: 14), textAlign: TextAlign.center),
+            Text(l.booking_confirmed_sub, style: TextStyle(color: context.textSecondary, fontSize: 14), textAlign: TextAlign.center),
             const SizedBox(height: 32),
 
             // ── Booking ID ────────────────────────────────────────────
@@ -56,7 +134,7 @@ class BookingConfirmedScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(l.booking_id, style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
+                  Text(l.booking_id, style: TextStyle(color: context.textSecondary, fontSize: 12)),
                   const SizedBox(height: 6),
                   Text(booking.bookingCode, style: const TextStyle(color: AppColors.orangeprimary, fontSize: 20, fontWeight: FontWeight.bold)),
                 ],
@@ -69,7 +147,7 @@ class BookingConfirmedScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l.tripDetails, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.greyDark)),
+                  Text(l.tripDetails, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: context.textPrimary)),
                   const SizedBox(height: 16),
                   _InfoRow(
                     icon: Icons.location_on_outlined,
@@ -92,7 +170,7 @@ class BookingConfirmedScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l.driver_details, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.greyDark)),
+                  Text(l.driver_details, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: context.textPrimary)),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -106,32 +184,22 @@ class BookingConfirmedScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(booking.driverName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.greyDark)),
+                        child: Text(booking.driverName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: context.textPrimary)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: AppColors.greyBackground, borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(color: context.bgSubtle, borderRadius: BorderRadius.circular(12)),
                     child: Row(
                       children: [
-                        const Icon(Icons.directions_car_outlined, color: AppColors.greySecondary, size: 18),
+                        Icon(Icons.directions_car_outlined, color: context.textSecondary, size: 18),
                         const SizedBox(width: 12),
-                        Text(booking.vehicleModel, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.greyDark)),
+                        Text(booking.vehicleModel, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: context.textPrimary)),
                       ],
                     ),
                   ),
-                  if (booking.driverPhone.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(color: AppColors.adminInfoBG, borderRadius: BorderRadius.circular(12)),
-                      alignment: Alignment.center,
-                      child: Text('${l.driverContact}: ${booking.driverPhone}', style: const TextStyle(color: AppColors.infoBlue, fontSize: 13, fontWeight: FontWeight.w600)),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -145,9 +213,9 @@ class BookingConfirmedScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l.payment_status, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.greyDark)),
+                      Text(l.payment_status, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: context.textPrimary)),
                       const SizedBox(height: 4),
-                      Text(booking.paymentStatus, style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
+                      Text(booking.paymentStatus, style: TextStyle(color: context.textSecondary, fontSize: 12)),
                     ],
                   ),
                   RichText(
@@ -155,30 +223,6 @@ class BookingConfirmedScreen extends StatelessWidget {
                       const TextSpan(text: '₪ ', style: TextStyle(color: AppColors.orangeprimary, fontSize: 14, fontWeight: FontWeight.bold)),
                       TextSpan(text: booking.totalAmount.toStringAsFixed(0), style: const TextStyle(color: AppColors.orangeprimary, fontSize: 22, fontWeight: FontWeight.bold)),
                     ]),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // ── Reminder ─────────────────────────────────────────────
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: AppColors.walletCardBg, borderRadius: BorderRadius.circular(12)),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.access_time, color: AppColors.primaryGradientEnd, size: 18),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Important Reminder', style: const TextStyle(color: AppColors.warningTextDark, fontSize: 12, fontWeight: FontWeight.w600)),
-                        const SizedBox(height: 4),
-                        Text(l.pickup_reminder, style: const TextStyle(color: AppColors.orangeprimary, fontSize: 12)),
-                      ],
-                    ),
                   ),
                 ],
               ),
@@ -216,9 +260,9 @@ class _CardContainer extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyLight, width: 1.5),
+        border: Border.all(color: context.borderColor, width: 1.5),
       ),
       child: child,
     );
@@ -244,9 +288,9 @@ class _InfoRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
+              Text(label, style: TextStyle(color: context.textSecondary, fontSize: 12)),
               const SizedBox(height: 2),
-              Text(value, style: const TextStyle(color: AppColors.greyDark, fontSize: 14, fontWeight: FontWeight.w500)),
+              Text(value, style: TextStyle(color: context.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
             ],
           ),
         ),

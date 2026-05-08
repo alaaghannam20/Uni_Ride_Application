@@ -1277,6 +1277,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStudentsFound => 'No students found';
 
   @override
+  String get noDriversFound => 'No drivers found';
+
+  @override
+  String get scheduleATrip => 'Schedule a Trip';
+
+  @override
+  String get scheduleTrip => 'Schedule Trip';
+
+  @override
+  String get newTrip => 'New Trip';
+
+  @override
+  String get dateAndTime => 'Date & Time';
+
+  @override
+  String get tripDuration => 'Trip Duration';
+
+  @override
+  String get estimatedTripTime => 'Estimated trip time';
+
+  @override
+  String get howManyPassengers => 'How many passengers can you take?';
+
+  @override
+  String get setPriceInILS => 'Set your price in ILS (₪)';
+
+  @override
+  String get pleaseSelectDateTime => 'Please select date and time';
+
+  @override
+  String get custom => 'Custom...';
+
+  @override
+  String get publish => 'Publish';
+
+  @override
   String get selectDate => 'Select Date';
 
   @override

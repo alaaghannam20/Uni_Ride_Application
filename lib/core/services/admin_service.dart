@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:uni_ride_application/core/models/admin_dashboard_stats_model.dart';
+import 'package:uni_ride_application/core/models/admin_driver_model.dart';
 import 'package:uni_ride_application/core/models/admin_student_model.dart';
 import 'package:uni_ride_application/core/models/admin_trip_model.dart';
 import 'package:uni_ride_application/core/models/pending_approval_model.dart';
@@ -20,6 +22,26 @@ class AdminService {
             .toList();
       }
       return [];
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<PendingApprovalModel> getPendingApprovalDetails(String id, String type) async {
+    try {
+      final response = await DioFactory.get(
+        AppEndpoints.pendingApprovalDetails(id),
+        queryParameters: {'type': type},
+      );
+      final data = (response.data is Map && response.data['data'] != null)
+          ? response.data['data'] as Map<String, dynamic>
+          : response.data as Map<String, dynamic>;
+      // DEBUG — remove after diagnosis
+      debugPrint('=== RAW DETAILS RESPONSE: ${response.data}');
+      debugPrint('=== PARSED DATA MAP: $data');
+      debugPrint('=== driverLicenseImage key check: licenseImagePath=${data['licenseImagePath']}, driverLicenseImage=${data['driverLicenseImage']}, DriverLicenseImage=${data['DriverLicenseImage']}');
+      debugPrint('=== vehicleLicenseImage key check: vehicleLicenseImagePath=${data['vehicleLicenseImagePath']}, vehicleLicenseImage=${data['vehicleLicenseImage']}, VehicleLicenseImage=${data['VehicleLicenseImage']}');
+      return PendingApprovalModel.fromJson(data);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -66,6 +88,16 @@ class AdminService {
       return ApiResponseModel.fromJson(response.data);
     } catch (e) {
       return ApiResponseModel(success: false, message: e.toString());
+    }
+  }
+
+  Future<List<AdminDriverModel>> getDriversList() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.adminDrivers);
+      final list = response.data as List? ?? [];
+      return list.map((e) => AdminDriverModel.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 

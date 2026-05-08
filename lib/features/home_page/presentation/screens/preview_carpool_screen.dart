@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class PreviewCarpoolScreen extends StatefulWidget {
@@ -21,7 +22,10 @@ class PreviewCarpoolScreen extends StatefulWidget {
     this.time            = '4:40 AM',
     this.availableSeats  = 1,
     this.pricePerSeat    = 8,
+    this.stops           = const [],
   });
+
+  final List<Map<String, dynamic>> stops;
 
   @override
   State<PreviewCarpoolScreen> createState() => _PreviewCarpoolScreenState();
@@ -59,6 +63,7 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
       departureTime:   _buildDepartureTime(),
       pricePerSeat:    widget.pricePerSeat.toDouble(),
       totalSeats:      widget.availableSeats,
+      stops:           widget.stops,
     );
     if (!mounted) return;
     if (ok) {
@@ -72,6 +77,7 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
           'time':            widget.time,
           'availableSeats':  widget.availableSeats,
           'pricePerSeat':    widget.pricePerSeat,
+          'stops':           widget.stops,
         },
       );
     } else {
@@ -86,7 +92,7 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
     final l = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
+      backgroundColor: context.bgWhite,
       body: SafeArea(
         child: Column(
           children: [
@@ -112,10 +118,10 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                       height: 178.2, // Specified height
                       padding: const EdgeInsets.fromLTRB(20.61, 20.61, 20.61, 0.62), // Specified padding
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.bgWhite,
                         borderRadius: BorderRadius.circular(20),
-                        border: const Border(
-                          top: BorderSide(color: Color(0xFFF3F4F6), width: 0.62), // Specified border
+                        border: Border(
+                          top: BorderSide(color: context.borderColor, width: 0.62), // Specified border
                         ),
                       ),
                       child: Column(
@@ -125,7 +131,7 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                             l.date,
                             widget.date,
                           ),
-                          const Divider(height: 1, color: Color(0xFFF3F4F6), indent: 72),
+                          Divider(height: 1, color: context.borderColor, indent: 72),
                           _detailRow(
                             Icons.access_time_rounded,
                             l.departure_time,
@@ -145,12 +151,12 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                       height: 213.4, // Specified height
                       padding: const EdgeInsets.fromLTRB(20.61, 20.61, 20.61, 0.62), // Specified padding
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.bgWhite,
                         borderRadius: BorderRadius.circular(20),
-                        border: const Border(
-                          top: BorderSide(color: Color(0xFFF3F4F6), width: 0.62),
+                        border: Border(
+                          top: BorderSide(color: context.borderColor, width: 0.62),
                         ),
-                        boxShadow: const [
+                        boxShadow: context.isDark ? [] : const [
                           // Specified shadows
                           BoxShadow(
                             color: Color(0x1A000000),
@@ -178,13 +184,13 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(l.available_seats, style: const TextStyle(fontSize: 12, color: Color(0xFF667085))),
+                                        Text(l.available_seats, style: TextStyle(fontSize: 12, color: context.textSecondary)),
                                         const SizedBox(height: 2),
                                         Text(
                                           l.localeName == 'ar'
-                                              ? '$widget.availableSeats ${widget.availableSeats > 1 ? 'مقاعد' : 'مقعد'}'
-                                              : '$widget.availableSeats seat${widget.availableSeats > 1 ? 's' : ''}',
-                                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                                              ? '${widget.availableSeats} ${widget.availableSeats > 1 ? 'مقاعد' : 'مقعد'}'
+                                              : '${widget.availableSeats} seat${widget.availableSeats > 1 ? 's' : ''}',
+                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: context.textPrimary),
                                         ),
                                       ],
                                     ),
@@ -193,10 +199,10 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Text(l.price_per_seat_label, style: const TextStyle(fontSize: 12, color: Color(0xFF667085))),
+                                    Text(l.price_per_seat_label, style: TextStyle(fontSize: 12, color: context.textSecondary)),
                                     const SizedBox(height: 2),
                                     Text(
-                                      '₪ $widget.pricePerSeat',
+                                      '₪ ${widget.pricePerSeat}',
                                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFCF8307)),
                                     ),
                                   ],
@@ -208,9 +214,9 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF0FDF4),
+                                color: context.isDark ? const Color(0xFF064E3B) : const Color(0xFFF0FDF4),
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: const Color(0xFFDCFCE7)),
+                                border: Border.all(color: context.isDark ? const Color(0xFF065F46) : const Color(0xFFDCFCE7)),
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -219,24 +225,24 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(l.total_potential_earnings,
-                                          style: const TextStyle(
-                                              fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF166534))),
+                                          style: TextStyle(
+                                              fontSize: 14, fontWeight: FontWeight.w600, color: context.isDark ? const Color(0xFF6EE7B7) : const Color(0xFF166534))),
                                       const SizedBox(height: 4),
                                       Text(l.if_all_seats_booked,
-                                          style: const TextStyle(fontSize: 12, color: Color(0xFF15803D))),
+                                          style: TextStyle(fontSize: 12, color: context.isDark ? const Color(0xFFA7F3D0) : const Color(0xFF15803D))),
                                     ],
                                   ),
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.baseline,
                                     textBaseline: TextBaseline.alphabetic,
                                     children: [
-                                      const Text('₪',
+                                      Text('₪',
                                           style: TextStyle(
-                                              fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                                              fontSize: 18, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFF6EE7B7) : const Color(0xFF15803D))),
                                       const SizedBox(width: 4),
                                       Text('$_totalEarnings',
-                                          style: const TextStyle(
-                                              fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                                          style: TextStyle(
+                                              fontSize: 28, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFF6EE7B7) : const Color(0xFF15803D))),
                                     ],
                                   ),
                                 ],
@@ -254,7 +260,7 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                       height: 113.9, // Specified height
                       padding: const EdgeInsets.fromLTRB(15.99, 15.99, 15.99, 15.99),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEFF6FF), // Specified background
+                        color: context.isDark ? const Color(0xFF1E3A8A).withValues(alpha: 0.3) : const Color(0xFFEFF6FF), // Specified background
                         borderRadius: BorderRadius.circular(16), // Specified radius
                       ),
                       child: Row(
@@ -262,11 +268,11 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                         children: [
                           Container(
                             padding: const EdgeInsets.all(6),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFDBEAFE),
+                            decoration: BoxDecoration(
+                              color: context.isDark ? const Color(0xFF1E40AF) : const Color(0xFFDBEAFE),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.check, color: Color(0xFF1D4ED8), size: 16),
+                            child: Icon(Icons.check, color: context.isDark ? const Color(0xFFBFDBFE) : const Color(0xFF1D4ED8), size: 16),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -274,10 +280,10 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(l.ready_to_post,
-                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1E40AF))),
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFFBFDBFE) : const Color(0xFF1E40AF))),
                                 const SizedBox(height: 4),
                                 Text(l.ready_to_post_sub,
-                                    style: const TextStyle(fontSize: 12, color: Color(0xFF1E40AF), height: 1.4)),
+                                    style: TextStyle(fontSize: 12, color: context.isDark ? const Color(0xFF93C5FD) : const Color(0xFF1E40AF), height: 1.4)),
                               ],
                             ),
                           ),
@@ -296,10 +302,10 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
               width: double.infinity,
               height: 88.5, // Specified height
               padding: const EdgeInsets.fromLTRB(23.99, 16.61, 23.99, 0), // Specified padding
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: context.bgWhite,
                 border: Border(
-                  top: BorderSide(color: Color(0xFFF3F4F6), width: 0.62), // Specified border
+                  top: BorderSide(color: context.borderColor, width: 0.62), // Specified border
                 ),
               ),
               child: Column(
@@ -342,11 +348,11 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.bgWhite,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFF2F4F7)),
+                border: Border.all(color: context.borderColor),
               ),
-              child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF101828)),
+              child: Icon(Icons.arrow_back, size: 20, color: context.textPrimary),
             ),
           ),
           const SizedBox(width: 16),
@@ -355,11 +361,11 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
             children: [
               Text(
                 l.preview_your_offer,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: context.textPrimary),
               ),
               Text(
                 l.review_before_posting,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF667085)),
+                style: TextStyle(fontSize: 14, color: context.textSecondary),
               ),
             ],
           ),
@@ -371,7 +377,6 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
   Widget _buildRouteCard(AppLocalizations l) {
     return Container(
       width: double.infinity,
-      height: 250,
       padding: const EdgeInsets.all(23.99),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -417,7 +422,7 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          Expanded(
+          IntrinsicHeight(
             child: Stack(
               children: [
                 // Dashed Line Layer
@@ -432,62 +437,23 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                 ),
                 // Content Layer
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // --- Pickup Step ---
-                    Row(
-                      children: [
-                        const Icon(Icons.circle, size: 12, color: Colors.white),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.pickupLocation,
-                                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, height: 1.2),
-                              ),
-                              Text(
-                                l.pickup_loc,
-                                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    // --- Drive Time ---
-                    Row(
-                      children: [
-                        const SizedBox(width: 28),
-                        Text(
-                          '${l.approx_drive} 15 min drive',
-                          style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 11),
-                        ),
-                      ],
-                    ),
-                    // --- Dropoff Step ---
-                    Row(
-                      children: [
-                        const Icon(Icons.circle, size: 12, color: Colors.white),
-                         const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.dropoffLocation,
-                                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, height: 1.2),
-                              ),
-                              Text(
-                                l.dropoff_loc,
-                                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                    _routeStep(widget.pickupLocation, l.pickup_loc, true),
+                    const SizedBox(height: 16),
+
+                    // --- Stops ---
+                    for (int i = 0; i < widget.stops.length; i++) ...[
+                      _routeStep(
+                        widget.stops[i]['stopName'],
+                        '${l.pickup_points} ${i + 1} (${widget.stops[i]['estimatedArrivalTime']})',
+                        false,
+                        isStop: true,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
+                    _routeStep(widget.dropoffLocation, l.dropoff_loc, false),
                   ],
                 ),
               ],
@@ -498,9 +464,37 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
     );
   }
 
+  Widget _routeStep(String location, String label, bool isWhite, {bool isStop = false}) {
+    return Row(
+      children: [
+        Icon(
+          isStop ? Icons.location_on_outlined : Icons.circle, 
+          size: isStop ? 14 : 12, 
+          color: isWhite ? Colors.white : Colors.white.withValues(alpha: 0.8)
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                location,
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Text(
+                label,
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _sectionTitle(String text) => Text(
         text,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: context.textPrimary),
       );
 
   Widget _detailRow(IconData icon, String label, String value) => Padding(
@@ -512,9 +506,9 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF667085))),
+                Text(label, style: TextStyle(fontSize: 12, color: context.textSecondary)),
                 const SizedBox(height: 2),
-                Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF101828))),
+                Text(value, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: context.textPrimary)),
               ],
             ),
           ],
@@ -524,8 +518,8 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
   Widget _iconBox(IconData icon) => Container(
         width: 44,
         height: 44,
-        decoration: const BoxDecoration(color: Color(0xFFFFF7ED), shape: BoxShape.circle),
-        child: Icon(icon, size: 22, color: const Color(0xFFCF8307)),
+        decoration: BoxDecoration(color: context.isDark ? AppColors.orangeprimary.withValues(alpha: 0.1) : const Color(0xFFFFF7ED), shape: BoxShape.circle),
+        child: Icon(icon, size: 22, color: AppColors.orangeprimary),
       );
 }
 

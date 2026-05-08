@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
@@ -66,14 +67,14 @@ class _CarpoolTabState extends State<CarpoolTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
           child: Text(
             'Carpool',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: AppColors.greyDark,
+              color: context.textPrimary,
             ),
           ),
         ),
@@ -87,7 +88,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
             ],
           ),
         ),
-        const Divider(height: 1, thickness: 1, color: AppColors.greyF2F),
+        Divider(height: 1, thickness: 1, color: context.borderColor),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -156,32 +157,34 @@ class _CarpoolTabState extends State<CarpoolTab> {
   Widget _buildTabItem(String label, bool isActive, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                color: isActive ? AppColors.orangeprimary : AppColors.grey667,
+      child: IntrinsicWidth(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                  color: isActive ? AppColors.orangeprimary : context.textSecondary,
+                ),
               ),
             ),
-          ),
-          if (isActive)
-            Container(
-              height: 2,
-              width: 40,
-              decoration: BoxDecoration(
-                color: AppColors.orangeprimary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            )
-          else
-            const SizedBox(height: 2),
-        ],
+            if (isActive)
+              Container(
+                height: 2,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.orangeprimary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              )
+            else
+              const SizedBox(height: 2),
+          ],
+        ),
       ),
     );
   }
@@ -255,8 +258,8 @@ class _CarpoolTabState extends State<CarpoolTab> {
       children: [
         Text(
           title,
-          style: const TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.greyDark),
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary),
         ),
         Row(
           children: [
@@ -281,20 +284,20 @@ class _CarpoolTabState extends State<CarpoolTab> {
         Container(
           width: 80,
           height: 80,
-          decoration: const BoxDecoration(
-            color: AppColors.greyBackground,
+          decoration: BoxDecoration(
+            color: context.bgSubtle,
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.directions_car_filled_outlined,
-              size: 40, color: AppColors.dashedLineColor),
+          child: Icon(Icons.directions_car_filled_outlined,
+              size: 40, color: context.textHint),
         ),
         const SizedBox(height: 24),
         Text(
           l.no_rides_yet,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: AppColors.greyDark,
+            color: context.textPrimary,
           ),
         ),
         const SizedBox(height: 8),
@@ -303,9 +306,9 @@ class _CarpoolTabState extends State<CarpoolTab> {
           child: Text(
             l.no_rides_sub,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: AppColors.grey667,
+              color: context.textSecondary,
               height: 1.5,
             ),
           ),

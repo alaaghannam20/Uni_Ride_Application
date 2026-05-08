@@ -33,6 +33,7 @@ class Routes {
   static const offerConfirmation = '/OfferConfirmationScreen';
 
   static const driverhome       = '/DriverHomeScreen';
+  static const createTrip       = '/CreateTripScreen';
   static const driverprofile    = '/DriverProfileScreen';
   static const carpoolProfile   = '/CarpoolProfileScreen';
   static const tripDetails = '/TripDetailsScreen';

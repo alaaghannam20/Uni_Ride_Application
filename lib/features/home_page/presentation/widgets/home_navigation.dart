@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class HomeNavigation extends StatelessWidget {
@@ -22,19 +23,19 @@ class HomeNavigation extends StatelessWidget {
       margin: const EdgeInsets.only(top: 16),
       child: Row(
         children: [
-          _navItem(0, l.find_trips, Icons.explore_outlined),
+          _navItem(context, 0, l.find_trips, Icons.explore_outlined),
           const SizedBox(width: 12),
-          _navItem(1, l.my_trips, Icons.access_time),
+          _navItem(context, 1, l.my_trips, Icons.access_time),
           const SizedBox(width: 12),
-          _navItem(2, l.carpool, Icons.people_outline),
+          _navItem(context, 2, l.carpool, Icons.people_outline),
           const SizedBox(width: 12),
-          _navItem(3, l.rewards, Icons.card_giftcard),
+          _navItem(context, 3, l.rewards, Icons.card_giftcard),
         ],
       ),
     );
   }
 
-  Widget _navItem(int index, String label, IconData icon) {
+  Widget _navItem(BuildContext context, int index, String label, IconData icon) {
     final isActive = activeIndex == index;
     return Expanded(
       child: GestureDetector(
@@ -42,14 +43,14 @@ class HomeNavigation extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           decoration: BoxDecoration(
-            color: isActive ? AppColors.orangeprimary : Colors.white,
+            color: isActive ? AppColors.orangeprimary : context.bgSubtle,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isActive ? AppColors.orangeprimary : AppColors.greyE5E),
+            border: Border.all(color: isActive ? AppColors.orangeprimary : context.borderColor),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 20, color: isActive ? Colors.white : AppColors.greyDark),
+              Icon(icon, size: 20, color: isActive ? Colors.white : context.textSecondary),
               const SizedBox(height: 4),
               Text(
                 label,
@@ -57,7 +58,7 @@ class HomeNavigation extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
-                  color: isActive ? Colors.white : AppColors.greyDark,
+                  color: isActive ? Colors.white : context.textSecondary,
                 ),
               ),
             ],

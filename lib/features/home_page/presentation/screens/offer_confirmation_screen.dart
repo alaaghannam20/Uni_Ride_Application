@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/features/home_page/presentation/screens/home_screen.dart';
 
@@ -26,7 +27,7 @@ class OfferConfirmationScreen extends StatelessWidget {
     final int potentialEarnings = availableSeats * pricePerSeat;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgWhite,
       body: SafeArea(
         child: Column(
           children: [
@@ -56,13 +57,13 @@ class OfferConfirmationScreen extends StatelessWidget {
                           const SizedBox(height: 12), // Gap: 12px
                           Text(
                             l.offer_posted,
-                            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: context.textPrimary),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             l.offer_posted_sub,
-                            style: const TextStyle(fontSize: 14, color: Color(0xFF667085)),
+                            style: TextStyle(fontSize: 14, color: context.textSecondary),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -76,21 +77,16 @@ class OfferConfirmationScreen extends StatelessWidget {
                       height: 95.67,
                       padding: const EdgeInsets.only(top: 21.84, right: 21.84, bottom: 1.85, left: 21.84),
                       decoration: BoxDecoration(
-                        color: const Color(0x0DCF8307), // #CF83070D
+                        color: context.isDark ? const Color(0xFFCF8307).withValues(alpha: 0.1) : const Color(0x0DCF8307), // #CF83070D
                         borderRadius: BorderRadius.circular(20),
-                        border: const Border(
-                          top: BorderSide(color: Color(0x33CF8307), width: 1.85), // #CF830733
-                          bottom: BorderSide(color: Color(0x33CF8307), width: 1.85),
-                          left: BorderSide(color: Color(0x33CF8307), width: 1.85),
-                          right: BorderSide(color: Color(0x33CF8307), width: 1.85),
-                        ),
+                        border: Border.all(color: const Color(0x33CF8307), width: 1.85), // #CF830733
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             l.carpool_id,
-                            style: const TextStyle(fontSize: 13, color: Color(0xFF9E9E9E), fontWeight: FontWeight.w400),
+                            style: TextStyle(fontSize: 13, color: context.textSecondary, fontWeight: FontWeight.w400),
                           ),
                           const SizedBox(height: 4), // Gap: 4px
                           const Text(
@@ -206,10 +202,10 @@ class OfferConfirmationScreen extends StatelessWidget {
                       height: 173.11,
                       padding: const EdgeInsets.only(top: 20.61, right: 20.61, bottom: 0.62, left: 20.61),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.bgWhite,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFF3F4F6), width: 0.62),
-                        boxShadow: [
+                        border: Border.all(color: context.borderColor, width: 0.62),
+                        boxShadow: context.isDark ? [] : [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
                             offset: const Offset(0, 1),
@@ -229,17 +225,17 @@ class OfferConfirmationScreen extends StatelessWidget {
                         children: [
                           Text(
                             l.offer_statistics,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary),
                           ),
                           const SizedBox(height: 15.99), // Gap: 15.99px
                           Row(
                             children: [
                               Expanded(
-                                child: _statBox(l.available_seats, "$availableSeats", const Color(0xFFF9FAFB), const Color(0xFFCF8307)),
+                                child: _statBox(context, l.available_seats, "$availableSeats", const Color(0xFFF9FAFB), const Color(0xFFCF8307)),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
-                                child: _statBox(l.potential_earnings, "₪$potentialEarnings", const Color(0xFFF0FDF4), const Color(0xFF16A34A)),
+                                child: _statBox(context, l.potential_earnings, "₪$potentialEarnings", const Color(0xFFF0FDF4), const Color(0xFF16A34A)),
                               ),
                             ],
                           ),
@@ -254,10 +250,10 @@ class OfferConfirmationScreen extends StatelessWidget {
                       height: 288.15,
                       padding: const EdgeInsets.only(top: 20.61, right: 20.61, bottom: 0.62, left: 20.61),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.bgWhite,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFF3F4F6), width: 0.62),
-                        boxShadow: [
+                        border: Border.all(color: context.borderColor, width: 0.62),
+                        boxShadow: context.isDark ? [] : [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.05),
                             offset: const Offset(0, 1),
@@ -277,14 +273,14 @@ class OfferConfirmationScreen extends StatelessWidget {
                         children: [
                           Text(
                             l.what_happens_next,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF101828)),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary),
                           ),
                           const SizedBox(height: 15.99), // Gap: 15.99px
-                          _nextStep(1, l.next1_title, l.next1_sub),
+                          _nextStep(context, 1, l.next1_title, l.next1_sub),
                           const SizedBox(height: 15.99),
-                          _nextStep(2, l.next2_title, l.next2_sub),
+                          _nextStep(context, 2, l.next2_title, l.next2_sub),
                           const SizedBox(height: 15.99),
-                          _nextStep(3, l.next3_title, l.next3_sub),
+                          _nextStep(context, 3, l.next3_title, l.next3_sub),
                         ],
                       ),
                     ),
@@ -297,11 +293,11 @@ class OfferConfirmationScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            child: _secondaryButton(Icons.share_outlined, l.share),
+                            child: _secondaryButton(context, Icons.share_outlined, l.share),
                           ),
                           const SizedBox(width: 12), // Gap: 12px
                           Expanded(
-                            child: _secondaryButton(Icons.list_alt_rounded, l.my_offers),
+                            child: _secondaryButton(context, Icons.list_alt_rounded, l.my_offers),
                           ),
                         ],
                       ),
@@ -314,7 +310,7 @@ class OfferConfirmationScreen extends StatelessWidget {
                       height: 113.96,
                       padding: const EdgeInsets.only(top: 15.99, left: 15.99, right: 15.99),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFFBEB),
+                        color: context.isDark ? const Color(0xFF451A03).withValues(alpha: 0.3) : const Color(0xFFFFFBEB),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Row(
@@ -323,8 +319,8 @@ class OfferConfirmationScreen extends StatelessWidget {
                           Container(
                             width: 32,
                             height: 32,
-                            decoration: const BoxDecoration(color: Color(0xFFFEF3C7), shape: BoxShape.circle),
-                            child: const Icon(Icons.lightbulb_outline, color: Color(0xFFD97706), size: 20),
+                            decoration: BoxDecoration(color: context.isDark ? const Color(0xFF78350F) : const Color(0xFFFEF3C7), shape: BoxShape.circle),
+                            child: Icon(Icons.lightbulb_outline, color: context.isDark ? const Color(0xFFFCD34D) : const Color(0xFFD97706), size: 20),
                           ),
                           const SizedBox(width: 12), // Gap: 12px
                           Expanded(
@@ -333,12 +329,12 @@ class OfferConfirmationScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   l.pro_tip,
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFFD97706)),
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFFFCD34D) : const Color(0xFFD97706)),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   l.pro_tip_description,
-                                  style: const TextStyle(fontSize: 12, color: Color(0xFFB45309), height: 1.4),
+                                  style: TextStyle(fontSize: 12, color: context.isDark ? const Color(0xFFFDE68A) : const Color(0xFFB45309), height: 1.4),
                                 ),
                               ],
                             ),
@@ -382,52 +378,73 @@ class OfferConfirmationScreen extends StatelessWidget {
     );
   }
 
-  Widget _statBox(String label, String value, Color bg, Color valueColor) {
-    // Image 2 internal box specs for Potential Earnings
+  Widget _statBox(BuildContext context, String label, String value, Color bg, Color valueColor) {
     final isPositive = valueColor == const Color(0xFF16A34A);
+    final isDark = context.isDark;
+
+    final Color boxColor = isPositive
+        ? (isDark ? const Color(0xFF064E3B) : bg)
+        : (isDark ? const Color(0xFF1F2937) : bg);
+
+    final Gradient? boxGradient = isPositive && !isDark
+        ? const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFF0FDF4), Color(0xFFECFDF5)],
+          )
+        : null;
+
+    final Color borderColor = isPositive
+        ? (isDark ? const Color(0xFF065F46) : const Color(0xFFDCFCE7))
+        : (isDark ? const Color(0xFF374151) : context.borderColor);
+
+    final Color textColor = isPositive
+        ? (isDark ? const Color(0xFF6EE7B7) : const Color(0xFF16A34A))
+        : (isDark ? const Color(0xFF9CA3AF) : context.textSecondary);
+
+    final Color valueTextColor = isPositive
+        ? (isDark ? const Color(0xFF6EE7B7) : const Color(0xFF16A34A))
+        : (isDark ? const Color(0xFFCF8307) : valueColor);
+
     return Container(
       width: 158.40,
       height: 91.89,
       padding: const EdgeInsets.only(top: 16.61, right: 16.61, bottom: 0.62, left: 16.61),
       decoration: BoxDecoration(
-        color: bg,
-        gradient: isPositive ? const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFF0FDF4), Color(0xFFECFDF5)],
-        ) : null,
+        color: boxColor,
+        gradient: boxGradient,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isPositive ? const Color(0xFFDCFCE7) : const Color(0xFFF3F4F6), width: 0.62),
+        border: Border.all(color: borderColor, width: 0.62),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(label, style: TextStyle(fontSize: 12, color: isPositive ? const Color(0xFF16A34A) : const Color(0xFF667085), fontWeight: FontWeight.w500)),
-          const SizedBox(height: 8), // Gap: 8px
-          Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: valueColor)),
+          Text(label, style: TextStyle(fontSize: 12, color: textColor, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 8),
+          Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: valueTextColor)),
         ],
       ),
     );
   }
 
-  Widget _nextStep(int number, String title, String subtitle) {
+  Widget _nextStep(BuildContext context, int number, String title, String subtitle) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: 24,
           height: 24,
-          decoration: const BoxDecoration(color: Color(0xFFEFF6FF), shape: BoxShape.circle),
-          child: Center(child: Text("$number", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1D4ED8)))),
+          decoration: BoxDecoration(color: context.isDark ? const Color(0xFF1E40AF) : const Color(0xFFEFF6FF), shape: BoxShape.circle),
+          child: Center(child: Text("$number", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFFBFDBFE) : const Color(0xFF1D4ED8)))),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF101828))),
+              Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: context.textPrimary)),
               const SizedBox(height: 4),
-              Text(subtitle, style: const TextStyle(fontSize: 12, color: Color(0xFF667085), height: 1.3)),
+              Text(subtitle, style: TextStyle(fontSize: 12, color: context.textSecondary, height: 1.3)),
             ],
           ),
         ),
@@ -435,19 +452,19 @@ class OfferConfirmationScreen extends StatelessWidget {
     );
   }
 
-  Widget _secondaryButton(IconData icon, String label) {
+  Widget _secondaryButton(BuildContext context, IconData icon, String label) {
     return Container(
       height: 50,
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 18, color: const Color(0xFF344054)),
+          Icon(icon, size: 18, color: context.textPrimary),
           const SizedBox(width: 8),
-          Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF344054))),
+          Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
         ],
       ),
     );

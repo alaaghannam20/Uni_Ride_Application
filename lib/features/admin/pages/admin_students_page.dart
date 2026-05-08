@@ -18,6 +18,8 @@ class AdminStudentsPage extends StatefulWidget {
 }
 
 class _AdminStudentsPageState extends State<AdminStudentsPage> {
+  String _query = '';
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +41,7 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
             title: locale.studentManagement,
             showSearchAndFilter: true,
             searchHint: 'Search students...',
+            onSearch: (val) => setState(() => _query = val.trim().toLowerCase()),
           ),
           Expanded(
             child: Consumer<AdminProvider>(
@@ -50,7 +53,12 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
                   return Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red)));
                 }
 
-                final students = provider.students;
+                final students = _query.isEmpty
+                    ? provider.students
+                    : provider.students.where((s) =>
+                        s.fullName.toLowerCase().contains(_query) ||
+                        s.email.toLowerCase().contains(_query),
+                      ).toList();
 
                 return SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: isDesktop ? 25 : 12, vertical: 25),

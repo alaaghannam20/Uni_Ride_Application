@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/models/admin_driver_model.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
@@ -10,62 +11,35 @@ import 'package:uni_ride_application/features/admin/widgets/admin_header.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class AdminDriversPage extends StatefulWidget {
-  const AdminDriversPage({Key? key}) : super(key: key);
+  const AdminDriversPage({super.key});
 
   @override
   State<AdminDriversPage> createState() => _AdminDriversPageState();
 }
 
 class _AdminDriversPageState extends State<AdminDriversPage> {
-  // Mock data — will be replaced with real API data once GET /api/admin/drivers is available
-  final List<Map<String, dynamic>> _drivers = [
-    {
-      'id': 'ef8c11f3-5831-4877-bb74-900bbf8c9380',
-      'name': 'Laila Hassan',
-      'phone': '+972 59 456 7890',
-      'vehicle': '2020 Mazda 3',
-      'rating': 4.8,
-      'trips': 156,
-      'status': 'active',
-    },
-    {
-      'id': 'a1b2c3d4-1234-5678-abcd-ef0123456789',
-      'name': 'Omar Saleh',
-      'phone': '+972 59 567 8901',
-      'vehicle': '2021 Nissan Altima',
-      'rating': 4.9,
-      'trips': 234,
-      'status': 'active',
-    },
-    {
-      'id': 'b2c3d4e5-2345-6789-bcde-f01234567890',
-      'name': 'Fatima Qasem',
-      'phone': '+972 59 678 9012',
-      'vehicle': '2022 Kia Optima',
-      'rating': 4.7,
-      'trips': 189,
-      'status': 'inactive',
-    },
-  ];
+  String _query = '';
 
-  Future<void> _toggleStatus(int index) async {
-    final driver  = _drivers[index];
-    final id      = driver['id'] as String;
-    final success = await context.read<AdminProvider>().toggleDriverStatus(id);
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AdminProvider>().fetchDriversList();
+    });
+  }
 
+  Future<void> _toggleStatus(AdminDriverModel driver) async {
+    final success = await context.read<AdminProvider>().toggleDriverStatus(driver.id);
     if (!mounted) return;
-    if (success) {
-      setState(() {
-        _drivers[index]['status'] =
-            driver['status'] == 'active' ? 'inactive' : 'active';
-      });
-    } else {
+    if (!success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.read<AdminProvider>().errorMessage),
           backgroundColor: AppColors.errorRed,
         ),
       );
+    } else {
+      context.read<AdminProvider>().fetchDriversList();
     }
   }
 
@@ -82,60 +56,102 @@ class _AdminDriversPageState extends State<AdminDriversPage> {
             title: locale.driverManagement,
             showSearchAndFilter: true,
             searchHint: 'Search drivers...',
+            onSearch: (val) => setState(() => _query = val.trim().toLowerCase()),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: isDesktop ? 32 : 12,
-                vertical: 32,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: context.bgCard,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: context.borderColor),
-                ),
-                child: Column(
-                  children: [
-                    if (isDesktop)
-                      Container(
-                        height: 52,
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        decoration: BoxDecoration(
-                          border: Border(bottom: BorderSide(color: context.borderColor)),
+            child: Consumer<AdminProvider>(
+              builder: (context, provider, _) {
+                if (provider.driversState == AdminState.loading && provider.drivers.isEmpty) {
+                  return const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary));
+                }
+
+                if (provider.driversState == AdminState.error && provider.drivers.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline, size: 48, color: AppColors.errorRed),
+                        const SizedBox(height: 12),
+                        Text(provider.errorMessage, style: TextStyle(color: context.textSecondary)),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => provider.fetchDriversList(),
+                          child: Text(locale.retry),
                         ),
-                        child: Row(
-                          children: [
-                            Expanded(flex: 3, child: Text(locale.driver.toUpperCase(),     style: AppStyle.adminCardSection(context))),
-                            Expanded(flex: 3, child: Text(locale.car.toUpperCase(),        style: AppStyle.adminCardSection(context))),
-                            Expanded(flex: 2, child: Text(locale.rating.toUpperCase(),     style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
-                            Expanded(flex: 2, child: Text(locale.totalTrips.toUpperCase(), style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
-                            Expanded(flex: 2, child: Text(locale.status.toUpperCase(),     style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
-                            Expanded(flex: 2, child: Text(locale.actions.toUpperCase(),    style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
-                          ],
-                        ),
-                      ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _drivers.length,
-                      itemBuilder: (context, index) {
-                        final driver = _drivers[index];
-                        return _DriverRow(
-                          name:             driver['name']    as String,
-                          phone:            driver['phone']   as String,
-                          vehicle:          driver['vehicle'] as String,
-                          rating:           driver['rating']  as double,
-                          trips:            driver['trips']   as int,
-                          status:           driver['status']  as String,
-                          showBottomBorder: index < _drivers.length - 1,
-                          onToggleStatus:   () => _toggleStatus(index),
-                        );
-                      },
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  );
+                }
+
+                final drivers = _query.isEmpty
+                    ? provider.drivers
+                    : provider.drivers.where((d) =>
+                        d.fullName.toLowerCase().contains(_query) ||
+                        d.vehicleInfo.toLowerCase().contains(_query),
+                      ).toList();
+
+                if (drivers.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.directions_car_outlined, size: 64, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(locale.noDriversFound, style: AppStyle.adminCardSection(context).copyWith(color: Colors.grey)),
+                      ],
+                    ),
+                  );
+                }
+
+                return SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isDesktop ? 32 : 12,
+                    vertical: 32,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: context.bgCard,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: context.borderColor),
+                    ),
+                    child: Column(
+                      children: [
+                        if (isDesktop)
+                          Container(
+                            height: 52,
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            decoration: BoxDecoration(
+                              border: Border(bottom: BorderSide(color: context.borderColor)),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(flex: 3, child: Text(locale.driver.toUpperCase(),     style: AppStyle.adminCardSection(context))),
+                                Expanded(flex: 3, child: Text(locale.car.toUpperCase(),        style: AppStyle.adminCardSection(context))),
+                                Expanded(flex: 2, child: Text(locale.rating.toUpperCase(),     style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.totalTrips.toUpperCase(), style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.status.toUpperCase(),     style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
+                                Expanded(flex: 2, child: Text(locale.actions.toUpperCase(),    style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
+                              ],
+                            ),
+                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: drivers.length,
+                          itemBuilder: (context, index) {
+                            final driver = drivers[index];
+                            return _DriverRow(
+                              driver:           driver,
+                              showBottomBorder: index < drivers.length - 1,
+                              onToggleStatus:   () => _toggleStatus(driver),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -145,30 +161,19 @@ class _AdminDriversPageState extends State<AdminDriversPage> {
 }
 
 class _DriverRow extends StatelessWidget {
-  final String       name;
-  final String       phone;
-  final String       vehicle;
-  final double       rating;
-  final int          trips;
-  final String       status;
-  final bool         showBottomBorder;
-  final VoidCallback onToggleStatus;
+  final AdminDriverModel driver;
+  final bool             showBottomBorder;
+  final VoidCallback     onToggleStatus;
 
   const _DriverRow({
-    required this.name,
-    required this.phone,
-    required this.vehicle,
-    required this.rating,
-    required this.trips,
-    required this.status,
+    required this.driver,
     required this.onToggleStatus,
     this.showBottomBorder = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final locale   = AppLocalizations.of(context)!;
-    final isActive = status == 'active';
+    final locale    = AppLocalizations.of(context)!;
     final isDesktop = Responsive.isDesktop(context);
 
     if (!isDesktop) {
@@ -194,30 +199,23 @@ class _DriverRow extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name, style: AppStyle.adminCardName(context, fontSize: 16)),
-                      Text(phone, style: AppStyle.adminCardContact(context)),
+                      Text(driver.fullName,    style: AppStyle.adminCardName(context, fontSize: 16)),
+                      Text(driver.phoneNumber, style: AppStyle.adminCardContact(context)),
                     ],
                   ),
                 ),
-                _statusBadge(isActive, locale),
+                _statusBadge(context, locale),
               ],
             ),
             const SizedBox(height: 12),
-            _infoRow(context, locale.car, vehicle),
-            _infoRow(context, locale.rating, rating.toString(), isRating: true),
-            _infoRow(context, locale.totalTrips, trips.toString()),
+            _infoRow(context, locale.car,        driver.vehicleInfo),
+            _infoRow(context, locale.rating,     driver.rating.toStringAsFixed(1), isRating: true),
+            _infoRow(context, locale.totalTrips, driver.totalTrips.toString()),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.visibility_outlined, size: 18),
-                  label: Text(locale.viewDetails),
-                  style: TextButton.styleFrom(foregroundColor: AppColors.adminIcon),
-                ),
-                const SizedBox(width: 8),
-                _moreMenu(context, locale, isActive),
+                _moreMenu(context, locale),
               ],
             ),
           ],
@@ -249,14 +247,14 @@ class _DriverRow extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name,  style: AppStyle.adminCardName(context, fontSize: 14)),
-                    Text(phone, style: AppStyle.adminCardContact(context)),
+                    Text(driver.fullName,    style: AppStyle.adminCardName(context, fontSize: 14)),
+                    Text(driver.phoneNumber, style: AppStyle.adminCardContact(context)),
                   ],
                 ),
               ],
             ),
           ),
-          Expanded(flex: 3, child: Text(vehicle, style: AppStyle.adminCardValue(context))),
+          Expanded(flex: 3, child: Text(driver.vehicleInfo, style: AppStyle.adminCardValue(context))),
           Expanded(
             flex: 2,
             child: Row(
@@ -264,34 +262,22 @@ class _DriverRow extends StatelessWidget {
               children: [
                 const Icon(Icons.star, color: Colors.orange, size: 16),
                 const SizedBox(width: 4),
-                Text(rating.toString(), style: AppStyle.adminCardValue(context)),
+                Text(driver.rating.toStringAsFixed(1), style: AppStyle.adminCardValue(context)),
               ],
             ),
           ),
-          Expanded(flex: 2, child: Text(trips.toString(), style: AppStyle.adminCardValue(context), textAlign: TextAlign.center)),
-          Expanded(flex: 2, child: Center(child: _statusBadge(isActive, locale))),
+          Expanded(flex: 2, child: Text(driver.totalTrips.toString(), style: AppStyle.adminCardValue(context), textAlign: TextAlign.center)),
+          Expanded(flex: 2, child: Center(child: _statusBadge(context, locale))),
           Expanded(
             flex: 2,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.visibility_outlined, size: 20, color: context.textSecondary),
-                  onPressed: () {},
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-                const SizedBox(width: 8),
-                _moreMenu(context, locale, isActive),
-              ],
-            ),
+            child: Center(child: _moreMenu(context, locale)),
           ),
         ],
       ),
     );
   }
 
-  Widget _moreMenu(BuildContext context, AppLocalizations locale, bool isActive) {
+  Widget _moreMenu(BuildContext context, AppLocalizations locale) {
     return PopupMenuButton<String>(
       icon: Icon(Icons.more_vert, size: 20, color: context.textSecondary),
       color: context.bgCard,
@@ -308,15 +294,15 @@ class _DriverRow extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                isActive ? Icons.block : Icons.check_circle_outline,
+                driver.isActive ? Icons.block : Icons.check_circle_outline,
                 size: 18,
-                color: isActive ? AppColors.errorRed : AppColors.adminSuccessText,
+                color: driver.isActive ? AppColors.errorRed : AppColors.adminSuccessText,
               ),
               const SizedBox(width: 8),
               Text(
-                isActive ? locale.deactivate : locale.activate,
+                driver.isActive ? locale.deactivate : locale.activate,
                 style: TextStyle(
-                  color: isActive ? AppColors.errorRed : AppColors.adminSuccessText,
+                  color: driver.isActive ? AppColors.errorRed : AppColors.adminSuccessText,
                   fontSize: 14,
                 ),
               ),
@@ -327,21 +313,34 @@ class _DriverRow extends StatelessWidget {
     );
   }
 
-  Widget _statusBadge(bool isActive, AppLocalizations locale) {
+  Widget _statusBadge(BuildContext context, AppLocalizations locale) {
+    final isActive  = driver.isActive;
+    final isPending = driver.status.toLowerCase() == 'pending';
+    final Color bg;
+    final Color fg;
+    final String label;
+
+    if (isActive) {
+      bg    = AppColors.adminSuccessBG;
+      fg    = AppColors.adminSuccessText;
+      label = locale.active;
+    } else if (isPending) {
+      bg    = AppColors.orangeprimary.withValues(alpha: 0.12);
+      fg    = AppColors.orangeprimary;
+      label = driver.status;
+    } else {
+      bg    = AppColors.adminDivider;
+      fg    = AppColors.adminIcon;
+      label = locale.inactive;
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isActive ? AppColors.adminSuccessBG : AppColors.adminDivider,
+        color: bg,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
-        isActive ? locale.active : locale.inactive,
-        style: TextStyle(
-          color: isActive ? AppColors.adminSuccessText : AppColors.adminIcon,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      child: Text(label, style: TextStyle(color: fg, fontSize: 12, fontWeight: FontWeight.w500)),
     );
   }
 

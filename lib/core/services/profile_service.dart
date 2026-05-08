@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:uni_ride_application/core/models/api_response_model.dart';
 import 'package:uni_ride_application/core/network/app_endpoints.dart';
 import 'package:uni_ride_application/core/services/dio_factory/dio_factory.dart';
@@ -19,6 +21,22 @@ class ProfileService {
       return MemberProfileModel.fromJson(json);
     } catch (e) {
       throw Exception(_cleanError(e));
+    }
+  }
+
+  // PUT /user/update-profile-image
+  Future<ApiResponseModel> updateProfileImage(File imageFile) async {
+    try {
+      final formData = FormData.fromMap({
+        'profileImage': await MultipartFile.fromFile(imageFile.path),
+      });
+      final response = await DioFactory.put(
+        AppEndpoints.updateProfileImage,
+        data: formData,
+      );
+      return ApiResponseModel.fromJson(response.data);
+    } catch (e) {
+      return ApiResponseModel(success: false, message: _cleanError(e));
     }
   }
 

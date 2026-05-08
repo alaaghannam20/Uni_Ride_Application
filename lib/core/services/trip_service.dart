@@ -97,9 +97,41 @@ class TripService {
     }
   }
 
+  Future<void> publishTrip(int tripId) async {
+    try {
+      await DioFactory.post(AppEndpoints.publishTrip(tripId));
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
   Future<void> cancelTrip(int tripId) async {
     try {
       await DioFactory.put(AppEndpoints.cancelTrip(tripId));
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
+  Future<List<MyTripModel>> getDriverScheduled() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.driverScheduled);
+      final data = response.data;
+      if (data is List) return data.map((e) => MyTripModel.fromJson(e)).toList();
+      if (data is Map && data['data'] is List) return (data['data'] as List).map((e) => MyTripModel.fromJson(e)).toList();
+      return [];
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
+  Future<List<MyTripModel>> getDriverHistory() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.driverHistory);
+      final data = response.data;
+      if (data is List) return data.map((e) => MyTripModel.fromJson(e)).toList();
+      if (data is Map && data['data'] is List) return (data['data'] as List).map((e) => MyTripModel.fromJson(e)).toList();
+      return [];
     } catch (e) {
       throw Exception(_cleanError(e));
     }

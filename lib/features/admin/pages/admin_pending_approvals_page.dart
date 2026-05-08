@@ -129,18 +129,31 @@ class _ApprovalCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundColor: context.bgSubtle,
-                    backgroundImage: approval.profileImage != null
-                        ? NetworkImage('http://uniride.runasp.net/${approval.profileImage}')
-                        : null,
-                    child: approval.profileImage == null
-                        ? Text(
-                            approval.fullName.isNotEmpty ? approval.fullName[0].toUpperCase() : '?',
-                            style: TextStyle(color: context.textSecondary, fontWeight: FontWeight.bold, fontSize: 18),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: context.bgSubtle,
+                    ),
+                    child: approval.profileImage != null
+                        ? Image.network(
+                            'http://uniride.runasp.net/${approval.profileImage}',
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => Center(
+                              child: Text(
+                                approval.fullName.isNotEmpty ? approval.fullName[0].toUpperCase() : '?',
+                                style: TextStyle(color: context.textSecondary, fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ),
                           )
-                        : null,
+                        : Center(
+                            child: Text(
+                              approval.fullName.isNotEmpty ? approval.fullName[0].toUpperCase() : '?',
+                              style: TextStyle(color: context.textSecondary, fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ),
                   ),
                   const SizedBox(width: 16),
                   Column(
@@ -230,7 +243,7 @@ class _ApprovalCard extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       Routes.adminDriverDetails,
-                      arguments: approval,
+                      arguments: {'id': approval.id, 'type': approval.type},
                     );
                   },
                   color: context.textSecondary,

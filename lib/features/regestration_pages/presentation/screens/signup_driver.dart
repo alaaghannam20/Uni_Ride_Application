@@ -194,10 +194,9 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             profileImagePath: _profileImagePath!,
           );
 
-    if (!mounted) return;
-
     if (success) {
       await clearProgress();
+      if (!mounted) return;
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -296,7 +295,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         color: isCompleted || isActive ? AppColors.orangeprimary : const Color(0xFFF2F4F7),
         shape: BoxShape.circle,
         border: isActive
-            ? Border.all(color: AppColors.orangeprimary.withOpacity(0.2), width: 4)
+            ? Border.all(color: AppColors.orangeprimary.withValues(alpha: 0.2), width: 4)
             : null,
       ),
       child: Icon(
@@ -348,7 +347,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: AppColors.orangeprimary.withOpacity(0.1),
+                      color: AppColors.orangeprimary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                       image: _profileImagePath != null
                           ? DecorationImage(
@@ -456,9 +455,13 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             onChanged: (value) {
               setState(() {
                 selectedCarType = value;
-                if (value == 'car') carSeatsController.text = '4';
-                else if (value == 'service') carSeatsController.text = '7';
-                else if (value == 'bus') carSeatsController.text = '20';
+                if (value == 'car') {
+                  carSeatsController.text = '4';
+                } else if (value == 'service') {
+                  carSeatsController.text = '7';
+                } else if (value == 'bus') {
+                  carSeatsController.text = '20';
+                }
               });
             },
             validator: (value) => AppValidators.validateCarType(context, value),
@@ -551,7 +554,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               border: Border.all(
                   color: path != null ? AppColors.orangeprimary : const Color(0xFFD0D5DD)),
               borderRadius: BorderRadius.circular(12),
-              color: path != null ? AppColors.orangeprimary.withOpacity(0.05) : Colors.white,
+              color: path != null ? AppColors.orangeprimary.withValues(alpha: 0.05) : Colors.white,
             ),
             child: Row(
               children: [

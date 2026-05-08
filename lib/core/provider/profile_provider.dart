@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/services/profile_service.dart';
 import 'package:uni_ride_application/features/profile_memberuni/data/models/driver_profile_model.dart';
@@ -12,13 +13,29 @@ class ProfileProvider extends ChangeNotifier {
   MemberProfileModel?  _memberProfile;
   DriverProfileModel?  _driverProfile;
   DriverProfileModel?  _carpoolProfile;
-  String _errorMessage = '';
+  String _errorMessage   = '';
+  bool   _uploadingImage = false;
 
   ProfileState        get state          => _state;
   MemberProfileModel? get memberProfile  => _memberProfile;
   DriverProfileModel? get driverProfile  => _driverProfile;
   DriverProfileModel? get carpoolProfile => _carpoolProfile;
   String              get errorMessage   => _errorMessage;
+  bool                get uploadingImage => _uploadingImage;
+
+  Future<bool> uploadMemberProfileImage(File imageFile) async {
+    _uploadingImage = true;
+    notifyListeners();
+    final result = await _profileService.updateProfileImage(imageFile);
+    _uploadingImage = false;
+    if (result.success) {
+      await fetchMemberProfile();
+    } else {
+      _errorMessage = result.message;
+      notifyListeners();
+    }
+    return result.success;
+  }
 
   Future<void> fetchMemberProfile() async {
     _state = ProfileState.loading;

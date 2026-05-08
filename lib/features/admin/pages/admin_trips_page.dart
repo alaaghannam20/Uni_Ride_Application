@@ -18,6 +18,8 @@ class AdminTripsPage extends StatefulWidget {
 }
 
 class _AdminTripsPageState extends State<AdminTripsPage> {
+  String _query = '';
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +41,7 @@ class _AdminTripsPageState extends State<AdminTripsPage> {
             title: locale.tripManagement,
             showSearchAndFilter: true,
             searchHint: 'Search trips...',
+            onSearch: (val) => setState(() => _query = val.trim().toLowerCase()),
           ),
           Expanded(
             child: Consumer<AdminProvider>(
@@ -50,7 +53,12 @@ class _AdminTripsPageState extends State<AdminTripsPage> {
                   return Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red)));
                 }
 
-                final trips = provider.adminTrips;
+                final trips = _query.isEmpty
+                    ? provider.adminTrips
+                    : provider.adminTrips.where((t) =>
+                        t.driverName.toLowerCase().contains(_query) ||
+                        t.route.toLowerCase().contains(_query),
+                      ).toList();
 
                 return SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: isDesktop ? 25 : 12, vertical: 25),

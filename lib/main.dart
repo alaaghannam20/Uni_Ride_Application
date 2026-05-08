@@ -7,6 +7,9 @@ import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
+import 'package:uni_ride_application/core/provider/payment_provider.dart';
+import 'package:uni_ride_application/core/provider/rating_provider.dart';
+import 'package:uni_ride_application/core/provider/reward_provider.dart';
 import 'package:uni_ride_application/core/routes/app_router.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
@@ -25,6 +28,9 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => TripProvider()),
         ChangeNotifierProvider(create: (_) => BookingProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => PaymentProvider()),
+        ChangeNotifierProvider(create: (_) => RatingProvider()),
+        ChangeNotifierProvider(create: (_) => RewardProvider()),
       ],
       child: const MainApp(),
     )
