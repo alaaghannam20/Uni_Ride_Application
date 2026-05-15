@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 
 class OtpPinFieldWidget extends StatelessWidget {
   final ValueChanged<String> onCompleted; 
@@ -37,13 +38,13 @@ class OtpPinFieldWidget extends StatelessWidget {
         borderWidth: 1.2,
         focusedBorderWidth: 1.4,
 
-        borderColor: const Color(0xFFE6E6E6),
+        borderColor: context.borderColor,
         focusedBorderColor: AppColors.orangeprimary,
-        filledBorderColor: const Color(0xFFE6E6E6),
+        filledBorderColor: context.borderColor,
 
-        fillColor: AppColors.white,
-        focusedFillColor: AppColors.white,
-        filledFillColor: AppColors.white,
+        fillColor: context.bgCard,
+        focusedFillColor: context.bgCard,
+        filledFillColor: context.bgCard,
 
         textStyle: AppStyle.custombuttonstyle.copyWith(
           fontSize: 22,

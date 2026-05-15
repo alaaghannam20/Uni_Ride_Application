@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/models/reward_model.dart';
 import 'package:uni_ride_application/core/provider/reward_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
@@ -91,9 +93,9 @@ class _RewardsTabState extends State<RewardsTab> {
                         const Spacer(),
                         Row(
                           children: [
-                            _buildInfoBox(l.level, data?.level ?? 'Member'),
+                            Expanded(child: _buildInfoBox(l.level, data?.level ?? 'Member')),
                             const SizedBox(width: 12),
-                            _buildInfoBox(l.rank, '#${data?.rank ?? 0}'),
+                            Expanded(child: _buildInfoBox(l.rank, '#${data?.rank ?? 0}')),
                           ],
                         ),
                       ],
@@ -117,7 +119,7 @@ class _RewardsTabState extends State<RewardsTab> {
               const SizedBox(height: 24),
 
               // 2. Refer a Friend Card
-              _buildReferCard(l),
+              _buildReferCard(l, data),
               const SizedBox(height: 32),
 
               // 3. Achievements Section
@@ -128,15 +130,28 @@ class _RewardsTabState extends State<RewardsTab> {
                       style: TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
                   const SizedBox(height: 16),
-                  AchievementCard(
-                    title: l.ach_top_rider_title,
-                    subtitle: l.ach_top_rider_sub,
-                    progress: data?.progress ?? 0.0,
-                    progressLabel: '${data?.completedTrips ?? 0} / ${data?.targetTrips ?? 0}',
-                    points: '+300',
-                    icon: Icons.emoji_events_outlined,
-                    isCompleted: (data?.completedTrips ?? 0) >= (data?.targetTrips ?? 1) && (data?.targetTrips ?? 0) != 0,
-                  ),
+                  if (data != null && data.achievements.isNotEmpty)
+                    ...data.achievements.map((ach) {
+                      double progress = ach.target > 0 ? ach.current / ach.target : 0.0;
+                      IconData icon = ach.id == 'first_ride' ? Icons.bolt : Icons.emoji_events_outlined;
+                      String title = ach.id == 'first_ride' ? l.ach_first_ride_title : (ach.id == 'top_rider' ? l.ach_top_rider_title : ach.id);
+                      String subtitle = ach.id == 'first_ride' ? l.ach_first_ride_sub : (ach.id == 'top_rider' ? l.ach_top_rider_sub : '');
+                      
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: AchievementCard(
+                          title: title,
+                          subtitle: subtitle,
+                          progress: progress,
+                          progressLabel: '${ach.current} / ${ach.target}',
+                          points: '+${ach.points}',
+                          icon: icon,
+                          isCompleted: ach.completed,
+                        ),
+                      );
+                    }),
+                  if (data == null || data.achievements.isEmpty)
+                    Center(child: Text('No achievements found.', style: TextStyle(color: context.textHint))),
                 ],
               ),
               const SizedBox(height: 32),
@@ -175,12 +190,12 @@ class _RewardsTabState extends State<RewardsTab> {
     );
   }
 
-  Widget _buildReferCard(AppLocalizations l) {
+  Widget _buildReferCard(AppLocalizations l, RewardModel? data) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: context.bgCard,
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: context.borderColor),
         boxShadow: [
@@ -196,40 +211,42 @@ class _RewardsTabState extends State<RewardsTab> {
         children: [
           Row(
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: context.isDark ? const Color(0xFF2D3045) : const Color(0xFFEFF6FF),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.people_outline,
-                  color: context.isDark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB),
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l.refer_a_friend,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: context.textPrimary,
-                    ),
-                  ),
-                  Text(
-                    l.refer_sub,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: context.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+               Container(
+                 width: 40,
+                 height: 40,
+                 decoration: BoxDecoration(
+                   color: context.isDark ? context.bgSubtle : AppColors.infoBlueBg,
+                   borderRadius: BorderRadius.circular(10),
+                 ),
+                 child: Icon(
+                   Icons.people_outline,
+                   color: context.isDark ? AppColors.lightBlueAccent : AppColors.infoBlue,
+                   size: 20,
+                 ),
+               ),
+               const SizedBox(width: 12),
+               Expanded(
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     Text(
+                       l.refer_a_friend,
+                       style: TextStyle(
+                         fontSize: 16,
+                         fontWeight: FontWeight.bold,
+                         color: context.textPrimary,
+                       ),
+                     ),
+                     Text(
+                       '${data?.referralCount ?? 0} friends joined • +${data?.referralPoints ?? 0} pts earned',
+                       style: TextStyle(
+                         fontSize: 12,
+                         color: context.textSecondary,
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
             ],
           ),
           const SizedBox(height: 20),
@@ -244,7 +261,7 @@ class _RewardsTabState extends State<RewardsTab> {
                   ),
                   child: Center(
                     child: Text(
-                      'AHMED2024',
+                      data?.referralCode ?? '---',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -256,14 +273,30 @@ class _RewardsTabState extends State<RewardsTab> {
                 ),
               ),
               const SizedBox(width: 12),
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: AppColors.orangeprimary,
-                  borderRadius: BorderRadius.circular(12),
+              InkWell(
+                onTap: () {
+                  final code = data?.referralCode;
+                  if (code != null && code.isNotEmpty) {
+                    Clipboard.setData(ClipboardData(text: code));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Referral code copied to clipboard!'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.orangeprimary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.copy, color: Colors.white, size: 20),
                 ),
-                child: const Icon(Icons.copy, color: Colors.white, size: 20),
               ),
             ],
           ),
@@ -303,10 +336,10 @@ class _RewardsTabState extends State<RewardsTab> {
 
   Widget _buildInfoBox(String label, String value) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha:0.2),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,7 +347,7 @@ class _RewardsTabState extends State<RewardsTab> {
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withValues(alpha:0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 10,
               fontWeight: FontWeight.w400,
             ),

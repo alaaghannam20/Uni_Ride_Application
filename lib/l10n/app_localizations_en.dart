@@ -728,7 +728,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refer_a_friend => 'Refer a Friend';
 
   @override
-  String get refer_sub => 'Get 50 points for each referral';
+  String get refer_sub => 'Get 10 points for each referral';
 
   @override
   String get friends_joined => '3 friends joined · +150 pts earned';

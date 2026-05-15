@@ -5,7 +5,7 @@ import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
-
+import 'package:uni_ride_application/core/routes/routes.dart';
 class MyTripsTab extends StatefulWidget {
   const MyTripsTab({super.key});
 
@@ -48,7 +48,7 @@ class _MyTripsTabState extends State<MyTripsTab> {
           children: [
             Container(
               height: 50.5,
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -297,7 +297,7 @@ class _MyBookingCardState extends State<_MyBookingCard> {
               child: OutlinedButton(
                 onPressed: _cancelling ? null : () => _onCancel(l),
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.bgCard,
                   foregroundColor: AppColors.errorRed,
                   side: BorderSide(color: AppColors.errorRed.withValues(alpha: 0.4)),
                   padding: const EdgeInsets.symmetric(vertical: 10),
@@ -306,6 +306,36 @@ class _MyBookingCardState extends State<_MyBookingCard> {
                 child: _cancelling
                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: AppColors.errorRed, strokeWidth: 2))
                     : Text(l.cancel_the_trip, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.errorRed)),
+              ),
+            ),
+          ],
+          
+          if (booking.status == 'Completed' && !booking.isRated) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.rateDriver,
+                    arguments: {
+                      'bookingId': booking.bookingId,
+                      'driverName': booking.driverName,
+                    },
+                  ).then((value) {
+                    if (mounted) {
+                      context.read<BookingProvider>().fetchMyBookings();
+                    }
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.orangeprimary,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: Text('Rate Driver', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
               ),
             ),
           ],

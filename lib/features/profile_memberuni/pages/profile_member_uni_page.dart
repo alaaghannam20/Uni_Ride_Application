@@ -8,6 +8,8 @@ import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -368,9 +370,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Logout logic
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        await AppPrefs.logout();
+                        if (context.mounted) {
+                          Navigator.pushNamedAndRemoveUntil(context, Routes.signIn, (r) => false);
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: context.bgCard,

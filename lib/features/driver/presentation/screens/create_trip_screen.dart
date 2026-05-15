@@ -517,9 +517,12 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                   children: [
                     Container(
                       width: 24, height: 24,
-                      decoration: const BoxDecoration(color: Color(0xFFFEF3DF), shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                        color: context.isDark ? context.bgSubtle : AppColors.orangeLightBg,
+                        shape: BoxShape.circle,
+                      ),
                       alignment: Alignment.center,
-                      child: Text('${idx + 1}', style: const TextStyle(color: Color(0xFFCF8307), fontWeight: FontWeight.bold, fontSize: 12)),
+                      child: Text('${idx + 1}', style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold, fontSize: 12)),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

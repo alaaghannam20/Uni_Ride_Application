@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/features/home_page/presentation/screens/home_screen.dart';
@@ -361,7 +362,7 @@ class OfferConfirmationScreen extends StatelessWidget {
                     (r) => false,
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFCF8307),
+                    backgroundColor: AppColors.orangeprimary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     elevation: 0,
                   ),

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:uni_ride_application/core/models/admin_dashboard_stats_model.dart';
 import 'package:uni_ride_application/core/models/admin_driver_model.dart';
 import 'package:uni_ride_application/core/models/admin_student_model.dart';
@@ -36,11 +35,6 @@ class AdminService {
       final data = (response.data is Map && response.data['data'] != null)
           ? response.data['data'] as Map<String, dynamic>
           : response.data as Map<String, dynamic>;
-      // DEBUG — remove after diagnosis
-      debugPrint('=== RAW DETAILS RESPONSE: ${response.data}');
-      debugPrint('=== PARSED DATA MAP: $data');
-      debugPrint('=== driverLicenseImage key check: licenseImagePath=${data['licenseImagePath']}, driverLicenseImage=${data['driverLicenseImage']}, DriverLicenseImage=${data['DriverLicenseImage']}');
-      debugPrint('=== vehicleLicenseImage key check: vehicleLicenseImagePath=${data['vehicleLicenseImagePath']}, vehicleLicenseImage=${data['vehicleLicenseImage']}, VehicleLicenseImage=${data['VehicleLicenseImage']}');
       return PendingApprovalModel.fromJson(data);
     } catch (e) {
       throw Exception(e.toString());
@@ -79,7 +73,7 @@ class AdminService {
   Future<List<AdminStudentModel>> getStudents() async {
     final response = await DioFactory.get(AppEndpoints.adminStudents);
     final list = response.data as List? ?? [];
-    return list.map((e) => AdminStudentModel.fromJson(e)).toList();
+return list.map((e) => AdminStudentModel.fromJson(e)).toList();
   }
 
   Future<ApiResponseModel> toggleDriverStatus(String id) async {

@@ -42,7 +42,7 @@ class UserModel {
       userType: userTypeFromString(json[ApiKeys.userType] ?? ''),
       token: json[ApiKeys.token] ?? '',
       status: json[ApiKeys.status] ?? '',
-      profileImage: json[ApiKeys.profileImage],
+      profileImage: json[ApiKeys.profileImage] ?? json[ApiKeys.profilePicturePath] ?? json['ProfileImage'],
     );
   }
 

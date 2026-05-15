@@ -72,10 +72,10 @@ class _RateDriverPageState extends State<RateDriverPage> {
           vertical: 10,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? (context.isDark ? const Color(0xFF064E3B).withValues(alpha: 0.3) : AppColors.successBGStart) : context.bgCard,
+          color: isSelected ? (context.isDark ? AppColors.successDeepDark.withValues(alpha: 0.3) : AppColors.successBGStart) : context.bgCard,
           border: Border.all(
             color: isSelected
-                ? (context.isDark ? const Color(0xFF059669) : AppColors.successBorder)
+                ? (context.isDark ? AppColors.successDarkGreen : AppColors.successBorder)
                 : context.borderColor,
           ),
           borderRadius: BorderRadius.circular(24),
@@ -84,7 +84,7 @@ class _RateDriverPageState extends State<RateDriverPage> {
           child: Text(
             option,
             style: isSelected
-                ? TextStyle(color: context.isDark ? const Color(0xFF34D399) : Colors.green, fontWeight: FontWeight.bold)
+                ? TextStyle(color: context.isDark ? AppColors.successLightGreen : Colors.green, fontWeight: FontWeight.bold)
                 : TextStyle(color: context.textSecondary),
             textAlign: TextAlign.center,
           ),

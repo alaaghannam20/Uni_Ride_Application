@@ -28,7 +28,7 @@ class MemberProfileModel {
       fullName: json[ApiKeys.fullName] ?? '',
       email: json[ApiKeys.email] ?? '',
       phoneNumber: json[ApiKeys.phoneNumber] ?? '',
-      profilePicturePath: json[ApiKeys.profilePicturePath],
+      profilePicturePath: json[ApiKeys.profilePicturePath] ?? json[ApiKeys.profileImage] ?? json['ProfileImage'],
       memberSince: json[ApiKeys.memberSince] ?? '',
       memberType: json[ApiKeys.memberType],
       totalTrips: (json[ApiKeys.totalTrips] ?? 0).toInt(),

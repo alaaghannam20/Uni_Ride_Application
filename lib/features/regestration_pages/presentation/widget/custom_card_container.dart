@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 
 class CustomCardContainer extends StatelessWidget {
   final Widget child;
@@ -29,10 +29,10 @@ class CustomCardContainer extends StatelessWidget {
       margin: margin,
       padding: padding ?? const EdgeInsets.all(25),
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.white,
+        color: backgroundColor ?? context.bgCard,
         borderRadius: borderRadius ?? BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0x66E0E0E0),
+          color: context.borderColor,
           width: 1,
         ),
         boxShadow: const [

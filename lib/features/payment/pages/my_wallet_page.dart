@@ -241,8 +241,14 @@ class _MyWalletPageState extends State<MyWalletPage> {
   }
 
   Widget _buildSearchAndFilters(AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+    return Container(
+      decoration: BoxDecoration(
+        color: context.bgSubtle,
+        border: Border(
+          top: BorderSide(color: context.borderColor, width: 0.61),
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
       child: Column(
         children: [
           Row(
@@ -254,6 +260,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                   decoration: BoxDecoration(
                     color: context.bgSubtle,
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: context.borderColor, width: 0.61),
                   ),
                   child: Row(
                     children: [
@@ -281,6 +288,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                 decoration: BoxDecoration(
                   color: context.bgSubtle,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: context.borderColor, width: 0.61),
                 ),
                 child: Icon(Icons.filter_alt_outlined, color: context.textPrimary, size: 20),
               ),

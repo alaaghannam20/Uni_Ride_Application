@@ -36,28 +36,28 @@ class TransactionTile extends StatelessWidget {
 
     switch (type) {
       case TransactionType.payment:
-        iconColor = const Color(0xFFEF4444);
-        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : const Color(0xFFFEF2F2);
+        iconColor = AppColors.adminErrorText;
+        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminErrorBG;
         iconData = Icons.arrow_outward;
-        amountColor = const Color(0xFFEF4444);
-        statusBgColor = isDark ? iconColor.withValues(alpha: 0.15) : const Color(0xFFFEF2F2);
-        statusTextColor = const Color(0xFFEF4444);
+        amountColor = AppColors.adminErrorText;
+        statusBgColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminErrorBG;
+        statusTextColor = AppColors.adminErrorText;
         break;
       case TransactionType.topUp:
-        iconColor = const Color(0xFF3B82F6);
-        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : const Color(0xFFEFF6FF);
+        iconColor = AppColors.adminInfoText;
+        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminInfoBG;
         iconData = Icons.add;
-        amountColor = const Color(0xFF12B76A);
-        statusTextColor = const Color(0xFF12B76A);
-        statusBgColor = isDark ? statusTextColor.withValues(alpha: 0.15) : const Color(0xFFECFDF3);
+        amountColor = AppColors.adminSuccessText;
+        statusTextColor = AppColors.adminSuccessText;
+        statusBgColor = isDark ? statusTextColor.withValues(alpha: 0.15) : AppColors.adminSuccessBG;
         break;
       case TransactionType.refund:
-        iconColor = const Color(0xFF12B76A);
-        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : const Color(0xFFECFDF3);
+        iconColor = AppColors.adminSuccessText;
+        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminSuccessBG;
         iconData = Icons.call_received;
-        amountColor = const Color(0xFF12B76A);
-        statusTextColor = const Color(0xFF12B76A);
-        statusBgColor = isDark ? statusTextColor.withValues(alpha: 0.15) : const Color(0xFFECFDF3);
+        amountColor = AppColors.adminSuccessText;
+        statusTextColor = AppColors.adminSuccessText;
+        statusBgColor = isDark ? statusTextColor.withValues(alpha: 0.15) : AppColors.adminSuccessBG;
         break;
     }
 

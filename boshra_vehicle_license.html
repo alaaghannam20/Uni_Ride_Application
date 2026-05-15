@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; padding: 40px; background: #f0f0f0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  .card {
+    width: 650px; height: 380px; background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 50%, #e8f5e9 100%);
+    border-radius: 18px; border: 2px solid #2e7d32; padding: 28px 32px; position: relative;
+    font-family: 'Segoe UI', Arial, sans-serif; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, #000 25%, #fff 25%, #fff 50%, #009736 50%, #009736 75%, #ce1126 75%);
+  }
+  .header {
+    text-align: center; border-bottom: 2px solid #2e7d32; padding-bottom: 12px; margin-bottom: 18px;
+  }
+  .header h2 { margin: 0; color: #1b5e20; font-size: 13px; font-weight: 600; letter-spacing: 1px; }
+  .header h1 { margin: 4px 0 0; color: #2e7d32; font-size: 20px; font-weight: 800; letter-spacing: 2px; }
+  .body-content { display: flex; gap: 24px; }
+  .car-icon {
+    width: 120px; height: 120px; background: linear-gradient(135deg, #43a047, #2e7d32);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .car-icon svg { width: 70px; height: 70px; fill: white; }
+  .fields { flex: 1; }
+  .field { display: flex; margin-bottom: 8px; }
+  .field-label { width: 130px; font-size: 11px; color: #555; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 2px; }
+  .field-value { font-size: 14px; color: #1a1a1a; font-weight: 700; }
+  .plate-box {
+    margin-top: 12px; background: #1b5e20; color: white; text-align: center;
+    padding: 8px 20px; border-radius: 8px; display: inline-block;
+    font-size: 22px; font-weight: 900; letter-spacing: 4px;
+  }
+  .barcode {
+    position: absolute; bottom: 18px; right: 24px; display: flex; gap: 2px; align-items: flex-end;
+  }
+  .barcode span { display: block; width: 2px; background: #333; }
+  .footer-text {
+    position: absolute; bottom: 12px; left: 32px; font-size: 9px; color: #888; letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <h2>PALESTINIAN AUTHORITY — MINISTRY OF TRANSPORTATION</h2>
+    <h1>🚗 VEHICLE LICENSE</h1>
+  </div>
+  <div class="body-content">
+    <div class="car-icon">
+      <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+    </div>
+    <div class="fields">
+      <div class="field"><span class="field-label">Owner</span><span class="field-value">BOSHRA NOFAL</span></div>
+      <div class="field"><span class="field-label">Vehicle</span><span class="field-value">BMW X5</span></div>
+      <div class="field"><span class="field-label">Year</span><span class="field-value">2017</span></div>
+      <div class="field"><span class="field-label">Color</span><span class="field-value">White</span></div>
+      <div class="field"><span class="field-label">Chassis (VIN)</span><span class="field-value">VIN-BX52017BN3341</span></div>
+      <div style="margin-top: 6px;">
+        <span class="field-label" style="display:block; margin-bottom: 4px;">Plate Number</span>
+        <div class="plate-box">5-2198-41</div>
+      </div>
+    </div>
+  </div>
+  <div class="barcode">
+    <span style="height:28px"></span><span style="height:22px"></span><span style="height:30px"></span>
+    <span style="height:18px"></span><span style="height:28px"></span><span style="height:24px"></span>
+    <span style="height:30px"></span><span style="height:16px"></span><span style="height:26px"></span>
+    <span style="height:20px"></span><span style="height:30px"></span><span style="height:22px"></span>
+    <span style="height:28px"></span><span style="height:18px"></span><span style="height:24px"></span>
+    <span style="height:30px"></span><span style="height:20px"></span><span style="height:26px"></span>
+    <span style="height:16px"></span><span style="height:28px"></span><span style="height:22px"></span>
+  </div>
+  <div class="footer-text">TESTING PURPOSES ONLY — NOT AN OFFICIAL DOCUMENT</div>
+</div>
+</body>
+</html>

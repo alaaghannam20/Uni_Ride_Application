@@ -47,7 +47,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         onPressed: () => Navigator.pushNamed(context, Routes.createTrip),
         backgroundColor: AppColors.orangeprimary,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: Text(l.newTrip, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        label: Text(l.scheduleTrip, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -55,10 +55,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(context, l, profile?.fullName ?? l.welcomeBack),
+              _buildHeader(context, l, profile?.fullName ?? l.welcomeBack, profile?.profilePicturePath),
               const SizedBox(height: 20),
               _buildStatsRow(context, l, profile),
-              const SizedBox(height: 28),
+              const SizedBox(height: 48),
               _buildTabBar(context, l, scheduled.length, history.length),
               const SizedBox(height: 20),
               if (isLoading)
@@ -84,13 +84,33 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AppLocalizations l, String name) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l, String name, String? imagePath) {
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(l.welcomeBack, style: TextStyle(fontSize: 14, color: context.textSecondary)),
-          Text(name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: context.textPrimary)),
+        Row(children: [
+          Container(
+            width: 48, height: 48,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.orangeprimary.withValues(alpha: 0.15),
+            ),
+            child: imagePath != null
+                ? Image.network(
+                    'http://uniride.runasp.net/$imagePath',
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Center(child: Text(initial, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.orangeprimary))),
+                  )
+                : Center(child: Text(initial, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.orangeprimary))),
+          ),
+          const SizedBox(width: 12),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(l.welcomeBack, style: TextStyle(fontSize: 14, color: context.textSecondary)),
+            Text(name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: context.textPrimary)),
+          ]),
         ]),
         PopupMenuButton<String>(
           onSelected: (value) async {
@@ -119,23 +139,19 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   Widget _buildStatsRow(BuildContext context, AppLocalizations l, dynamic profile) {
     return Row(children: [
-      _statItem(context, label: l.today,  value: '${profile?.earned ?? 0}', prefix: '₪', prefixColor: AppColors.orangeprimary),
-      const SizedBox(width: 16),
+      Expanded(child: _statItem(context, label: l.today,  value: '${profile?.earned ?? 0}', prefix: '₪', prefixColor: AppColors.orangeprimary, align: CrossAxisAlignment.center)),
       Container(width: 1, height: 32, color: context.borderColor),
-      const SizedBox(width: 16),
-      _statItem(context, label: l.rating, value: profile?.rating?.toStringAsFixed(1) ?? '—', prefix: '★ ', prefixColor: AppColors.adminPrice),
-      const SizedBox(width: 16),
+      Expanded(child: _statItem(context, label: l.rating, value: profile?.rating?.toStringAsFixed(1) ?? '0.0', prefix: '★', prefixColor: AppColors.adminPrice, align: CrossAxisAlignment.center)),
       Container(width: 1, height: 32, color: context.borderColor),
-      const SizedBox(width: 16),
-      _statItem(context, label: l.trips,  value: '${profile?.totalTrips ?? 0}'),
+      Expanded(child: _statItem(context, label: l.trips,  value: '${profile?.totalTrips ?? 0}', align: CrossAxisAlignment.center)),
     ]);
   }
 
-  Widget _statItem(BuildContext context, {required String label, required String value, String? prefix, Color? prefixColor}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+  Widget _statItem(BuildContext context, {required String label, required String value, String? prefix, Color? prefixColor, CrossAxisAlignment align = CrossAxisAlignment.start}) {
+    return Column(crossAxisAlignment: align, children: [
       Text(label, style: TextStyle(fontSize: 13, color: context.textSecondary)),
       const SizedBox(height: 2),
-      Row(children: [
+      Row(mainAxisSize: MainAxisSize.min, children: [
         if (prefix != null) Text(prefix, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20, height: 1, color: prefixColor ?? context.textPrimary)),
         Text(value, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24, height: 1, color: context.textPrimary)),
       ]),
@@ -147,57 +163,61 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       (label: l.scheduled, count: scheduledCount),
       (label: l.history,   count: historyCount),
     ];
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: context.borderColor)),
-      ),
-      child: Row(
-        children: List.generate(tabs.length, (i) {
-          final active = _selectedTab == i;
-          return GestureDetector(
-            onTap: () => setState(() => _selectedTab = i),
-            child: Padding(
-              padding: const EdgeInsets.only(right: 24),
-              child: Container(
-              padding: const EdgeInsets.only(bottom: 10),
+    return Row(
+      children: List.generate(tabs.length, (i) {
+        final active = _selectedTab == i;
+        return Expanded(
+          child: GestureDetector(
+          onTap: () => setState(() => _selectedTab = i),
+          child: Container(
+              margin: EdgeInsets.only(left: i > 0 ? 12 : 0),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(
-                  color: active ? AppColors.orangeprimary : Colors.transparent,
-                  width: 2,
-                )),
+                color: active
+                    ? AppColors.orangeprimary
+                    : context.isDark
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : context.borderColor,
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: active
+                      ? Colors.transparent
+                      : Colors.white.withValues(alpha: context.isDark ? 0.4 : 0.6),
+                  width: 1.5,
+                ),
               ),
-              child: Row(children: [
+              child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(
                   tabs[i].label,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                    color: active ? AppColors.orangeprimary : context.textHint,
+                    color: active ? Colors.white : context.textHint,
                   ),
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 5),
                 Container(
-                  width: 22, height: 22,
+                  width: 17, height: 17,
                   decoration: BoxDecoration(
-                    color: active ? AppColors.orangeprimary : context.bgSubtle,
+                    color: active || context.isDark
+                        ? Colors.white.withValues(alpha: 0.3)
+                        : Colors.black.withValues(alpha: 0.35),
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: Text(
-                    '${tabs[i].count}',
-                    style: TextStyle(
-                      fontSize: 11,
+                  child: Text('${tabs[i].count}',
+                    style: const TextStyle(
+                      fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: active ? Colors.white : context.textHint,
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ]),
             ),
-            ),
-          );
+          ),
+        );
         }),
-      ),
     );
   }
 }

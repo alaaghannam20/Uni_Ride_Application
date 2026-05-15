@@ -59,7 +59,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
         titleSpacing: 5,
       ),
       body: state == TripState.loading || trip == null
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFFCF8307)))
+          ? const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary))
           : state == TripState.error
               ? Center(child: Text(context.read<TripProvider>().errorMessage, style: const TextStyle(color: AppColors.errorRed)))
               : SingleChildScrollView(
@@ -102,7 +102,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: const Color(0xFFCF8307), borderRadius: BorderRadius.circular(24)),
+      decoration: BoxDecoration(color: AppColors.orangeprimary, borderRadius: BorderRadius.circular(24)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -159,7 +159,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
             children: [
               Container(
                 width: 48, height: 48,
-                decoration: const BoxDecoration(color: Color(0xFFCF8307), shape: BoxShape.circle),
+                decoration: const BoxDecoration(color: AppColors.orangeprimary, shape: BoxShape.circle),
                 alignment: Alignment.center,
                 child: photo != null
                     ? ClipOval(child: Image.network('http://uniride.runasp.net/$photo', fit: BoxFit.cover, errorBuilder: (ctx, err, st) => Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18))))
@@ -174,7 +174,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(Icons.star, color: Color(0xFFF5A623), size: 14),
+                        const Icon(Icons.star, color: AppColors.amberWarning, size: 14),
                         const SizedBox(width: 4),
                         Text('${rating.toStringAsFixed(1)} • $trips trips', style: TextStyle(color: context.textSecondary, fontSize: 12)),
                       ],
@@ -308,9 +308,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           ),
           Row(
             children: [
-              const Icon(Icons.people_outline, color: Color(0xFFCF8307), size: 20),
+              const Icon(Icons.people_outline, color: AppColors.orangeprimary, size: 20),
               const SizedBox(width: 8),
-              Text('$available', style: const TextStyle(color: Color(0xFFCF8307), fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('$available', style: const TextStyle(color: AppColors.orangeprimary, fontSize: 20, fontWeight: FontWeight.bold)),
             ],
           ),
         ],
@@ -342,16 +342,16 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     child: Container(
                       width: 36, height: 36,
                       decoration: BoxDecoration(
-                        color: context.isDark ? const Color(0xFF2D3045) : const Color(0xFFFEF3DF),
+                        color: context.isDark ? context.bgSubtle : AppColors.orangeLightBg,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.remove, color: _selectedSeats > 1 ? const Color(0xFFCF8307) : context.textHint, size: 18),
+                      child: Icon(Icons.remove, color: _selectedSeats > 1 ? AppColors.orangeprimary : context.textHint, size: 18),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Container(
                     width: 36, height: 40,
-                    decoration: BoxDecoration(color: const Color(0xFFCF8307), borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(color: AppColors.orangeprimary, borderRadius: BorderRadius.circular(10)),
                     alignment: Alignment.center,
                     child: Text('$_selectedSeats', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
                   ),
@@ -361,10 +361,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     child: Container(
                       width: 36, height: 36,
                       decoration: BoxDecoration(
-                        color: context.isDark ? const Color(0xFF2D3045) : const Color(0xFFFEF3DF),
+                        color: context.isDark ? context.bgSubtle : AppColors.orangeLightBg,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.add, color: _selectedSeats < maxSeats ? const Color(0xFFCF8307) : context.textHint, size: 18),
+                      child: Icon(Icons.add, color: _selectedSeats < maxSeats ? AppColors.orangeprimary : context.textHint, size: 18),
                     ),
                   ),
                 ],
@@ -401,8 +401,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     Text(l.total, style: TextStyle(color: context.textPrimary, fontSize: 14, fontWeight: FontWeight.bold)),
                     RichText(
                       text: TextSpan(children: [
-                        const TextSpan(text: '₪ ', style: TextStyle(color: Color(0xFFCF8307), fontSize: 12, fontWeight: FontWeight.bold)),
-                        TextSpan(text: total.toStringAsFixed(0), style: const TextStyle(color: Color(0xFFCF8307), fontSize: 16, fontWeight: FontWeight.bold)),
+                        const TextSpan(text: '₪ ', style: TextStyle(color: AppColors.orangeprimary, fontSize: 12, fontWeight: FontWeight.bold)),
+                        TextSpan(text: total.toStringAsFixed(0), style: const TextStyle(color: AppColors.orangeprimary, fontSize: 16, fontWeight: FontWeight.bold)),
                       ]),
                     ),
                   ],
@@ -437,8 +437,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 const SizedBox(height: 4),
                 RichText(
                   text: TextSpan(children: [
-                    const TextSpan(text: '₪ ', style: TextStyle(color: Color(0xFFCF8307), fontSize: 14, fontWeight: FontWeight.bold)),
-                    TextSpan(text: total.toStringAsFixed(0), style: const TextStyle(color: Color(0xFFCF8307), fontSize: 24, fontWeight: FontWeight.bold)),
+                    const TextSpan(text: '₪ ', style: TextStyle(color: AppColors.orangeprimary, fontSize: 14, fontWeight: FontWeight.bold)),
+                    TextSpan(text: total.toStringAsFixed(0), style: const TextStyle(color: AppColors.orangeprimary, fontSize: 24, fontWeight: FontWeight.bold)),
                   ]),
                 ),
               ],
@@ -449,7 +449,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               child: ElevatedButton(
                 onPressed: isLoading ? null : () => _onBookNow(l, tripId),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFCF8307),
+                  backgroundColor: AppColors.orangeprimary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -538,11 +538,11 @@ class _PickupRow extends StatelessWidget {
         Container(
           width: 24, height: 24,
           decoration: BoxDecoration(
-            color: context.isDark ? const Color(0xFF2D3045) : const Color(0xFFFEF3DF),
+            color: context.isDark ? context.bgSubtle : AppColors.orangeLightBg,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
-          child: Text(number, style: const TextStyle(color: Color(0xFFCF8307), fontWeight: FontWeight.bold, fontSize: 11)),
+          child: Text(number, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold, fontSize: 11)),
         ),
         const SizedBox(width: 12),
         Expanded(child: Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: context.textPrimary))),

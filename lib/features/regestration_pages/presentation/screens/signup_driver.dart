@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -233,11 +234,10 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
     final l = AppLocalizations.of(context)!;
     final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
 
-    // ✅ التعديل هون
     final String title = widget.isCarpoole ? l.signUpCarpool : l.signUpDriver;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -292,15 +292,15 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: isCompleted || isActive ? AppColors.orangeprimary : const Color(0xFFF2F4F7),
+        color: isCompleted || isActive ? AppColors.orangeprimary : context.bgSubtle,
         shape: BoxShape.circle,
         border: isActive
             ? Border.all(color: AppColors.orangeprimary.withValues(alpha: 0.2), width: 4)
-            : null,
+            : Border.all(color: context.borderColor, width: 1),
       ),
       child: Icon(
         isCompleted ? Icons.check : icon,
-        color: isCompleted || isActive ? Colors.white : const Color(0xFF667085),
+        color: isCompleted || isActive ? Colors.white : context.textSecondary,
         size: 20,
       ),
     );
@@ -311,7 +311,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
     return Expanded(
       child: Container(
         height: 2,
-        color: isCompleted ? AppColors.orangeprimary : const Color(0xFFF2F4F7),
+        color: isCompleted ? AppColors.orangeprimary : context.borderColor,
       ),
     );
   }
@@ -336,7 +336,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(l.personalInformation,
-              style: AppStyle.lablestyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
+              style: AppStyle.lablestyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
           const SizedBox(height: 24),
           Center(
             child: GestureDetector(
@@ -381,7 +381,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             CustomTextfiled(
               controller: fullNameController,
               labelText: l.fullName,
-              hintText: 'John Doe',
+              hintText: '',
               prefixIcon: const Icon(Icons.person_outline, color: AppColors.languagecolor),
               validator: (value) => AppValidators.validateFullName(context, value),
             ),
@@ -390,7 +390,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
           CustomTextfiled(
             controller: emailController,
             labelText: l.emailAddress,
-            hintText: 'email@example.com',
+            hintText: '',
             keyboardType: TextInputType.emailAddress,
             prefixIcon: const Icon(Icons.email_outlined, color: AppColors.languagecolor),
             validator: (value) => AppValidators.validateEmail(context, value),
@@ -437,7 +437,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(l.vehicleDetails,
-              style: AppStyle.lablestyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
+              style: AppStyle.lablestyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
           const SizedBox(height: 24),
           DropdownButtonFormField<String>(
             value: selectedCarType,
@@ -495,7 +495,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(l.driverDocuments,
-              style: AppStyle.lablestyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
+              style: AppStyle.lablestyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
           const SizedBox(height: 24),
           CustomTextfiled(
             controller: licenseNumberController,
@@ -529,7 +529,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               ),
               Expanded(
                   child: Text(l.agreeTerms,
-                      style: const TextStyle(fontSize: 13, color: Color(0xFF667085)))),
+                      style: TextStyle(fontSize: 13, color: context.textSecondary))),
             ],
           ),
         ],
@@ -542,8 +542,8 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
-            style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF344054))),
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w500, color: context.textPrimary)),
         const SizedBox(height: 8),
         InkWell(
           onTap: onTap,
@@ -552,22 +552,22 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               border: Border.all(
-                  color: path != null ? AppColors.orangeprimary : const Color(0xFFD0D5DD)),
+                  color: path != null ? AppColors.orangeprimary : context.borderColor),
               borderRadius: BorderRadius.circular(12),
-              color: path != null ? AppColors.orangeprimary.withValues(alpha: 0.05) : Colors.white,
+              color: path != null ? AppColors.orangeprimary.withValues(alpha: 0.05) : context.bgCard,
             ),
             child: Row(
               children: [
                 Icon(
                   path != null ? Icons.check_circle : Icons.cloud_upload_outlined,
-                  color: path != null ? AppColors.orangeprimary : const Color(0xFF667085),
+                  color: path != null ? AppColors.orangeprimary : context.textSecondary,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     path != null ? path.split('/').last : AppLocalizations.of(context)!.uploadDocument,
                     style: TextStyle(
-                      color: path != null ? AppColors.orangeprimary : const Color(0xFF667085),
+                      color: path != null ? AppColors.orangeprimary : context.textSecondary,
                       fontSize: 14,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -598,22 +598,25 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: OutlinedButton(
-            onPressed: () {
-              if (currentStep == 0) {
-                Navigator.pop(context);
-              } else {
-                goToPreviousStep();
-              }
-            },
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              side: const BorderSide(color: Color(0xFFE5E7EB)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            child: Text(
-              l.cancel,
-              style: const TextStyle(color: Color(0xFF4B5563), fontWeight: FontWeight.bold),
+          child: SizedBox(
+            height: 56,
+            child: OutlinedButton(
+              onPressed: () {
+                if (currentStep == 0) {
+                  Navigator.pop(context);
+                } else {
+                  goToPreviousStep();
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 56),
+                side: BorderSide(color: context.borderColor),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: Text(
+                l.cancel,
+                style: TextStyle(color: context.textSecondary, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
         ),

@@ -28,7 +28,7 @@ class AchievementCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.bgCard,
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: context.borderColor, width: 0.62),
         boxShadow: context.isDark ? [] : [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2))],
@@ -114,7 +114,7 @@ class RedeemCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.bgCard,
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: context.borderColor),
         boxShadow: context.isDark ? [] : [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2))],
@@ -154,10 +154,10 @@ class RedeemCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: context.isDark ? const Color(0xFF059669).withValues(alpha: 0.2) : const Color(0xFF00A63E).withValues(alpha: 0.12),
+                  color: context.isDark ? AppColors.successDarkGreen.withValues(alpha: 0.2) : AppColors.successSolid.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Text(percentage, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: context.isDark ? const Color(0xFF34D399) : const Color(0xFF027A48))),
+                child: Text(percentage, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: context.isDark ? AppColors.successLightGreen : AppColors.successDarkText)),
               ),
             ],
           ),

@@ -37,7 +37,7 @@ class DriverProfileModel {
       email: json[ApiKeys.email] ?? '',
       phoneNumber: json[ApiKeys.phoneNumber] ?? '',
       licenseNumber: json[ApiKeys.licenseNumber] ?? '',
-      profilePicturePath: json[ApiKeys.profilePicturePath],
+      profilePicturePath: json[ApiKeys.profilePicturePath] ?? json[ApiKeys.profileImage] ?? json['ProfileImage'],
       status: json[ApiKeys.status] ?? '',
       rating: (json[ApiKeys.rating] ?? 0).toDouble(),
       totalTrips: (json[ApiKeys.totalTrips] ?? 0).toInt(),

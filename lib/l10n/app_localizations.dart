@@ -1523,7 +1523,7 @@ abstract class AppLocalizations {
   /// No description provided for @refer_sub.
   ///
   /// In en, this message translates to:
-  /// **'Get 50 points for each referral'**
+  /// **'Get 10 points for each referral'**
   String get refer_sub;
 
   /// No description provided for @friends_joined.

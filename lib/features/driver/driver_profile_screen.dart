@@ -110,9 +110,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     children: [
                       _StatCell(value: rating, label: l.rating),
                       const SizedBox(width: 12),
-                      _StatCell(value: trips,   label: l.totalTrips),
+                      _StatCell(value: trips,  label: l.totalTrips),
                       const SizedBox(width: 12),
-                      _StatCell(value: earned,  label: l.earned),
+                      _StatCell(value: earned, label: l.earned),
                     ],
                   ),
                 ],
@@ -152,8 +152,6 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   const SizedBox(height: 8),
                   _CardGroup(items: [
                     _InfoItem(icon: Icons.notifications_outlined, title: l.notifications, subtitle: l.manageYourAlerts),
-                    _InfoItem(icon: Icons.shield_outlined,        title: l.privacySecurity, subtitle: l.controlYourData),
-                    _InfoItem(icon: Icons.credit_card_outlined,   title: l.paymentMethods,  subtitle: l.manageWithdrawals),
                     _InfoItem(
                       icon:     Icons.language,
                       title:    l.languageLabel,
@@ -173,6 +171,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         inactiveTrackColor: AppColors.borderadmincolor,
                       ),
                     ),
+                    _InfoItem(icon: Icons.credit_card_outlined,   title: l.paymentMethods,  subtitle: l.manageWithdrawals),
+                    _InfoItem(icon: Icons.shield_outlined,        title: l.privacySecurity, subtitle: l.controlYourData),
                   ]),
 
                   const SizedBox(height: 24),
@@ -218,10 +218,6 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   ),
 
                   const SizedBox(height: 24),
-
-                  Center(
-                    child: Text(l.version, style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
-                  ),
 
                   const SizedBox(height: 32),
                 ],

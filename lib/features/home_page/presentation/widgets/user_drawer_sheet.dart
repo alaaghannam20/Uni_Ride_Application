@@ -75,9 +75,9 @@ class UserDrawerSheet extends StatelessWidget {
                         height: 56,
                         decoration: BoxDecoration(color: context.bgWhite, shape: BoxShape.circle),
                         clipBehavior: Clip.antiAlias,
-                        child: auth.user?.profileImage != null
+                        child: (profile?.profilePicturePath ?? auth.user?.profileImage) != null
                             ? Image.network(
-                                'http://uniride.runasp.net/${auth.user!.profileImage}',
+                                'http://uniride.runasp.net/${profile?.profilePicturePath ?? auth.user!.profileImage}',
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stack) => Center(
                                   child: Text(initial, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold, fontSize: 22)),

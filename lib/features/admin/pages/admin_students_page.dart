@@ -153,7 +153,8 @@ class _StudentRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(student.fullName, style: AppStyle.adminCardName(context, fontSize: 16)),
-                      Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContact(context)),
+                      if (student.phoneNumber.isNotEmpty)
+                        Text(student.phoneNumber, style: AppStyle.adminCardContact(context)),
                     ],
                   ),
                 ),

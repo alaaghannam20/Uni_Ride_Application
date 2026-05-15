@@ -232,8 +232,8 @@ class CarpoolTripCard extends StatelessWidget {
             if (trip.isRecurring)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(8)),
-                child: Text(l.recurring, style: const TextStyle(color: Color(0xFF2563EB), fontSize: 10, fontWeight: FontWeight.w600)),
+                decoration: BoxDecoration(color: context.isDark ? context.bgSubtle : AppColors.infoBlueBg, borderRadius: BorderRadius.circular(8)),
+                child: Text(l.recurring, style: TextStyle(color: context.isDark ? AppColors.lightBlueAccent : AppColors.infoBlue, fontSize: 10, fontWeight: FontWeight.w600)),
               ),
           ]),
           const SizedBox(height: 16),

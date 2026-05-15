@@ -10,6 +10,7 @@ import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/provider/payment_provider.dart';
 import 'package:uni_ride_application/core/provider/rating_provider.dart';
 import 'package:uni_ride_application/core/provider/reward_provider.dart';
+import 'package:uni_ride_application/core/theme/app_theme.dart';
 import 'package:uni_ride_application/core/routes/app_router.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
@@ -48,37 +49,8 @@ class MainApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           locale: languageProvider.locale,
           themeMode: themeProvider.themeMode,
-          theme: ThemeData(
-            useMaterial3: false,
-            brightness: Brightness.light,
-            scaffoldBackgroundColor: const Color(0xFFF5F7FA),
-            cardColor: const Color(0xFFFFFFFF),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFFFFFFFF),
-              foregroundColor: Color(0xFF101828),
-              elevation: 0,
-            ),
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFFCF8307),
-              surface: Color(0xFFFFFFFF),
-            ),
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: false,
-            brightness: Brightness.dark,
-            scaffoldBackgroundColor: const Color(0xFF1A1D2E),
-            cardColor: const Color(0xFF252836),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFF1E2235),
-              foregroundColor: Color(0xFFE8ECF4),
-              elevation: 0,
-            ),
-            colorScheme: const ColorScheme.dark(
-              primary: Color(0xFFCF8307),
-              surface: Color(0xFF252836),
-              onSurface: Color(0xFFE8ECF4),
-            ),
-          ),
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
           initialRoute: Routes.splash,
           onGenerateRoute: AppRouter.onGenerateRoute,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

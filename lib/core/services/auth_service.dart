@@ -106,34 +106,34 @@ class AuthService {
   // Login 
   Future<UserModel> login(String emailOrPhone, String password) async {
     try {
-      print("start api call");
       final response = await DioFactory.post(
         AppEndpoints.login,
         data: {ApiKeys.emailOrPhone: emailOrPhone, ApiKeys.password: password},
       );
-              print("api call completed");
-
       if (response.data != null && response.data[ApiKeys.success] == true) {
-         return UserModel.fromJson(response.data);
+        return UserModel.fromJson(response.data);
       } else {
-         throw Exception(response.data[ApiKeys.message] ?? 'Login failed');
+        throw Exception(response.data[ApiKeys.message] ?? 'Login failed');
       }
     } catch (e) {
-      print(e);
       throw Exception(_cleanError(e));
     }
   }
 
   //  Verify OTP
-  Future<ApiResponseModel> verifyOtp(String email, String otpCode) async {
+  Future<UserModel> verifyOtp(String email, String otpCode) async {
     try {
       final response = await DioFactory.post(
         AppEndpoints.verifyOtp,
         data: {ApiKeys.email: email, ApiKeys.otpCode: otpCode},
       );
-      return ApiResponseModel.fromJson(response.data);
+      if (response.data != null && response.data[ApiKeys.success] == true) {
+        return UserModel.fromJson(response.data);
+      } else {
+        throw Exception(response.data[ApiKeys.message] ?? 'OTP verification failed');
+      }
     } catch (e) {
-      return ApiResponseModel(success: false, message: _cleanError(e));
+      throw Exception(_cleanError(e));
     }
   }
 

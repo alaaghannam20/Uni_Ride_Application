@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/features/home_page/presentation/widgets/user_drawer_sheet.dart';
@@ -12,13 +13,15 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final user = context.watch<AuthProvider>().user;
+    final user        = context.watch<AuthProvider>().user;
+    final profile     = context.watch<ProfileProvider>().memberProfile;
 
-    final fullName = user?.fullName ?? '';
+    final fullName  = user?.fullName ?? '';
     final firstName = fullName.split(' ').first;
-    final initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : '?';
-    final imageUrl = user?.profileImage != null
-        ? 'http://uniride.runasp.net/${user!.profileImage}'
+    final initial   = fullName.isNotEmpty ? fullName[0].toUpperCase() : '?';
+    final imagePath = profile?.profilePicturePath ?? user?.profileImage;
+    final imageUrl  = imagePath != null
+        ? 'http://uniride.runasp.net/$imagePath'
         : null;
 
     return Container(
