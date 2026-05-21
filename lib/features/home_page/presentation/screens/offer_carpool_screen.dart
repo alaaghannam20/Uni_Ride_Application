@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/features/home_page/data/models/location_model.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class OfferCarpoolScreen extends StatefulWidget {
@@ -13,45 +15,98 @@ class OfferCarpoolScreen extends StatefulWidget {
 }
 
 class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
-  String? _carType;
-  String? _carSeats;
   final _pickupCtrl  = TextEditingController();
   final _dropoffCtrl = TextEditingController();
   String _date = '';
   String _time = '';
   int _availableSeats = 1;
   int _pricePerSeat = 8;
-  final _notesController = TextEditingController();
-  final List<Map<String, dynamic>> _stops = [];
+  int _duration = 15;
+  bool _customDuration = false;
+  final _durationCtrl = TextEditingController();
 
-  // Inline stop adder state
-  String? _newStopName;
-  String? _newStopTime;
-  final _customStopController = TextEditingController();
+  static const _durationOptions = [15, 30, 45, 60, 90, 120];
+
+  // Stop state
+  LocationModel? _selectedStop;
+  final _customStopCtrl = TextEditingController();
+  static final _otherLocation = LocationModel(id: -1, name: 'Other');
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  String _durationLabel(int v) {
+    if (v < 60) return '$v min';
+    if (v == 60) return '1 hour';
+    if (v % 60 == 0) return '${v ~/ 60} hours';
+    return '${v ~/ 60}h ${v % 60}m';
+  }
 
   @override
   void dispose() {
     _pickupCtrl.dispose();
     _dropoffCtrl.dispose();
-    _notesController.dispose();
-    _customStopController.dispose();
+    _durationCtrl.dispose();
+    _customStopCtrl.dispose();
     super.dispose();
   }
 
   int get _estimatedEarnings => _availableSeats * _pricePerSeat;
 
+  String _formatDisplayDate(String iso) {
+    try {
+      final dt = DateTime.parse(iso);
+      const days   = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return '${days[dt.weekday-1]}, ${months[dt.month-1]} ${dt.day}, ${dt.year}';
+    } catch (_) { return iso; }
+  }
+
+  // Build ISO datetime string from a date string and time string
+  String _buildDateTime(String dateStr, String timeStr) {
+    try {
+      final timeParts = timeStr.trim().split(RegExp(r'[\s:]'));
+      int hour   = int.tryParse(timeParts[0]) ?? 0;
+      int minute = int.tryParse(timeParts[1]) ?? 0;
+      final isPM = timeStr.toUpperCase().contains('PM');
+      if (isPM && hour != 12) hour += 12;
+      if (!isPM && hour == 12) hour = 0;
+      DateTime? dt;
+      try { dt = DateTime.parse(dateStr); } catch (_) {}
+      dt ??= DateTime.now();
+      return '${dt.year}-${dt.month.toString().padLeft(2,'0')}-${dt.day.toString().padLeft(2,'0')}'
+             'T${hour.toString().padLeft(2,'0')}:${minute.toString().padLeft(2,'0')}:00';
+    } catch (_) {
+      return '${DateTime.now().toIso8601String().substring(0, 10)}T00:00:00';
+    }
+  }
+
   void _continueToPreview() {
+    final date = _date.isEmpty ? 'Saturday, Dec 11' : _date;
+    final time = _time.isEmpty ? '4:40 AM' : _time;
+
+    final List<Map<String, dynamic>> stops = (_selectedStop != null && _selectedStop!.id > 0)
+        ? [{
+            'locationId':           _selectedStop!.id,
+            'estimatedArrivalTime': _buildDateTime(date, time),
+            'stopOrder':            1,
+          }]
+        : [];
+
     Navigator.pushNamed(
       context,
       Routes.previewCarpool,
       arguments: {
-        'pickupLocation': _pickupCtrl.text.trim().isEmpty ? 'City Center' : _pickupCtrl.text.trim(),
+        'pickupLocation':  _pickupCtrl.text.trim().isEmpty ? 'City Center' : _pickupCtrl.text.trim(),
         'dropoffLocation': _dropoffCtrl.text.trim().isEmpty ? 'PTUK University' : _dropoffCtrl.text.trim(),
-        'date': _date.isEmpty ? 'Saturday, Dec 11' : _date,
-        'time': _time.isEmpty ? '4:40 AM' : _time,
-        'availableSeats': _availableSeats,
-        'pricePerSeat': _pricePerSeat,
-        'stops': _stops,
+        'date':            date,
+        'time':            time,
+        'availableSeats':  _availableSeats,
+        'pricePerSeat':    _pricePerSeat,
+        'duration':        _customDuration ? (int.tryParse(_durationCtrl.text) ?? _duration) : _duration,
+        'stops':           stops,
       },
     );
   }
@@ -108,32 +163,6 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── Car Details (Image 1 Specs) ──
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _sectionTitle(l.car_details),
-                        const SizedBox(height: 12),
-                        _buildPickerField(
-                          label: l.car_type,
-                          isSubHeader: true,
-                          value: _carType ?? 'Sedan',
-                          leadingIcon: Icons.directions_car,
-                          onTap: () => _showOptions(context, l.car_type, ['Sedan', 'SUV', 'Bus', 'Van']),
-                        ),
-                        const SizedBox(height: 12), // Gap 12
-                        _buildPickerField(
-                          label: l.number_of_car_seats,
-                          isSubHeader: true,
-                          value: _carSeats ?? '4 Seats',
-                          leadingIcon: Icons.event_seat,
-                          onTap: () => _showOptions(context, l.number_of_car_seats, ['2', '4', '5', '7']),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 15.99),
-
                     // ── Route ──
                     _sectionTitle("Route"),
                     const SizedBox(height: 12),
@@ -178,19 +207,19 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                           Row(
                             children: [
                               Expanded(
-                                flex: 3, // More space for Date
+                                flex: 5,
                                 child: _buildPickerField(
                                   label: l.date,
                                   isSubHeader: true,
-                                  value: _date.isEmpty ? 'Sat, Dec 11, 2024' : _date,
+                                  value: _date.isEmpty ? 'Sat, Dec 11, 2024' : _formatDisplayDate(_date),
                                   leadingIcon: Icons.calendar_today_outlined,
                                   onTap: _pickDate,
-                                  fontSize: 12, // Slightly smaller font to help it fit
+                                  fontSize: 12,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
-                                flex: 2, // Less space for Time
+                                flex: 4,
                                 child: _buildPickerField(
                                   label: l.time,
                                   isSubHeader: true,
@@ -218,18 +247,13 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
 
                     const SizedBox(height: 15.99),
 
+                    // ── Trip Duration ──
+                    _buildDurationSection(l),
+
+                    const SizedBox(height: 15.99),
+
                     // ── Price per Seat (Image 5 Specs) ──
                     _buildPriceSection(l),
-
-                    const SizedBox(height: 24),
-
-                    // ── Notes (Image 1 Specs) ──
-                    _sectionTitle(l.additional_notes_optional),
-                    const SizedBox(height: 12),
-                    Container(
-                      height: 177.8, // Specified height
-                      child: _buildNotesField(l),
-                    ),
 
                     const SizedBox(height: 24),
 
@@ -324,7 +348,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null) ...[
+        ...[
           Text(
             label,
             style: TextStyle(
@@ -358,7 +382,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     maxLines: 1, // Reverted to single line
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: context.textSecondary,
+                      color: context.textPrimary,
                       fontSize: fontSize ?? 13,
                       fontWeight: FontWeight.w500,
                     ),
@@ -442,6 +466,73 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDurationSection(AppLocalizations l) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l.tripDuration, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
+          const SizedBox(height: 2),
+          Text(l.estimatedTripTime, style: TextStyle(fontSize: 12, color: context.textSecondary)),
+          const SizedBox(height: 10),
+          Row(children: [
+            Expanded(
+              child: DropdownButtonFormField<int>(
+                initialValue: _customDuration ? null : _duration,
+                dropdownColor: context.bgCard,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: context.textPrimary),
+                decoration: InputDecoration(
+                  filled: true, fillColor: context.bgSubtle,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                ),
+                hint: Text(l.selectTime, style: TextStyle(color: context.textHint)),
+                items: [
+                  ..._durationOptions.map((v) => DropdownMenuItem(value: v, child: Text(_durationLabel(v)))),
+                  DropdownMenuItem(value: -1, child: Text(l.custom, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.w600))),
+                ],
+                onChanged: (v) {
+                  if (v == -1) { setState(() => _customDuration = true); }
+                  else if (v != null) { setState(() { _customDuration = false; _duration = v; }); }
+                },
+              ),
+            ),
+            if (_customDuration) ...[
+              const SizedBox(width: 10),
+              SizedBox(
+                width: 90,
+                child: TextFormField(
+                  controller: _durationCtrl,
+                  keyboardType: TextInputType.number,
+                  autofocus: true,
+                  style: TextStyle(fontSize: 14, color: context.textPrimary, fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(
+                    hintText: '0', suffixText: 'min',
+                    suffixStyle: TextStyle(fontSize: 12, color: context.textSecondary),
+                    filled: true, fillColor: context.bgSubtle,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                  ),
+                  onChanged: (v) { final n = int.tryParse(v); if (n != null && n > 0) setState(() => _duration = n); },
+                ),
+              ),
+            ],
+          ]),
         ],
       ),
     );
@@ -575,7 +666,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
           boxShadow: hasShadow
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -587,237 +678,59 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
     );
   }
 
-  Widget _buildNotesField(AppLocalizations l) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.bgWhite,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.borderColor),
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 4), // Added padding for baseline alignment
-                child: Icon(Icons.chat_bubble_outline, size: 20, color: context.textSecondary),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: _notesController,
-                  maxLines: 4,
-                  maxLength: 200,
-                  style: TextStyle(fontSize: 15, color: context.textPrimary),
-                  decoration: InputDecoration(
-                    hintText: l.notes_hint,
-                    hintStyle: TextStyle(color: context.textHint, fontSize: 14),
-                    border: InputBorder.none,
-                    counterText: '',
-                    isDense: true, // Makes content more compact to match icon alignment
-                    contentPadding: const EdgeInsets.symmetric(vertical: 4), // Aligns first line with icon
-                  ),
-                  onChanged: (_) => setState(() {}),
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Text(
-              '${_notesController.text.length}/200',
-              style: TextStyle(fontSize: 12, color: context.textHint),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildStopsSection(AppLocalizations l) {
-    const predefined = ['PTUK Main Gate', 'Engineering Building', 'Student Housing'];
-    final dropdownVal = predefined.contains(_newStopName) ? _newStopName : (_newStopName == null ? null : 'Other');
+    final locations = context.watch<TripProvider>().locations;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _sectionTitle(l.pickup_points),
-            if (_stops.isNotEmpty)
-              TextButton.icon(
-                onPressed: () => setState(() {
-                  _newStopName = null;
-                  _newStopTime = null;
-                  _customStopController.clear();
-                }),
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Add Point'),
-                style: TextButton.styleFrom(foregroundColor: AppColors.orangeprimary),
-              ),
-          ],
-        ),
+        _sectionTitle(l.pickup_points),
         const SizedBox(height: 12),
 
-        // ── Dropdown ──
-        DropdownButtonFormField<String>(
-          key: ValueKey(dropdownVal),
+        // ── Location Dropdown ──
+        DropdownButtonFormField<LocationModel>(
           dropdownColor: context.bgCard,
-          initialValue: dropdownVal,
-          hint: Text('Select pickup point', style: TextStyle(color: context.textHint, fontSize: 14)),
-          style: TextStyle(color: context.textSecondary, fontSize: 14),
+          initialValue: _selectedStop,
+          hint: Text(l.selectPickupPoint, style: TextStyle(color: context.textHint, fontSize: 14)),
+          style: TextStyle(color: context.textPrimary, fontSize: 14),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+            border:        OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary)),
           ),
-          items: [...predefined, 'Other']
-              .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-              .toList(),
+          items: [
+            ...locations.map((loc) => DropdownMenuItem(value: loc, child: Text(loc.name))),
+            DropdownMenuItem(value: _otherLocation, child: Text(l.other)),
+          ],
           onChanged: (val) => setState(() {
-            _newStopName = val == 'Other' ? '' : val;
-            _newStopTime = null;
-            _customStopController.clear();
+            _selectedStop = val;
+            _customStopCtrl.clear();
           }),
         ),
 
-        // ── Custom input (Other) ──
-        if (_newStopName != null && !predefined.contains(_newStopName)) ...[
+        if (_selectedStop?.id == -1) ...[
           const SizedBox(height: 12),
           TextField(
-            controller: _customStopController,
-            style: TextStyle(color: context.textPrimary, fontSize: 14),
+            controller: _customStopCtrl,
+            autofocus: true,
+            style: TextStyle(fontSize: 14, color: context.textPrimary),
             decoration: InputDecoration(
-              hintText: 'Enter stop name',
+              hintText: l.pickupLocation,
               hintStyle: TextStyle(color: context.textHint, fontSize: 14),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+              border:        OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary)),
             ),
-            onChanged: (val) => setState(() => _newStopName = val),
+            onChanged: (_) => setState(() {}),
           ),
         ],
 
-        // ── Time picker + Add button ──
-        if (_newStopName != null && _newStopName!.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    final time = await showTimePicker(context: context, initialTime: TimeOfDay.now());
-                    if (time != null && mounted) setState(() => _newStopTime = time.format(context));
-                  },
-                  child: Container(
-                    height: 48,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: context.bgCard,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _newStopTime != null ? AppColors.orangeprimary : context.borderColor),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.access_time, size: 18, color: _newStopTime != null ? AppColors.orangeprimary : context.textHint),
-                        const SizedBox(width: 10),
-                        Text(
-                          _newStopTime ?? 'Arrival time',
-                          style: TextStyle(fontSize: 14, color: _newStopTime != null ? context.textPrimary : context.textHint),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: _newStopTime == null ? null : () {
-                  setState(() {
-                    _stops.add({
-                      'stopName': _newStopName!,
-                      'estimatedArrivalTime': _newStopTime!,
-                      'stopOrder': _stops.length + 1,
-                    });
-                    _newStopName = null;
-                    _newStopTime = null;
-                    _customStopController.clear();
-                  });
-                },
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: _newStopTime != null ? AppColors.orangeprimary : context.bgSubtle,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Add',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: _newStopTime != null ? Colors.white : context.textHint,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-
-        // ── Added stops list ──
-        if (_stops.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          ..._stops.asMap().entries.map((entry) {
-            final idx = entry.key;
-            final stop = entry.value;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: context.bgCard,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: context.borderColor),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 24, height: 24,
-                      decoration: const BoxDecoration(color: Color(0xFFFEF3DF), shape: BoxShape.circle),
-                      alignment: Alignment.center,
-                      child: Text('${idx + 1}', style: const TextStyle(color: Color(0xFFCF8307), fontWeight: FontWeight.bold, fontSize: 12)),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(stop['stopName'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: context.textPrimary)),
-                          Text(stop['estimatedArrivalTime'], style: TextStyle(fontSize: 12, color: context.textSecondary)),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => _stops.removeAt(idx)),
-                      child: const Icon(Icons.remove_circle_outline, color: AppColors.errorRed, size: 20),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-        ],
       ],
     );
   }
+
 
   Widget _buildEarningsCard(AppLocalizations l) {
     return Container(
@@ -868,35 +781,6 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
     );
   }
 
-  void _showOptions(BuildContext ctx, String title, List<String> options) {
-    showModalBottomSheet(
-      context: ctx,
-      backgroundColor: context.bgCard,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(child: Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary))),
-            const SizedBox(height: 16),
-            ...options.map((o) => ListTile(
-                  title: Text(o, style: TextStyle(color: context.textPrimary)),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  onTap: () {
-                    setState(() {
-                      if (title == AppLocalizations.of(context)!.car_type) _carType = o;
-                      if (title == AppLocalizations.of(context)!.number_of_car_seats) _carSeats = o;
-                    });
-                    Navigator.pop(ctx);
-                  },
-                )),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _locationField({
     required TextEditingController controller,
@@ -928,112 +812,51 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
   }
 
   Future<void> _pickDate() async {
-    final DateTime now = DateTime.now();
-    DateTime tempDate = now;
-
-    showModalBottomSheet(
+    final now = DateTime.now();
+    final picked = await showDatePicker(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) {
-        return Container(
-          height: 350,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: context.bgCard,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle(color: context.textSecondary)),
-                  ),
-                  Text(AppLocalizations.of(context)!.selectDate, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                        final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                        final dayName = weekdays[tempDate.weekday - 1];
-                        _date = "$dayName, ${months[tempDate.month - 1]} ${tempDate.day}, ${tempDate.year}";
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text(AppLocalizations.of(context)!.done, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-              const Divider(height: 32),
-              Expanded(
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.date,
-                  initialDateTime: now,
-                  minimumDate: now,
-                  maximumDate: DateTime(2030), // Fix: increased to avoid crash if system date is in 2026
-                  onDateTimeChanged: (date) => tempDate = date,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      initialDate: now,
+      firstDate: now,
+      lastDate: DateTime(2030),
+      builder: (ctx, child) => Theme(data: _pickerTheme, child: child!),
     );
+    if (picked != null) {
+      setState(() {
+        // Store as ISO so preview can parse it correctly
+        _date = '${picked.year}-${picked.month.toString().padLeft(2,'0')}-${picked.day.toString().padLeft(2,'0')}';
+      });
+    }
   }
 
-  Future<void> _pickTime() async {
-    final DateTime now = DateTime.now();
-    DateTime tempTime = now;
 
-    showModalBottomSheet(
+  ThemeData get _pickerTheme => ThemeData.light().copyWith(
+    colorScheme: const ColorScheme.light(
+      primary:              AppColors.orangeprimary,
+      onPrimary:            Colors.white,
+      onSurface:            Color(0xFF1A1A2E),
+      tertiaryContainer:    AppColors.orangeprimary,
+      onTertiaryContainer:  Colors.white,
+      secondaryContainer:   AppColors.orangeprimary,
+      onSecondaryContainer: Colors.white,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: AppColors.orangeprimary),
+    ),
+  );
+
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) {
-        return Container(
-          height: 350,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: context.bgCard,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle(color: context.textSecondary)),
-                  ),
-                  Text(AppLocalizations.of(context)!.selectTime, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        final hour = tempTime.hour > 12 ? tempTime.hour - 12 : (tempTime.hour == 0 ? 12 : tempTime.hour);
-                        final amPm = tempTime.hour >= 12 ? 'PM' : 'AM';
-                        final minute = tempTime.minute.toString().padLeft(2, '0');
-                        _time = "$hour:$minute $amPm";
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text(AppLocalizations.of(context)!.done, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-              const Divider(height: 32),
-              Expanded(
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.time,
-                  initialDateTime: now,
-                  onDateTimeChanged: (date) => tempTime = date,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      initialTime: TimeOfDay.now(),
+      builder: (ctx, child) => Theme(data: _pickerTheme, child: child!),
     );
+    if (picked != null) {
+      setState(() {
+        final h      = picked.hourOfPeriod == 0 ? 12 : picked.hourOfPeriod;
+        final m      = picked.minute.toString().padLeft(2, '0');
+        final period = picked.period == DayPeriod.am ? 'AM' : 'PM';
+        _time = '$h:$m $period';
+      });
+    }
   }
 }

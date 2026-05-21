@@ -280,6 +280,8 @@ class AppRouter {
             time: args['time'],
             availableSeats: args['availableSeats'],
             pricePerSeat: args['pricePerSeat'],
+            duration: args['duration'] ?? 15,
+            stops: List<Map<String, dynamic>>.from(args['stops'] ?? []),
           ),
         );
       case Routes.offerConfirmation:

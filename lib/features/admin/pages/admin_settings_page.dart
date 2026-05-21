@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
+import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -21,13 +22,17 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   bool _autoApprove = false;
   bool _emailNotifications = true;
   bool _smsNotifications = true;
-  final _baseFareController = TextEditingController(text: '5');
-  final _perKmController = TextEditingController(text: '2');
+  late final TextEditingController _appFeeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _appFeeController = TextEditingController(text: '${AppPrefs.getAppFee()}');
+  }
 
   @override
   void dispose() {
-    _baseFareController.dispose();
-    _perKmController.dispose();
+    _appFeeController.dispose();
     super.dispose();
   }
 
@@ -175,22 +180,28 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         title: locale.pricingConfiguration,
                         children: [
                           _InputSettingRow(
-                            label: locale.baseFare,
-                            controller: _baseFareController,
-                          ),
-                          const SizedBox(height: 16),
-                          _InputSettingRow(
-                            label: locale.perKilometer,
-                            controller: _perKmController,
+                            label: locale.appFeePerTrip,
+                            description: locale.appFeePerTripDesc,
+                            controller: _appFeeController,
                           ),
                           const SizedBox(height: 32),
                           SizedBox(
                             width: double.infinity,
                             height: 52,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                final fee = int.tryParse(_appFeeController.text.trim()) ?? 3;
+                                await AppPrefs.setAppFee(fee);
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('تم حفظ رسوم التطبيق بنجاح'),
+                                    backgroundColor: AppColors.adminSecondary,
+                                  ),
+                                );
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:  AppColors.adminSecondary,
+                                backgroundColor: AppColors.adminSecondary,
                                 foregroundColor: Colors.white,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
@@ -291,9 +302,10 @@ class _SwitchSettingRow extends StatelessWidget {
 
 class _InputSettingRow extends StatelessWidget {
   final String label;
+  final String? description;
   final TextEditingController controller;
 
-  const _InputSettingRow({required this.label, required this.controller});
+  const _InputSettingRow({required this.label, required this.controller, this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -301,6 +313,10 @@ class _InputSettingRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.adminTextDark)),
+        if (description != null) ...[
+          const SizedBox(height: 4),
+          Text(description!, style: const TextStyle(fontSize: 12, color: AppColors.greySecondary)),
+        ],
         const SizedBox(height: 8),
         TextField(
           controller: controller,

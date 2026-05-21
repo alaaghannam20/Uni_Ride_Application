@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
@@ -454,7 +455,26 @@ class _ProfilePageState extends State<ProfilePage> {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     if (picked == null || !context.mounted) return;
-    final success = await context.read<ProfileProvider>().uploadMemberProfileImage(File(picked.path));
+
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: picked.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Photo',
+          toolbarColor: AppColors.orangeprimary,
+          toolbarWidgetColor: Colors.white,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop Photo',
+          aspectRatioLockEnabled: true,
+        ),
+      ],
+    );
+    if (cropped == null || !context.mounted) return;
+
+    final success = await context.read<ProfileProvider>().uploadMemberProfileImage(File(cropped.path));
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(success ? 'Profile picture updated!' : context.read<ProfileProvider>().errorMessage),

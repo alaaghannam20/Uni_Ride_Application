@@ -129,6 +129,10 @@ static Future<void> setUserType(String userType) async {
     await _prefs.remove(PrefKeys.userType);
   }
 
+  static int getAppFee() => _prefs.getInt(PrefKeys.appFee) ?? 3;
+  static Future<void> setAppFee(int fee) async =>
+      _prefs.setInt(PrefKeys.appFee, fee);
+
   // Returns null if user never set a preference (use system default)
   static bool? getSavedTheme() => _prefs.containsKey(PrefKeys.themeMode)
       ? _prefs.getBool(PrefKeys.themeMode)

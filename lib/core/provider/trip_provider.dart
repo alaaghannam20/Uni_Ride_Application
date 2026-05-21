@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/services/trip_service.dart';
 import 'package:uni_ride_application/features/home_page/data/models/available_trip_model.dart';
+import 'package:uni_ride_application/features/home_page/data/models/location_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/my_trip_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/trip_detail_model.dart';
 
@@ -16,12 +17,18 @@ class TripProvider extends ChangeNotifier {
   TripState _actionState          = TripState.idle;
   TripState _scheduledState       = TripState.idle;
   TripState _historyState         = TripState.idle;
+  TripState _locationsState       = TripState.idle;
 
   List<AvailableTripModel> _availableTrips  = [];
   TripDetailModel?         _tripDetails;
   List<MyTripModel>        _myTrips          = [];
   List<MyTripModel>        _driverScheduled  = [];
   List<MyTripModel>        _driverHistory    = [];
+  List<LocationModel> _locations = const [
+    LocationModel(id: 1, name: 'PTUK Main Gate'),
+    LocationModel(id: 2, name: 'Industry Gateway'),
+    LocationModel(id: 3, name: 'Energy Gateway'),
+  ];
 
   String _errorMessage = '';
 
@@ -32,12 +39,26 @@ class TripProvider extends ChangeNotifier {
   TripState get actionState         => _actionState;
   TripState get scheduledState      => _scheduledState;
   TripState get historyState        => _historyState;
-  List<AvailableTripModel> get availableTrips     => _availableTrips;
-  TripDetailModel?         get tripDetails         => _tripDetails;
-  List<MyTripModel>        get driverScheduled     => _driverScheduled;
-  List<MyTripModel>        get driverHistory       => _driverHistory;
-  List<MyTripModel> get myTrips     => _myTrips;
-  String get errorMessage           => _errorMessage;
+  TripState get locationsState      => _locationsState;
+  List<AvailableTripModel> get availableTrips => _availableTrips;
+  TripDetailModel?         get tripDetails    => _tripDetails;
+  List<MyTripModel>        get driverScheduled => _driverScheduled;
+  List<MyTripModel>        get driverHistory   => _driverHistory;
+  List<MyTripModel>        get myTrips         => _myTrips;
+  List<LocationModel>      get locations       => _locations;
+  String get errorMessage => _errorMessage;
+
+  Future<void> fetchLocations() async {
+    notifyListeners();
+    try {
+      final fetched = await _tripService.getLocations();
+      if (fetched.isNotEmpty) _locations = fetched;
+      _locationsState = TripState.success;
+    } catch (_) {
+      _locationsState = TripState.error;
+    }
+    notifyListeners();
+  }
 
   Future<void> fetchAvailableTrips({String? type}) async {
     _availableTripsState = TripState.loading;
@@ -65,35 +86,37 @@ class TripProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> createTrip({
+  Future<int?> createTrip({
     required String pickupLocation,
     required String dropoffLocation,
     required String departureTime,
     required double pricePerSeat,
     required int totalSeats,
     String description = '',
+    int estimatedDurationMinutes = 0,
     List<Map<String, dynamic>> stops = const [],
   }) async {
     _createState = TripState.loading;
     notifyListeners();
     try {
-      await _tripService.createTrip(
+      final tripId = await _tripService.createTrip(
         pickupLocation: pickupLocation,
         dropoffLocation: dropoffLocation,
         departureTime: departureTime,
         pricePerSeat: pricePerSeat,
         totalSeats: totalSeats,
         description: description,
+        estimatedDurationMinutes: estimatedDurationMinutes,
         stops: stops,
       );
       _createState = TripState.success;
       notifyListeners();
-      return true;
+      return tripId;
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       _createState  = TripState.error;
       notifyListeners();
-      return false;
+      return null;
     }
   }
 

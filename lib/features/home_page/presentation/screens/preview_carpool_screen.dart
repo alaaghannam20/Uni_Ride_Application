@@ -13,6 +13,7 @@ class PreviewCarpoolScreen extends StatefulWidget {
   final String time;
   final int availableSeats;
   final int pricePerSeat;
+  final int duration;
 
   const PreviewCarpoolScreen({
     super.key,
@@ -22,6 +23,7 @@ class PreviewCarpoolScreen extends StatefulWidget {
     this.time            = '4:40 AM',
     this.availableSeats  = 1,
     this.pricePerSeat    = 8,
+    this.duration        = 15,
     this.stops           = const [],
   });
 
@@ -57,34 +59,68 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
 
   Future<void> _onConfirm() async {
     final provider = context.read<TripProvider>();
-    final ok = await provider.createTrip(
+
+    // Step 1: Create trip
+    final created = await provider.createTrip(
       pickupLocation:  widget.pickupLocation,
       dropoffLocation: widget.dropoffLocation,
       departureTime:   _buildDepartureTime(),
       pricePerSeat:    widget.pricePerSeat.toDouble(),
       totalSeats:      widget.availableSeats,
-      stops:           widget.stops,
+      description:              'estimatedDurationMinutes:${widget.duration}',
+      estimatedDurationMinutes: widget.duration,
+      stops:           [],
     );
     if (!mounted) return;
-    if (ok) {
-      Navigator.pushReplacementNamed(
-        context,
-        Routes.offerConfirmation,
-        arguments: {
-          'pickupLocation':  widget.pickupLocation,
-          'dropoffLocation': widget.dropoffLocation,
-          'date':            widget.date,
-          'time':            widget.time,
-          'availableSeats':  widget.availableSeats,
-          'pricePerSeat':    widget.pricePerSeat,
-          'stops':           widget.stops,
-        },
-      );
-    } else {
+
+    if (created == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(provider.errorMessage), backgroundColor: AppColors.errorRed),
       );
+      return;
     }
+
+    // Step 2: Get the real tripId - either from create response or from scheduled list
+    int tripIdToPublish = created;
+    if (tripIdToPublish == 0) {
+      await provider.fetchDriverScheduled();
+      if (!mounted) return;
+      if (provider.driverScheduled.isNotEmpty) {
+        tripIdToPublish = provider.driverScheduled.first.tripId;
+      }
+    }
+
+    if (tripIdToPublish == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to get trip ID'), backgroundColor: Colors.red),
+      );
+      return;
+    }
+
+    // Step 3: Publish
+    final published = await provider.publishTrip(tripIdToPublish);
+    if (!mounted) return;
+
+    if (!published) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(provider.errorMessage), backgroundColor: AppColors.errorRed),
+      );
+      return;
+    }
+
+    Navigator.pushReplacementNamed(
+      context,
+      Routes.offerConfirmation,
+      arguments: {
+        'pickupLocation':  widget.pickupLocation,
+        'dropoffLocation': widget.dropoffLocation,
+        'date':            widget.date,
+        'time':            widget.time,
+        'availableSeats':  widget.availableSeats,
+        'pricePerSeat':    widget.pricePerSeat,
+        'stops':           widget.stops,
+      },
+    );
   }
 
   @override
@@ -110,46 +146,12 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
 
                     const SizedBox(height: 15.99), // Specified Gap
 
-                    // ── Departure Details (Image 2 Specs) ──
-                    _sectionTitle(l.departure_details),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      height: 178.2, // Specified height
-                      padding: const EdgeInsets.fromLTRB(20.61, 20.61, 20.61, 0.62), // Specified padding
-                      decoration: BoxDecoration(
-                        color: context.bgWhite,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border(
-                          top: BorderSide(color: context.borderColor, width: 0.62), // Specified border
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          _detailRow(
-                            Icons.calendar_today_outlined,
-                            l.date,
-                            widget.date,
-                          ),
-                          Divider(height: 1, color: context.borderColor, indent: 72),
-                          _detailRow(
-                            Icons.access_time_rounded,
-                            l.departure_time,
-                            widget.time,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 15.99), // Specified Gap
-
-                    // ── Pricing Details (Image 3 Specs) ──
+                    // ── Pricing Details ──
                     _sectionTitle(l.pricing_details),
                     const SizedBox(height: 12),
                     Container(
                       width: double.infinity,
-                      height: 213.4, // Specified height
-                      padding: const EdgeInsets.fromLTRB(20.61, 20.61, 20.61, 0.62), // Specified padding
+                      padding: const EdgeInsets.fromLTRB(20.61, 0, 20.61, 20.61),
                       decoration: BoxDecoration(
                         color: context.bgWhite,
                         borderRadius: BorderRadius.circular(20),
@@ -157,7 +159,6 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                           top: BorderSide(color: context.borderColor, width: 0.62),
                         ),
                         boxShadow: context.isDark ? [] : const [
-                          // Specified shadows
                           BoxShadow(
                             color: Color(0x1A000000),
                             offset: Offset(0, 1),
@@ -174,6 +175,12 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                       ),
                       child: Column(
                         children: [
+                          // ── Date + Time (below top line, above seats) ──
+                          _detailRow(Icons.calendar_today_outlined, l.date, widget.date),
+                          Divider(height: 1, color: context.borderColor, indent: 72),
+                          _detailRow(Icons.access_time_rounded, l.departure_time, widget.time),
+                          Divider(height: 1, color: context.borderColor),
+                          const SizedBox(height: 20.61),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -441,18 +448,6 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
                   children: [
                     _routeStep(widget.pickupLocation, l.pickup_loc, true),
                     const SizedBox(height: 16),
-
-                    // --- Stops ---
-                    for (int i = 0; i < widget.stops.length; i++) ...[
-                      _routeStep(
-                        widget.stops[i]['stopName'],
-                        '${l.pickup_points} ${i + 1} (${widget.stops[i]['estimatedArrivalTime']})',
-                        false,
-                        isStop: true,
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-
                     _routeStep(widget.dropoffLocation, l.dropoff_loc, false),
                   ],
                 ),

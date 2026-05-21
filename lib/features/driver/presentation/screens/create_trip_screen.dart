@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/features/home_page/data/models/location_model.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class CreateTripScreen extends StatefulWidget {
@@ -24,10 +25,11 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
   int  _duration      = 15;
   bool _customDuration = false;
   final _durationCtrl  = TextEditingController();
-  final List<Map<String, dynamic>> _stops = [];
-  String? _newStopName;
-  String? _newStopTime;
+  LocationModel? _selectedStop;
   final _customStopCtrl = TextEditingController();
+  static final _otherLocation = LocationModel(id: -1, name: 'Other');
+
+  int get _estimatedEarnings => _seats * _price;
 
   static const _durationOptions = [15, 30, 45, 60, 90, 120];
 
@@ -36,6 +38,11 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     if (v == 60) return '1 hour';
     if (v % 60 == 0) return '${v ~/ 60} hours';
     return '${v ~/ 60}h ${v % 60}min';
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -114,29 +121,29 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       return;
     }
 
-    // Build ISO 8601 departure time in UTC
-    final local = DateTime(
-      _selectedDate!.year, _selectedDate!.month, _selectedDate!.day,
-      _selectedTime!.hour, _selectedTime!.minute,
-    );
-    final departureTime = local.toUtc().toIso8601String();
+    final d = _selectedDate!;
+    final t = _selectedTime!;
+    final departureTime =
+        '${d.year}-${d.month.toString().padLeft(2,'0')}-${d.day.toString().padLeft(2,'0')}'
+        'T${t.hour.toString().padLeft(2,'0')}:${t.minute.toString().padLeft(2,'0')}:00';
 
     final duration = _customDuration
         ? (int.tryParse(_durationCtrl.text) ?? _duration)
         : _duration;
 
-    final success = await context.read<TripProvider>().createTrip(
+    final tripId = await context.read<TripProvider>().createTrip(
       pickupLocation:  _pickupCtrl.text.trim(),
       dropoffLocation: _dropoffCtrl.text.trim(),
       departureTime:   departureTime,
       pricePerSeat:    _price.toDouble(),
       totalSeats:      _seats,
-      description:     'estimatedDurationMinutes:$duration',
-      stops:           _stops,
+      description:              'estimatedDurationMinutes:$duration',
+      estimatedDurationMinutes: duration,
+      stops: [],
     );
 
     if (!mounted) return;
-    if (success) {
+    if (tripId != null) {
       context.read<TripProvider>().fetchDriverScheduled();
       Navigator.pop(context);
     } else {
@@ -327,15 +334,94 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
               const SizedBox(height: 12),
 
               // Price
-              _detailCard(context, child: Row(children: [
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(l.pricePerSeat, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
-                  const SizedBox(height: 2),
-                  Text(l.setPriceInILS, style: TextStyle(fontSize: 12, color: context.textSecondary)),
-                ])),
-                const SizedBox(width: 12),
-                _Stepper(value: _price, min: 1, max: 100, prefix: '₪', onChanged: (v) => setState(() => _price = v)),
+              _detailCard(context, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: [
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(l.pricePerSeat, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
+                    const SizedBox(height: 2),
+                    Text(l.setPriceInILS, style: TextStyle(fontSize: 12, color: context.textSecondary)),
+                  ])),
+                  const SizedBox(width: 12),
+                  _Stepper(value: _price, min: 1, max: 100, prefix: '₪', onChanged: (v) => setState(() => _price = v)),
+                ]),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: context.isDark ? const Color(0xFF1E293B) : AppColors.adminInfoBG,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: context.isDark ? const Color(0xFF334155) : AppColors.lightBlueBg,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.attach_money, size: 14, color: context.isDark ? const Color(0xFF94A3B8) : AppColors.infoDarkBlue),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        l.suggested_price_range,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: context.isDark ? const Color(0xFFCBD5E1) : AppColors.infoDarkBlue,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
               ])),
+
+              const SizedBox(height: 12),
+
+              // ── Estimated Earnings ──
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: context.isDark ? null : const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.successBGStart, AppColors.successBGEnd],
+                  ),
+                  color: context.isDark ? const Color(0xFF064E3B) : null,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: context.isDark ? const Color(0xFF059669) : AppColors.successBorder,
+                    width: 0.62,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l.estimated_earnings,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.isDark ? const Color(0xFF34D399) : AppColors.darkGreen),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Text('₪', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFF34D399) : AppColors.darkGreen)),
+                        const SizedBox(width: 4),
+                        Text(
+                          '$_estimatedEarnings',
+                          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFF34D399) : AppColors.darkGreen),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '$_seats ${l.localeName == 'ar' ? (_seats > 1 ? 'مقاعد' : 'مقعد') : (_seats > 1 ? 'seats' : 'seat')} × ₪$_price ${l.per_seat}',
+                      style: TextStyle(fontSize: 12, color: context.isDark ? const Color(0xFF34D399) : AppColors.darkGreen),
+                    ),
+                  ],
+                ),
+              ),
 
               const SizedBox(height: 40),
 
@@ -363,186 +449,63 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
   }
 
   Widget _buildStopsSection(BuildContext context, AppLocalizations l) {
-    const predefined = ['PTUK Main Gate', 'Engineering Building', 'Student Housing'];
-    final dropdownVal = predefined.contains(_newStopName) ? _newStopName : (_newStopName == null ? null : 'Other');
+    final provider   = context.watch<TripProvider>();
+    final locations  = provider.locations;
+    final isLoading  = provider.locationsState == TripState.loading;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _sectionLabel(context, l.pickup_points),
-            if (_stops.isNotEmpty)
-              TextButton.icon(
-                onPressed: () => setState(() {
-                  _newStopName = null;
-                  _newStopTime = null;
-                  _customStopCtrl.clear();
-                }),
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('Add Point'),
-                style: TextButton.styleFrom(foregroundColor: AppColors.orangeprimary),
-              ),
-          ],
-        ),
+        _sectionLabel(context, l.pickup_points),
         const SizedBox(height: 8),
 
-        // ── Dropdown ──
-        DropdownButtonFormField<String>(
-          key: ValueKey(dropdownVal),
+        // ── Location Dropdown from API ──
+        DropdownButtonFormField<LocationModel>(
           dropdownColor: Theme.of(context).cardColor,
-          initialValue: dropdownVal,
-          hint: Text('Select pickup point', style: TextStyle(color: context.textHint, fontSize: 14)),
-          style: TextStyle(color: context.textSecondary, fontSize: 14),
+          initialValue: _selectedStop,
+          hint: Row(children: [
+            if (isLoading) ...[
+              const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.orangeprimary)),
+              const SizedBox(width: 8),
+            ],
+            Text(
+              isLoading ? 'Loading...' : l.selectPickupPoint,
+              style: TextStyle(color: context.textHint, fontSize: 14),
+            ),
+          ]),
+          style: TextStyle(color: context.textPrimary, fontSize: 14),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+            border:        OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
             enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary)),
           ),
-          items: [...predefined, 'Other']
-              .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-              .toList(),
+          items: [
+            ...locations.map((loc) => DropdownMenuItem(value: loc, child: Text(loc.name))),
+            DropdownMenuItem(value: _otherLocation, child: Text(AppLocalizations.of(context)!.other)),
+          ],
           onChanged: (val) => setState(() {
-            _newStopName = val == 'Other' ? '' : val;
-            _newStopTime = null;
+            _selectedStop = val;
             _customStopCtrl.clear();
           }),
         ),
 
-        // ── Custom input (Other) ──
-        if (_newStopName != null && !predefined.contains(_newStopName)) ...[
+        if (_selectedStop?.id == -1) ...[
           const SizedBox(height: 12),
           TextField(
             controller: _customStopCtrl,
-            style: TextStyle(color: context.textPrimary, fontSize: 14),
+            autofocus: true,
+            style: TextStyle(fontSize: 14, color: context.textPrimary),
             decoration: InputDecoration(
-              hintText: 'Enter stop name',
+              hintText: AppLocalizations.of(context)!.pickupLocation,
               hintStyle: TextStyle(color: context.textHint, fontSize: 14),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+              border:        OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
               enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary)),
             ),
-            onChanged: (val) => setState(() => _newStopName = val),
+            onChanged: (_) => setState(() {}),
           ),
-        ],
-
-        // ── Time picker + Add button ──
-        if (_newStopName != null && _newStopName!.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () async {
-                    final time = await showTimePicker(context: context, initialTime: TimeOfDay.now());
-                    if (time != null && mounted) setState(() => _newStopTime = time.format(context));
-                  },
-                  child: Container(
-                    height: 48,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: context.bgCard,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _newStopTime != null ? AppColors.orangeprimary : context.borderColor),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.access_time, size: 18, color: _newStopTime != null ? AppColors.orangeprimary : context.textHint),
-                        const SizedBox(width: 10),
-                        Text(
-                          _newStopTime ?? 'Arrival time',
-                          style: TextStyle(fontSize: 14, color: _newStopTime != null ? context.textPrimary : context.textHint),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: _newStopTime == null ? null : () {
-                  setState(() {
-                    _stops.add({
-                      'stopName': _newStopName!,
-                      'estimatedArrivalTime': _newStopTime!,
-                      'stopOrder': _stops.length + 1,
-                    });
-                    _newStopName = null;
-                    _newStopTime = null;
-                    _customStopCtrl.clear();
-                  });
-                },
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: _newStopTime != null ? AppColors.orangeprimary : context.bgSubtle,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Add',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: _newStopTime != null ? Colors.white : context.textHint,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-
-        // ── Added stops list ──
-        if (_stops.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          ..._stops.asMap().entries.map((entry) {
-            final idx  = entry.key;
-            final stop = entry.value;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: context.bgCard,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: context.borderColor),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 24, height: 24,
-                      decoration: BoxDecoration(
-                        color: context.isDark ? context.bgSubtle : AppColors.orangeLightBg,
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child: Text('${idx + 1}', style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold, fontSize: 12)),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(stop['stopName'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: context.textPrimary)),
-                          Text(stop['estimatedArrivalTime'], style: TextStyle(fontSize: 12, color: context.textSecondary)),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => setState(() => _stops.removeAt(idx)),
-                      child: const Icon(Icons.remove_circle_outline, color: AppColors.errorRed, size: 20),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
         ],
       ],
     );

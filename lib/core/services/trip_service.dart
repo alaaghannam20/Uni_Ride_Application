@@ -2,6 +2,7 @@ import 'package:uni_ride_application/core/constants/api_keys.dart';
 import 'package:uni_ride_application/core/network/app_endpoints.dart';
 import 'package:uni_ride_application/core/services/dio_factory/dio_factory.dart';
 import 'package:uni_ride_application/features/home_page/data/models/available_trip_model.dart';
+import 'package:uni_ride_application/features/home_page/data/models/location_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/my_trip_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/trip_detail_model.dart';
 
@@ -10,13 +11,27 @@ class TripService {
     return e.toString().replaceAll('Exception: ', '');
   }
 
+  Future<List<LocationModel>> getLocations() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.tripLocations);
+      List<dynamic> list = [];
+      if (response.data is List) {
+        list = response.data as List;
+      } else if (response.data is Map && response.data['data'] is List) {
+        list = response.data['data'] as List;
+      }
+      return list.map((e) => LocationModel.fromJson(e as Map<String, dynamic>)).toList();
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
   Future<List<AvailableTripModel>> getAvailableTrips({String? type}) async {
     try {
       final response = await DioFactory.get(
         AppEndpoints.availableTrips,
         queryParameters: type != null ? {ApiKeys.type: type} : null,
       );
-      print('✅ Available Trips response: ${response.data}');
       List<dynamic> list = [];
       if (response.data is List) {
         list = response.data as List;
@@ -41,25 +56,34 @@ class TripService {
     }
   }
 
-  Future<void> createTrip({
+  Future<int> createTrip({
     required String pickupLocation,
     required String dropoffLocation,
     required String departureTime,
     required double pricePerSeat,
     required int totalSeats,
     String description = '',
+    int estimatedDurationMinutes = 0,
     List<Map<String, dynamic>> stops = const [],
   }) async {
     try {
-      await DioFactory.post(AppEndpoints.createTrip, data: {
+      final Map<String, dynamic> body = {
         'pickupLocation': pickupLocation,
         'dropoffLocation': dropoffLocation,
         'departureTime': departureTime,
         'pricePerSeat': pricePerSeat,
         'totalSeats': totalSeats,
-        'description': description,
-        'stops': stops,
-      });
+        'estimatedDurationMinutes': estimatedDurationMinutes,
+      };
+      if (description.isNotEmpty) body['description'] = description;
+      body['stops'] = stops;
+
+      final response = await DioFactory.post(AppEndpoints.createTrip, data: body);
+      final responseBody = (response.data is Map && response.data[ApiKeys.data] != null)
+          ? response.data[ApiKeys.data]
+          : response.data;
+      final id = responseBody[ApiKeys.tripId] ?? responseBody['id'] ?? responseBody['TripId'] ?? responseBody['trip_id'] ?? 0;
+      return (id is int) ? id : int.tryParse(id.toString()) ?? 0;
     } catch (e) {
       throw Exception(_cleanError(e));
     }

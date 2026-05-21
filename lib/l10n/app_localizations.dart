@@ -1016,6 +1016,30 @@ abstract class AppLocalizations {
   /// **'Per Kilometer (₪)'**
   String get perKilometer;
 
+  /// No description provided for @appFee.
+  ///
+  /// In en, this message translates to:
+  /// **'App Fee'**
+  String get appFee;
+
+  /// No description provided for @included.
+  ///
+  /// In en, this message translates to:
+  /// **'included'**
+  String get included;
+
+  /// No description provided for @appFeePerTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform Fee per Trip (₪)'**
+  String get appFeePerTrip;
+
+  /// No description provided for @appFeePerTripDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically added on top of driver price and paid by the student'**
+  String get appFeePerTripDesc;
+
   /// No description provided for @saveChanges.
   ///
   /// In en, this message translates to:
@@ -1709,14 +1733,26 @@ abstract class AppLocalizations {
   /// No description provided for @pickup_eng_building.
   ///
   /// In en, this message translates to:
-  /// **'Engineering Building'**
+  /// **'Industry Gateway'**
   String get pickup_eng_building;
 
   /// No description provided for @pickup_student_housing.
   ///
   /// In en, this message translates to:
-  /// **'Student Housing'**
+  /// **'Energy Gateway'**
   String get pickup_student_housing;
+
+  /// No description provided for @selectPickupPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select pickup point'**
+  String get selectPickupPoint;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
 
   /// No description provided for @all.
   ///
@@ -1907,7 +1943,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggested_price_range.
   ///
   /// In en, this message translates to:
-  /// **'Suggested price range: ₪5-₪12 per seat'**
+  /// **'₪3 will be added to your price for the app'**
   String get suggested_price_range;
 
   /// No description provided for @additional_notes_optional.

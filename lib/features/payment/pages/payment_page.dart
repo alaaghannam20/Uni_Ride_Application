@@ -114,10 +114,38 @@ class _PaymentPageState extends State<PaymentPage> {
                 tripId: tripId,
                 seatCount: seats,
               );
-              if (session != null && context.mounted) {
-                final uri = Uri.parse(session.checkoutUrl);
-                if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+              if (!context.mounted) return;
+              if (session == null) {
+                final error = context.read<PaymentProvider>().errorMessage;
+                final isNoSeats = error.toLowerCase().contains('seat') ||
+                    error.toLowerCase().contains('available') ||
+                    error.toLowerCase().contains('full');
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text('Booking Failed'),
+                    content: Text(
+                      isNoSeats
+                          ? 'Sorry, this seat was just booked by another student. Please go back and check available seats.'
+                          : error,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Go Back'),
+                      ),
+                    ],
+                  ),
+                );
+                return;
+              }
+              final uri = Uri.parse(session.checkoutUrl);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                if (context.mounted) {
                   Navigator.pushNamed(context, Routes.bookingConfirmed, arguments: session.sessionId);
                 }
               }

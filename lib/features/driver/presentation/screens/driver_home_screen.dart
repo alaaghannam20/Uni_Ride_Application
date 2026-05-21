@@ -226,12 +226,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
 String _fmtTime(String raw) {
   try {
-    final dt = DateTime.parse('${raw}Z').toLocal();
+    final dt = DateTime.parse(raw);
     final h  = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
     final m  = dt.minute.toString().padLeft(2, '0');
     final p  = dt.hour >= 12 ? 'PM' : 'AM';
+    const days   = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return '$h:$m $p  •  ${dt.day} ${months[dt.month - 1]}';
+    final dayName = days[dt.weekday - 1];
+    final month   = months[dt.month - 1];
+    return '$h:$m $p  •  $dayName, $month ${dt.day}, ${dt.year}';
   } catch (_) { return raw; }
 }
 
@@ -246,6 +249,13 @@ class _ScheduledCard extends StatefulWidget {
 class _ScheduledCardState extends State<_ScheduledCard> {
   bool _cancelling  = false;
   bool _publishing  = false;
+
+  String _fmtDuration(int minutes) {
+    if (minutes < 60) return '$minutes min';
+    if (minutes == 60) return '1 hour';
+    if (minutes % 60 == 0) return '${minutes ~/ 60} hours';
+    return '${minutes ~/ 60}h ${minutes % 60}m';
+  }
 
   Future<void> _onCancel() async {
     setState(() => _cancelling = true);
@@ -296,26 +306,31 @@ class _ScheduledCardState extends State<_ScheduledCard> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
               // ── Route ──────────────────────────────────────────────
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(children: [
-                    const Icon(Icons.circle, size: 10, color: AppColors.orangeprimary),
-                    const SizedBox(height: 4),
-                    _DashedLine(color: context.borderColor, height: 28),
-                    const SizedBox(height: 4),
-                    Icon(Icons.circle, size: 10, color: context.textHint),
-                  ]),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(trip.pickupLocation,  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
-                      const SizedBox(height: 16),
-                      Text(trip.dropoffLocation, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
-                    ]),
-                  ),
-                ],
+              Row(children: [
+                const Icon(Icons.circle, size: 10, color: AppColors.orangeprimary),
+                const SizedBox(width: 12),
+                Expanded(child: Text(trip.pickupLocation, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary))),
+              ]),
+              Padding(
+                padding: const EdgeInsets.only(left: 1),
+                child: Row(
+                  children: [
+                    _DashedLine(color: context.borderColor, height: 36),
+                    if (trip.estimatedDurationMinutes > 0) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        _fmtDuration(trip.estimatedDurationMinutes),
+                        style: TextStyle(fontSize: 12, color: context.textHint, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ],
+                ),
               ),
+              Row(children: [
+                Icon(Icons.circle, size: 10, color: context.textHint),
+                const SizedBox(width: 12),
+                Expanded(child: Text(trip.dropoffLocation, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary))),
+              ]),
 
               const SizedBox(height: 14),
               Divider(height: 1, color: context.borderColor),

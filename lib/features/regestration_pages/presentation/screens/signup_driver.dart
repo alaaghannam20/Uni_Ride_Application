@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
@@ -105,17 +107,36 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
 
   Future<void> _pickImage(String type) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        if (type == 'driverLicense') {
-          _driverLicensePath = image.path;
-        } else if (type == 'vehicleLicense') {
-          _vehicleLicensePath = image.path;
-        } else if (type == 'profile') {
-          _profileImagePath = image.path;
-        }
-      });
-    }
+    if (image == null) return;
+
+    final isProfile = type == 'profile';
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: image.path,
+      aspectRatio: isProfile ? const CropAspectRatio(ratioX: 1, ratioY: 1) : null,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: isProfile ? 'Crop Photo' : 'Crop Document',
+          toolbarColor: AppColors.orangeprimary,
+          toolbarWidgetColor: Colors.white,
+          lockAspectRatio: isProfile,
+        ),
+        IOSUiSettings(
+          title: isProfile ? 'Crop Photo' : 'Crop Document',
+          aspectRatioLockEnabled: isProfile,
+        ),
+      ],
+    );
+    if (cropped == null) return;
+
+    setState(() {
+      if (type == 'driverLicense') {
+        _driverLicensePath = cropped.path;
+      } else if (type == 'vehicleLicense') {
+        _vehicleLicensePath = cropped.path;
+      } else if (type == 'profile') {
+        _profileImagePath = cropped.path;
+      }
+    });
   }
 
   void goToNextStep() {
@@ -207,10 +228,12 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
           content: Text(AppLocalizations.of(context)!.under_review_message),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                await AppPrefs.logout();
+                if (!context.mounted) return;
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  '/signIn',
+                  Routes.signIn,
                   (route) => false,
                 );
               },
@@ -220,6 +243,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
         ),
       );
     } else {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(provider.errorMessage),
@@ -440,7 +464,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
               style: AppStyle.lablestyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
           const SizedBox(height: 24),
           DropdownButtonFormField<String>(
-            value: selectedCarType,
+            initialValue: selectedCarType,
             decoration: InputDecoration(
               labelText: l.vehicleType,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),

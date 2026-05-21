@@ -473,6 +473,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get perKilometer => 'Per Kilometer (₪)';
 
   @override
+  String get appFee => 'App Fee';
+
+  @override
+  String get included => 'included';
+
+  @override
+  String get appFeePerTrip => 'Platform Fee per Trip (₪)';
+
+  @override
+  String get appFeePerTripDesc =>
+      'Automatically added on top of driver price and paid by the student';
+
+  @override
   String get saveChanges => 'Save Changes';
 
   @override
@@ -821,10 +834,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickup_ptuk_gate => 'PTUK Main Gate';
 
   @override
-  String get pickup_eng_building => 'Engineering Building';
+  String get pickup_eng_building => 'Industry Gateway';
 
   @override
-  String get pickup_student_housing => 'Student Housing';
+  String get pickup_student_housing => 'Energy Gateway';
+
+  @override
+  String get selectPickupPoint => 'Select pickup point';
+
+  @override
+  String get other => 'Other';
 
   @override
   String get all => 'All';
@@ -923,7 +942,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get set_price => 'Set your price in ILS (₪)';
 
   @override
-  String get suggested_price_range => 'Suggested price range: ₪5-₪12 per seat';
+  String get suggested_price_range =>
+      '₪3 will be added to your price for the app';
 
   @override
   String get additional_notes_optional => 'Additional Notes (Optional)';

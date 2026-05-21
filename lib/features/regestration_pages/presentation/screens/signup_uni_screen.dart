@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -191,7 +192,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                             const SizedBox(height: 4),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, '/signIn');
+                                Navigator.pushNamed(context, Routes.signIn);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

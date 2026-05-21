@@ -23,7 +23,8 @@ class AppEndpoints {
   static String toggleDriverStatus(String id) => 'admin/drivers/$id/toggle-status';
 
   // Trip Endpoints
-  static const String availableTrips = 'Trip/available';
+  static const String tripLocations   = 'Trip/locations';
+  static const String availableTrips  = 'Trip/available';
   static String tripDetails(int id) => 'Trip/$id/details';
   static const String myTrips          = 'Trip/my-trips';
   static const String driverScheduled  = 'Trip/driver/scheduled';

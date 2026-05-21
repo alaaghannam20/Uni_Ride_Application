@@ -27,7 +27,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
       context.read<TripProvider>().fetchAvailableTrips();
       final userType = context.read<AuthProvider>().userType;
       if (userType == UserType.carpool) {
-        context.read<TripProvider>().fetchMyTrips();
+        context.read<TripProvider>().fetchDriverScheduled();
       }
     });
   }
@@ -116,17 +116,8 @@ class _CarpoolTabState extends State<CarpoolTab> {
                         child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint)),
                       ));
                     }
-                    final carpoolTrips = provider.availableTrips
-                        .where((t) => t.driverType == 'Carpool')
-                        .toList();
-                    if (carpoolTrips.isEmpty) {
-                      return Center(child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint)),
-                      ));
-                    }
                     return Column(
-                      children: carpoolTrips
+                      children: provider.availableTrips
                           .map((trip) => AvailableTripApiCard(trip: trip))
                           .toList(),
                     );
@@ -137,12 +128,12 @@ class _CarpoolTabState extends State<CarpoolTab> {
                   builder: (context, provider, _) {
                     final userType = context.read<AuthProvider>().userType;
                     if (userType != UserType.carpool) return _buildMyRidesEmptyState(l);
-                    if (provider.myTripsState == TripState.loading) {
+                    if (provider.scheduledState == TripState.loading) {
                       return const Padding(padding: EdgeInsets.symmetric(vertical: 40), child: Center(child: CircularProgressIndicator(color: AppColors.orangeprimary)));
                     }
-                    if (provider.myTrips.isEmpty) return _buildMyRidesEmptyState(l);
+                    if (provider.driverScheduled.isEmpty) return _buildMyRidesEmptyState(l);
                     return Column(
-                      children: provider.myTrips.map((t) => MyTripApiCard(trip: t)).toList(),
+                      children: provider.driverScheduled.map((t) => MyTripApiCard(trip: t)).toList(),
                     );
                   },
                 ),

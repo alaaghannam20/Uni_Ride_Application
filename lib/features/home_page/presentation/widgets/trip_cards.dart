@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/constants/app_fee.dart';
+import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
@@ -86,7 +89,7 @@ class TripCard extends StatelessWidget {
                   Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
                     const Text('₪', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
                     const SizedBox(width: 2),
-                    Text('${trip.price}', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 20, color: AppColors.orangeprimary)),
+                    Text('${trip.price + kAppFee}', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 20, color: AppColors.orangeprimary)),
                   ]),
                 ],
               ),
@@ -184,7 +187,7 @@ class MyTripCard extends StatelessWidget {
               Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
                 const Text('₪', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
                 const SizedBox(width: 2),
-                Text('${trip.price}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
+                Text('${trip.price + kAppFee}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
               ]),
             ]),
           ],
@@ -280,7 +283,7 @@ class CarpoolTripCard extends StatelessWidget {
             Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
               const Text('₪', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
               const SizedBox(width: 2),
-              Text('${trip.price}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
+              Text('${trip.price + kAppFee}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
               Text(' /seats', style: TextStyle(fontSize: 12, color: context.textHint, fontWeight: FontWeight.w500)),
             ]),
           ]),
@@ -327,10 +330,12 @@ class AvailableTripApiCard extends StatelessWidget {
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(trip.driverName, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, color: context.textPrimary)),
               Row(children: [
-                const Icon(Icons.star, size: 13, color: Color(0xFFF5A623)),
-                const SizedBox(width: 3),
-                const Text('4.8', style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
-                Text(' · ', style: TextStyle(color: context.textSecondary)),
+                if (trip.driverRating > 0) ...[
+                  const Icon(Icons.star, size: 13, color: Color(0xFFF5A623)),
+                  const SizedBox(width: 3),
+                  Text(trip.driverRating.toStringAsFixed(1), style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+                  Text(' · ', style: TextStyle(color: context.textSecondary)),
+                ],
                 Text(trip.vehicleModel, style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
               ]),
             ])),
@@ -376,7 +381,7 @@ class AvailableTripApiCard extends StatelessWidget {
             Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
               const Text('₪', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
               const SizedBox(width: 2),
-              Text('${trip.pricePerSeat}', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 18, color: AppColors.orangeprimary)),
+              Text('${trip.pricePerSeat + kAppFee}', style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 18, color: AppColors.orangeprimary)),
             ]),
           ]),
         ]),
@@ -478,9 +483,55 @@ class MyTripApiCard extends StatelessWidget {
             Row(crossAxisAlignment: CrossAxisAlignment.baseline, textBaseline: TextBaseline.alphabetic, children: [
               const Text('₪', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
               const SizedBox(width: 2),
-              Text('${trip.pricePerSeat}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
+              Text('${trip.pricePerSeat + kAppFee}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
             ]),
           ]),
+          if (statusLower != 'completed' && statusLower != 'cancelled') ...[
+            const SizedBox(height: 12),
+            Row(children: [
+              // ── Cancel ──
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text(l.cancel, style: TextStyle(color: context.textPrimary)),
+                        content: Text(l.cancel_trip_confirmation),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: Text(l.cancel, style: TextStyle(color: context.textSecondary)),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.errorRed),
+                            onPressed: () => Navigator.pop(context, true),
+                            child: Text(l.cancel_trip, style: const TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirm == true && context.mounted) {
+                      await context.read<TripProvider>().cancelTrip(trip.tripId);
+                      if (context.mounted) {
+                        context.read<TripProvider>().fetchDriverScheduled();
+                        context.read<TripProvider>().fetchMyTrips();
+                        context.read<TripProvider>().fetchAvailableTrips();
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.cancel_outlined, size: 16, color: AppColors.errorRed),
+                  label: Text(l.cancel_trip, style: const TextStyle(fontSize: 13, color: AppColors.errorRed)),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.errorRed),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                ),
+              ),
+              // ── Publish (only if not yet published) ──
+            ]),
+          ],
         ]),
       ),
     );
@@ -560,7 +611,7 @@ class DetailedTripCard extends StatelessWidget {
             Row(children: [
               const Text('₪', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
               const SizedBox(width: 2),
-              Text('${trip.price}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
+              Text('${trip.price + kAppFee}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.orangeprimary)),
             ]),
           ]),
         ]),

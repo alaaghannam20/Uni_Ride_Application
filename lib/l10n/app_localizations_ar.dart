@@ -472,6 +472,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get perKilometer => 'لكل كيلومتر (₪)';
 
   @override
+  String get appFee => 'رسوم التطبيق';
+
+  @override
+  String get included => 'مشمولة';
+
+  @override
+  String get appFeePerTrip => 'رسوم التطبيق لكل رحلة (₪)';
+
+  @override
+  String get appFeePerTripDesc =>
+      'تُضاف تلقائياً على سعر السائق ويدفعها الطالب';
+
+  @override
   String get saveChanges => 'حفظ التغييرات';
 
   @override
@@ -819,10 +832,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pickup_ptuk_gate => 'البوابة الرئيسية - خضوري';
 
   @override
-  String get pickup_eng_building => 'مبنى الهندسة';
+  String get pickup_eng_building => 'البوابة الصناعية';
 
   @override
-  String get pickup_student_housing => 'سكن الطلاب';
+  String get pickup_student_housing => 'بوابة الطاقة';
+
+  @override
+  String get selectPickupPoint => 'اختر نقطة التوقف';
+
+  @override
+  String get other => 'أخرى';
 
   @override
   String get all => 'الكل';
@@ -921,7 +940,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get set_price => 'حدد سعرك بالشيكل (₪)';
 
   @override
-  String get suggested_price_range => 'نطاق السعر المقترح: ₪5-₪12 لكل مقعد';
+  String get suggested_price_range => 'سيُضاف ₪3 على سعرك الأصلي للتطبيق';
 
   @override
   String get additional_notes_optional => 'ملاحظات إضافية (اختياري)';

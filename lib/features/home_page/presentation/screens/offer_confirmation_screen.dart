@@ -99,11 +99,10 @@ class OfferConfirmationScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // ── Route Summary Card (Image 4 specs) ──
+                    // ── Route Summary Card ──
                     Container(
-                      width: 382.02,
-                      height: 237.58,
-                      padding: const EdgeInsets.only(top: 23.99, right: 23.99, left: 23.99),
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(23.99),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           begin: Alignment.topCenter,
@@ -133,8 +132,8 @@ class OfferConfirmationScreen extends StatelessWidget {
                             l.your_carpool_offer,
                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                           ),
-                          const SizedBox(height: 15.99), // Gap: 15.99px
-                          
+                          const SizedBox(height: 15.99),
+
                           // Path Visualization
                           Column(
                             children: [
@@ -146,23 +145,23 @@ class OfferConfirmationScreen extends StatelessWidget {
                                   Text(pickupLocation, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white)),
                                 ],
                               ),
-                              // Middle Row (Dashed line + Date/Time)
+                              // Dashed connector
                               Row(
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 4),
                                     child: Column(
                                       children: [
+                                        const SizedBox(height: 3),
+                                        Container(width: 2, height: 5, color: Colors.white.withValues(alpha: 0.5)),
                                         const SizedBox(height: 4),
-                                        Container(width: 2, height: 4, color: Colors.white.withOpacity(0.4)),
+                                        Container(width: 2, height: 5, color: Colors.white.withValues(alpha: 0.5)),
                                         const SizedBox(height: 4),
-                                        Container(width: 2, height: 4, color: Colors.white.withOpacity(0.4)),
-                                        const SizedBox(height: 4),
+                                        Container(width: 2, height: 5, color: Colors.white.withValues(alpha: 0.5)),
+                                        const SizedBox(height: 3),
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(width: 16),
-                                  Text("$date at $time", style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.8))),
                                 ],
                               ),
                               // Dropoff Row
@@ -175,10 +174,23 @@ class OfferConfirmationScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          
-                          const SizedBox(height: 24),
-                          Container(height: 1, color: Colors.white.withOpacity(0.1)),
-                          const SizedBox(height: 20),
+
+                          const SizedBox(height: 16),
+                          Container(height: 1, color: Colors.white.withValues(alpha: 0.2)),
+                          const SizedBox(height: 12),
+
+                          // Date + Time (below the line, above seats)
+                          Row(
+                            children: [
+                              Icon(Icons.access_time_rounded, size: 16, color: Colors.white.withValues(alpha: 0.8)),
+                              const SizedBox(width: 8),
+                              Text("$date  •  $time", style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.9))),
+                            ],
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // Seats + Price
                           Row(
                             children: [
                               const Icon(Icons.people_outline, size: 20, color: Colors.white),
@@ -214,7 +226,7 @@ class OfferConfirmationScreen extends StatelessWidget {
                             spreadRadius: -1,
                           ),
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             offset: const Offset(0, 1),
                             blurRadius: 3,
                             spreadRadius: 0,
@@ -262,7 +274,7 @@ class OfferConfirmationScreen extends StatelessWidget {
                             spreadRadius: -1,
                           ),
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             offset: const Offset(0, 1),
                             blurRadius: 3,
                             spreadRadius: 0,
@@ -288,7 +300,7 @@ class OfferConfirmationScreen extends StatelessWidget {
                     const SizedBox(height: 24),
 
                     // ── Secondary Action Buttons (Image 3 specs) ──
-                    Container(
+                    SizedBox(
                       width: 382.02,
                       height: 51.72,
                       child: Row(

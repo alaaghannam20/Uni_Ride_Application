@@ -18,4 +18,5 @@ class PrefKeys {
   static const String userEmail = 'userEmail';
   static const String userProfileImage = 'userProfileImage';
   static const String themeMode = 'themeMode';
+  static const String appFee = 'appFee';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uni_ride_application/core/constants/app_fee.dart';
 import 'package:uni_ride_application/core/provider/payment_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
@@ -319,7 +320,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   }
 
   Widget _buildSelectSeats(AppLocalizations l, int maxSeats, double pricePerSeat) {
-    final total = _selectedSeats * pricePerSeat;
+    final studentPrice = pricePerSeat + kAppFee;
+    final total = _selectedSeats * studentPrice;
     return _CardContainer(
       title: l.select_seats,
       child: Column(
@@ -381,7 +383,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(l.pricePerSeat, style: TextStyle(color: context.textSecondary, fontSize: 12)),
-                    Text('₪ ${pricePerSeat.toStringAsFixed(0)}', style: TextStyle(color: context.textPrimary, fontSize: 12, fontWeight: FontWeight.w500)),
+                    Text('₪ ${studentPrice.toStringAsFixed(0)}', style: TextStyle(color: context.textPrimary, fontSize: 12, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(l.appFee, style: TextStyle(color: context.textSecondary, fontSize: 11)),
+                    Text('₪ $kAppFee ${l.included}', style: TextStyle(color: context.textSecondary, fontSize: 11)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -416,7 +426,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   }
 
   Widget _buildBottomBar(BuildContext context, AppLocalizations l, int tripId, double pricePerSeat) {
-    final total = _selectedSeats * pricePerSeat;
+    final total = _selectedSeats * (pricePerSeat + kAppFee);
     final paymentState = context.watch<PaymentProvider>().checkoutState;
     final isLoading = paymentState == PaymentState.loading;
 
@@ -485,7 +495,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
       dateStr = trip.departureTime;
     }
 
-    Navigator.pushNamed(
+    await Navigator.pushNamed(
       context,
       Routes.payment,
       arguments: {
@@ -497,6 +507,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
         'totalAmount': _selectedSeats * trip.pricePerSeat.toDouble(),
       },
     );
+    if (mounted) {
+      context.read<TripProvider>().fetchTripDetails(widget.tripId);
+    }
   }
 }
 
