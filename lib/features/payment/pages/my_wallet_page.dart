@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uni_ride_application/core/provider/payment_provider.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -65,7 +67,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => provider.fetchWalletBalance(),
-                    child: const Text('Retry'),
+                    child: Text(AppLocalizations.of(context)!.retry),
                   ),
                 ],
               ),
@@ -200,24 +202,55 @@ class _MyWalletPageState extends State<MyWalletPage> {
     );
   }
 
+  void _showReturnDialog(BuildContext context, String sessionId) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.bgCard,
+        title: Text(
+          AppLocalizations.of(context)!.topUpSuccess,
+          style: TextStyle(color: context.textPrimary),
+        ),
+        content: Text(
+          AppLocalizations.of(context)!.walletHasBeenCharged,
+          style: TextStyle(color: context.textSecondary),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              Navigator.pushNamed(context, Routes.topUpConfirmed, arguments: sessionId);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.orangeprimary),
+            child: Text(
+              AppLocalizations.of(context)!.continu,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showTopUpDialog(BuildContext context) {
     final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: context.bgCard,
-        title: Text('Top-up Wallet', style: TextStyle(color: context.textPrimary)),
+        title: Text(AppLocalizations.of(context)!.topUpWallet, style: TextStyle(color: context.textPrimary)),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           style: TextStyle(color: context.textPrimary),
           decoration: InputDecoration(
-            hintText: 'Enter amount (ILS)',
+            hintText: AppLocalizations.of(context)!.enterAmountILS,
             hintStyle: TextStyle(color: context.textHint),
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text('Cancel', style: TextStyle(color: context.textSecondary))),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(AppLocalizations.of(context)!.cancel, style: TextStyle(color: context.textSecondary))),
           ElevatedButton(
             onPressed: () async {
               final amount = double.tryParse(controller.text);
@@ -225,15 +258,24 @@ class _MyWalletPageState extends State<MyWalletPage> {
                 Navigator.pop(ctx);
                 final paymentProvider = context.read<PaymentProvider>();
                 final session = await paymentProvider.startTopUp(amount: amount);
-                if (session != null && context.mounted) {
+                if (!context.mounted) return;
+                if (session == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Opening Checkout: ${session.checkoutUrl}')),
+                    SnackBar(content: Text(paymentProvider.errorMessage), backgroundColor: Colors.red),
                   );
+                  return;
+                }
+                final uri = Uri.parse(session.checkoutUrl);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  if (context.mounted) {
+                    _showReturnDialog(context, session.sessionId);
+                  }
                 }
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.orangeprimary),
-            child: const Text('Top-up', style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.topUpAction, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -345,6 +387,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
     // Filter transactions based on tab
     final filtered = wallet.transactions.where((t) {
       if (_selectedTabIndex == 1) return t.type == 'Payment';
+      if (_selectedTabIndex == 2) return t.type == 'Refund';
       if (_selectedTabIndex == 3) return t.type == 'Recharge';
       return true;
     }).toList();

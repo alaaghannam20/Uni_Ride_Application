@@ -120,7 +120,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                             CustomTextfiled(
                               controller: uniEmailController,
                               labelText: AppLocalizations.of(context)!.emailAddress,
-                              hintText: '',
+                              hintText: 'Enter your email',
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(
                                 Icons.email_sharp,
@@ -197,11 +197,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Login Now', style: AppStyle.loginNowStyle),
-                                  const SizedBox(width: 4),
-                                  Text('|', style: AppStyle.loginNowStyle),
-                                  const SizedBox(width: 4),
-                                  Text('تسجيل الدخول', style: AppStyle.loginNowStyle),
+                                  Text(AppLocalizations.of(context)!.loginNow, style: AppStyle.loginNowStyle),
                                 ],
                               ),
                             ),

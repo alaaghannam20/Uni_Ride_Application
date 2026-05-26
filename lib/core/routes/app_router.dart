@@ -32,9 +32,12 @@ import 'package:uni_ride_application/features/home_page/presentation/screens/off
 import 'package:uni_ride_application/features/driver/presentation/screens/driver_home_screen.dart';
 import 'package:uni_ride_application/features/driver/presentation/screens/create_trip_screen.dart';
 import 'package:uni_ride_application/features/carpool/carpool_profile_screen.dart';
+import 'package:uni_ride_application/features/carpool/carpool_reviews_screen.dart';
 import 'package:uni_ride_application/features/driver/driver_profile_screen.dart';
+import 'package:uni_ride_application/features/driver/presentation/screens/driver_reviews_screen.dart';
 import 'package:uni_ride_application/features/trip_details/presentation/screens/trip_details_screen.dart';
 import 'package:uni_ride_application/features/trip_details/presentation/screens/booking_confirmed_screen.dart';
+import 'package:uni_ride_application/features/payment/pages/topup_confirmed_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -243,6 +246,8 @@ class AppRouter {
           builder: (_) => RateDriverPage(
             bookingId: args['bookingId'],
             driverName: args['driverName'] ?? 'Ali M.',
+            driverType: args['driverType'] ?? 'Driver',
+            profilePicturePath: args['profilePicturePath'],
           ),
         );
 
@@ -319,10 +324,20 @@ class AppRouter {
           settings: settings,
           builder: (_) => const DriverProfileScreen(),
         );
+      case Routes.driverReviews:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const DriverReviewsScreen(),
+        );
       case Routes.carpoolProfile:
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => const CarpoolProfileScreen(),
+        );
+      case Routes.carpoolReviews:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const CarpoolReviewsScreen(),
         );
       case Routes.tripDetails:
         final tripId = settings.arguments as int;
@@ -331,10 +346,20 @@ class AppRouter {
           builder: (_) => TripDetailsScreen(tripId: tripId),
         );
       case Routes.bookingConfirmed:
+        final args = settings.arguments;
+        final isPreConfirmed = args is Map && args['preConfirmed'] == true;
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => BookingConfirmedScreen(
+            sessionId: isPreConfirmed ? null : args as String,
+            preConfirmed: isPreConfirmed,
+          ),
+        );
+      case Routes.topUpConfirmed:
         final sessionId = settings.arguments as String;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => BookingConfirmedScreen(sessionId: sessionId),
+          builder: (_) => TopUpConfirmedScreen(sessionId: sessionId),
         );
       default:
         return MaterialPageRoute(

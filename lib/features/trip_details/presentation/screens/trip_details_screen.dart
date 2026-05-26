@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:uni_ride_application/core/constants/app_fee.dart';
 import 'package:uni_ride_application/core/provider/payment_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
@@ -69,7 +68,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     children: [
                       _buildGoldenCard(trip.pickupLocation, trip.dropoffLocation, trip.departureTime),
                       const SizedBox(height: 16),
-                      _buildDriverInfo(context, l, trip.driverName, trip.profilePicturePath, trip.driverRating, trip.totalDriverTrips, trip.vehicleModel, trip.vehicleType),
+                      _buildDriverInfo(context, l, trip.driverName, trip.profilePicturePath, trip.driverRating, trip.totalDriverTrips, trip.vehicleModel, trip.vehicleType, trip.driverPhone),
                       if (trip.stops.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPickupPoints(l, trip.stops),
@@ -77,11 +76,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                       const SizedBox(height: 16),
                       _buildAvailableSeats(l, trip.availableSeats, trip.totalSeats),
                       const SizedBox(height: 16),
-                      _buildSelectSeats(l, trip.availableSeats, trip.pricePerSeat.toDouble()),
+                      _buildSelectSeats(l, trip.availableSeats, trip.pricePerSeat.toDouble(), trip.platformFee),
                     ],
                   ),
                 ),
-      bottomNavigationBar: trip == null ? null : _buildBottomBar(context, l, trip.tripId, trip.pricePerSeat.toDouble()),
+      bottomNavigationBar: trip == null ? null : _buildBottomBar(context, l, trip.tripId, trip.pricePerSeat.toDouble(), trip.platformFee),
     );
   }
 
@@ -150,7 +149,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     );
   }
 
-  Widget _buildDriverInfo(BuildContext context, AppLocalizations l, String name, String? photo, double rating, int trips, String vehicleModel, String vehicleType) {
+  Widget _buildDriverInfo(BuildContext context, AppLocalizations l, String name, String? photo, double rating, int trips, String vehicleModel, String vehicleType, String driverPhone) {
     final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
     return _CardContainer(
       title: l.driverInfo,
@@ -172,12 +171,36 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: context.textPrimary)),
+                    if (driverPhone.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      GestureDetector(
+                        onTap: () async {
+                          final uri = Uri(scheme: 'tel', path: driverPhone);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri);
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.phone_outlined, color: const Color(0xFF25D366), size: 13),
+                            const SizedBox(width: 4),
+                            Text(driverPhone, style: TextStyle(color: context.textSecondary, fontSize: 12)),
+                          ],
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 4),
                     Row(
                       children: [
                         const Icon(Icons.star, color: AppColors.amberWarning, size: 14),
                         const SizedBox(width: 4),
-                        Text('${rating.toStringAsFixed(1)} • $trips trips', style: TextStyle(color: context.textSecondary, fontSize: 12)),
+                        Text(rating.toStringAsFixed(1), style: TextStyle(color: context.textSecondary, fontSize: 12)),
+                        const SizedBox(width: 8),
+                        Container(width: 1, height: 12, color: context.borderColor),
+                        const SizedBox(width: 8),
+                        Icon(Icons.directions_car_outlined, color: AppColors.orangeprimary, size: 13),
+                        const SizedBox(width: 4),
+                        Text('$trips trips', style: TextStyle(color: context.textSecondary, fontSize: 12)),
                       ],
                     ),
                   ],
@@ -191,7 +214,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
             decoration: BoxDecoration(color: context.bgSubtle, borderRadius: BorderRadius.circular(12)),
             child: Row(
               children: [
-                Icon(Icons.directions_car_outlined, color: context.textSecondary, size: 20),
+                Icon(Icons.directions_car_outlined, color: AppColors.orangeprimary, size: 20),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text('$vehicleModel • $vehicleType', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: context.textPrimary)),
@@ -319,8 +342,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     );
   }
 
-  Widget _buildSelectSeats(AppLocalizations l, int maxSeats, double pricePerSeat) {
-    final studentPrice = pricePerSeat + kAppFee;
+  Widget _buildSelectSeats(AppLocalizations l, int maxSeats, double pricePerSeat, int platformFee) {
+    final studentPrice = pricePerSeat + platformFee;
     final total = _selectedSeats * studentPrice;
     return _CardContainer(
       title: l.select_seats,
@@ -391,7 +414,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(l.appFee, style: TextStyle(color: context.textSecondary, fontSize: 11)),
-                    Text('₪ $kAppFee ${l.included}', style: TextStyle(color: context.textSecondary, fontSize: 11)),
+                    Text('₪ $platformFee ${l.included}', style: TextStyle(color: context.textSecondary, fontSize: 11)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -425,8 +448,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     );
   }
 
-  Widget _buildBottomBar(BuildContext context, AppLocalizations l, int tripId, double pricePerSeat) {
-    final total = _selectedSeats * (pricePerSeat + kAppFee);
+  Widget _buildBottomBar(BuildContext context, AppLocalizations l, int tripId, double pricePerSeat, int platformFee) {
+    final total = _selectedSeats * (pricePerSeat + platformFee);
     final paymentState = context.watch<PaymentProvider>().checkoutState;
     final isLoading = paymentState == PaymentState.loading;
 
@@ -503,8 +526,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
         'route': '${trip.pickupLocation} → ${trip.dropoffLocation}',
         'dateTime': '$dateStr, $timeStr',
         'seats': _selectedSeats,
-        'pricePerSeat': trip.pricePerSeat.toDouble(),
-        'totalAmount': _selectedSeats * trip.pricePerSeat.toDouble(),
+        'pricePerSeat': (trip.pricePerSeat + trip.platformFee).toDouble(),
+        'totalAmount': _selectedSeats * (trip.pricePerSeat + trip.platformFee).toDouble(),
       },
     );
     if (mounted) {

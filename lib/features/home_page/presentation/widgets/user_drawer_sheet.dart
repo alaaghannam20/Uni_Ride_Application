@@ -247,7 +247,7 @@ class UserDrawerSheet extends StatelessWidget {
                 child: const Center(child: Text('P', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold))),
               ),
               const SizedBox(width: 6),
-              Text('Powered by PTUK Engineering', style: TextStyle(fontSize: 11, color: context.textSecondary)),
+              Text('${AppLocalizations.of(context)!.poweredBy}${AppLocalizations.of(context)!.ptukEngineering}', style: TextStyle(fontSize: 11, color: context.textSecondary)),
             ],
           ),
         ],

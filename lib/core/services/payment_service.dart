@@ -79,6 +79,28 @@ class PaymentService {
     }
   }
 
+  Future<BookingModel> bookTripWallet({
+    required int tripId,
+    required int seatCount,
+  }) async {
+    try {
+      final response = await DioFactory.post(
+        AppEndpoints.checkoutBookTripWallet,
+        data: {
+          'tripId': tripId,
+          'seatCount': seatCount,
+          'discountId': null,
+        },
+      );
+      final data = (response.data is Map && response.data['data'] != null)
+          ? response.data['data']
+          : response.data;
+      return BookingModel.fromJson(data);
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
   Future<bool> confirmTopUp(String sessionId) async {
     try {
       final response = await DioFactory.get(AppEndpoints.checkoutConfirmTopUp(sessionId));

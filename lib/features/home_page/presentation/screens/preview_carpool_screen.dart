@@ -92,7 +92,7 @@ class _PreviewCarpoolScreenState extends State<PreviewCarpoolScreen> {
 
     if (tripIdToPublish == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to get trip ID'), backgroundColor: Colors.red),
+        SnackBar(content: Text(AppLocalizations.of(context)!.failedToGetTripId), backgroundColor: Colors.red),
       );
       return;
     }

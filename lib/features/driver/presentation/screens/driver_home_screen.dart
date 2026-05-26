@@ -124,8 +124,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           color: context.bgCard,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           itemBuilder: (_) => [
-            PopupMenuItem(value: 'profile', child: Row(children: [Icon(Icons.person_outline, size: 18, color: context.textPrimary), const SizedBox(width: 10), Text('Profile', style: TextStyle(color: context.textPrimary))])),
-            const PopupMenuItem(value: 'logout', child: Row(children: [Icon(Icons.logout, size: 18, color: AppColors.errorRed), SizedBox(width: 10), Text('Log Out', style: TextStyle(color: AppColors.errorRed))])),
+            PopupMenuItem(value: 'profile', child: Row(children: [Icon(Icons.person_outline, size: 18, color: context.textPrimary), const SizedBox(width: 10), Text(AppLocalizations.of(context)!.profileMenuItem, style: TextStyle(color: context.textPrimary))])),
+            PopupMenuItem(value: 'logout', child: Row(children: [const Icon(Icons.logout, size: 18, color: AppColors.errorRed), const SizedBox(width: 10), Text(AppLocalizations.of(context)!.logOut, style: const TextStyle(color: AppColors.errorRed))])),
           ],
           child: Container(
             width: 36, height: 36,
@@ -249,6 +249,7 @@ class _ScheduledCard extends StatefulWidget {
 class _ScheduledCardState extends State<_ScheduledCard> {
   bool _cancelling  = false;
   bool _publishing  = false;
+  bool _completing  = false;
 
   String _fmtDuration(int minutes) {
     if (minutes < 60) return '$minutes min';
@@ -264,6 +265,7 @@ class _ScheduledCardState extends State<_ScheduledCard> {
     setState(() => _cancelling = false);
     if (success) {
       context.read<TripProvider>().fetchDriverScheduled();
+      context.read<TripProvider>().fetchDriverHistory();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.read<TripProvider>().errorMessage), backgroundColor: AppColors.errorRed),
@@ -278,6 +280,41 @@ class _ScheduledCardState extends State<_ScheduledCard> {
     setState(() => _publishing = false);
     if (success) {
       context.read<TripProvider>().fetchDriverScheduled();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.read<TripProvider>().errorMessage), backgroundColor: AppColors.errorRed),
+      );
+    }
+  }
+
+  Future<void> _onComplete() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).cardColor,
+        title: const Text('Complete Trip'),
+        content: const Text('Are you sure you want to mark this trip as completed?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Complete', style: TextStyle(color: Color(0xFF00A63E))),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    setState(() => _completing = true);
+    final success = await context.read<TripProvider>().completeTrip(widget.trip.tripId);
+    if (!mounted) return;
+    setState(() => _completing = false);
+    if (success) {
+      context.read<TripProvider>().fetchDriverScheduled();
+      context.read<TripProvider>().fetchDriverHistory();
+      context.read<ProfileProvider>().fetchDriverProfile();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.read<TripProvider>().errorMessage), backgroundColor: AppColors.errorRed),
@@ -355,14 +392,21 @@ class _ScheduledCardState extends State<_ScheduledCard> {
 
           // ── Actions ──────────────────────────────────────────────
           Container(
-            decoration: BoxDecoration(border: Border(top: BorderSide(color: context.borderColor))),
+            decoration: BoxDecoration(
+              color: context.bgCard,
+              border: Border(top: BorderSide(color: context.borderColor)),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(18),
+                bottomRight: Radius.circular(18),
+              ),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(children: [
               Expanded(
                 child: OutlinedButton(
                   onPressed: _cancelling ? null : _onCancel,
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.bgCard,
                     foregroundColor: AppColors.errorRed,
                     side: BorderSide(color: AppColors.errorRed.withValues(alpha: 0.4)),
                     padding: const EdgeInsets.symmetric(vertical: 11),
@@ -370,10 +414,10 @@ class _ScheduledCardState extends State<_ScheduledCard> {
                   ),
                   child: _cancelling
                       ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.errorRed))
-                      : Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                      : Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: _publishing ? null : _onPublish,
@@ -385,9 +429,33 @@ class _ScheduledCardState extends State<_ScheduledCard> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   icon: _publishing
-                      ? const SizedBox(width: 15, height: 15, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : const Icon(Icons.send_rounded, size: 15, color: Colors.white),
-                  label: Text(AppLocalizations.of(context)!.publish, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Colors.white)),
+                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Icon(Icons.send_rounded, size: 14, color: Colors.white),
+                  label: Text(AppLocalizations.of(context)!.publish, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Colors.white)),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _completing ? null : _onComplete,
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: context.isDark
+                        ? const Color(0xFF00A63E).withValues(alpha: 0.15)
+                        : const Color(0xFFEFFBF3),
+                    foregroundColor: const Color(0xFF00A63E),
+                    side: BorderSide(
+                      color: context.isDark
+                          ? const Color(0xFF00A63E).withValues(alpha: 0.5)
+                          : const Color(0xFF00A63E),
+                      width: 1.2,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  icon: _completing
+                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF00A63E)))
+                      : const Icon(Icons.check_circle_outline, size: 14, color: Color(0xFF00A63E)),
+                  label: const Text('Complete', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Color(0xFF00A63E))),
                 ),
               ),
             ]),
@@ -443,6 +511,14 @@ class _HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCompleted = trip.status == 'Completed';
+    final statusColor = isCompleted ? const Color(0xFF00A63E) : const Color(0xFFE7000B);
+    final statusBg    = isCompleted
+        ? (context.isDark ? const Color(0xFF00A63E).withValues(alpha: 0.15) : const Color(0xFFEFFBF3))
+        : (context.isDark ? const Color(0xFFE7000B).withValues(alpha: 0.15) : const Color(0xFFFFF2F2));
+    final statusIcon  = isCompleted ? Icons.check_circle_outline : Icons.cancel_outlined;
+    final statusLabel = isCompleted ? 'Completed' : 'Cancelled';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
@@ -453,6 +529,21 @@ class _HistoryCard extends StatelessWidget {
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 3))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+        // ── Status Badge + Chevron ────────────────────────────────
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(color: statusBg, borderRadius: BorderRadius.circular(12)),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(statusIcon, size: 12, color: statusColor),
+              const SizedBox(width: 4),
+              Text(statusLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: statusColor)),
+            ]),
+          ),
+          Icon(Icons.chevron_right, size: 18, color: context.textSecondary),
+        ]),
+        const SizedBox(height: 14),
 
         // ── Route ────────────────────────────────────────────────
         Row(children: [

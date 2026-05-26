@@ -477,7 +477,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final success = await context.read<ProfileProvider>().uploadMemberProfileImage(File(cropped.path));
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(success ? 'Profile picture updated!' : context.read<ProfileProvider>().errorMessage),
+      content: Text(success ? AppLocalizations.of(context)!.profilePictureUpdated : context.read<ProfileProvider>().errorMessage),
       backgroundColor: success ? AppColors.emeraldGreen : AppColors.errorRed,
     ));
   }

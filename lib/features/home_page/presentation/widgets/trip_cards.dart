@@ -330,14 +330,18 @@ class AvailableTripApiCard extends StatelessWidget {
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(trip.driverName, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, color: context.textPrimary)),
               Row(children: [
-                if (trip.driverRating > 0) ...[
-                  const Icon(Icons.star, size: 13, color: Color(0xFFF5A623)),
-                  const SizedBox(width: 3),
-                  Text(trip.driverRating.toStringAsFixed(1), style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
-                  Text(' · ', style: TextStyle(color: context.textSecondary)),
-                ],
-                Text(trip.vehicleModel, style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
+                const Icon(Icons.star, size: 13, color: Color(0xFFF5A623)),
+                const SizedBox(width: 3),
+                Text(trip.driverRating.toStringAsFixed(1), style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+                const SizedBox(width: 6),
+                Container(width: 1, height: 10, color: AppColors.greySecondary),
+                const SizedBox(width: 6),
+                Icon(Icons.directions_car_outlined, size: 12, color: AppColors.orangeprimary),
+                const SizedBox(width: 3),
+                Text('${trip.totalDriverTrips} trips', style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
               ]),
+              const SizedBox(height: 2),
+              Text(trip.vehicleModel, style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
             ])),
             Container(
               width: 36, height: 36,
@@ -390,9 +394,16 @@ class AvailableTripApiCard extends StatelessWidget {
   }
 }
 
-class MyTripApiCard extends StatelessWidget {
+class MyTripApiCard extends StatefulWidget {
   final MyTripModel trip;
   const MyTripApiCard({super.key, required this.trip});
+
+  @override
+  State<MyTripApiCard> createState() => _MyTripApiCardState();
+}
+
+class _MyTripApiCardState extends State<MyTripApiCard> {
+  bool _completing = false;
 
   String _formatDate(String iso) {
     try {
@@ -402,8 +413,43 @@ class MyTripApiCard extends StatelessWidget {
     } catch (_) { return iso; }
   }
 
+  Future<void> _onComplete() async {
+    final l = AppLocalizations.of(context)!;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Complete Trip', style: TextStyle(color: context.textPrimary)),
+        content: const Text('Are you sure you want to mark this trip as completed?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l.cancel, style: TextStyle(color: context.textSecondary)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00A63E)),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Complete', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true || !mounted) return;
+    setState(() => _completing = true);
+    final success = await context.read<TripProvider>().completeTrip(widget.trip.tripId);
+    if (!mounted) return;
+    setState(() => _completing = false);
+    if (success) {
+      context.read<TripProvider>().fetchDriverScheduled();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.read<TripProvider>().errorMessage), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final trip = widget.trip;
     final l = AppLocalizations.of(context)!;
     final statusLower = trip.status.toLowerCase();
     final Color statusColor;
@@ -529,7 +575,31 @@ class MyTripApiCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // ── Publish (only if not yet published) ──
+              const SizedBox(width: 8),
+              // ── Complete ──
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _completing ? null : _onComplete,
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: context.isDark
+                        ? const Color(0xFF00A63E).withValues(alpha: 0.15)
+                        : const Color(0xFFEFFBF3),
+                    foregroundColor: const Color(0xFF00A63E),
+                    side: BorderSide(
+                      color: context.isDark
+                          ? const Color(0xFF00A63E).withValues(alpha: 0.5)
+                          : const Color(0xFF00A63E),
+                      width: 1.2,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  icon: _completing
+                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF00A63E)))
+                      : const Icon(Icons.check_circle_outline, size: 16, color: Color(0xFF00A63E)),
+                  label: const Text('Complete', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: Color(0xFF00A63E))),
+                ),
+              ),
             ]),
           ],
         ]),

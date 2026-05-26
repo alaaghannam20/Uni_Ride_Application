@@ -30,4 +30,6 @@ class AdminStudentModel {
       status:      json[ApiKeys.status]       ?? '',
     );
   }
+
+  bool get isActive => status.toLowerCase() == 'active';
 }

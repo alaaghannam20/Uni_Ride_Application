@@ -151,7 +151,7 @@ class _RewardsTabState extends State<RewardsTab> {
                       );
                     }),
                   if (data == null || data.achievements.isEmpty)
-                    Center(child: Text('No achievements found.', style: TextStyle(color: context.textHint))),
+                    Center(child: Text(AppLocalizations.of(context)!.noAchievementsFound, style: TextStyle(color: context.textHint))),
                 ],
               ),
               const SizedBox(height: 32),
@@ -279,10 +279,10 @@ class _RewardsTabState extends State<RewardsTab> {
                   if (code != null && code.isNotEmpty) {
                     Clipboard.setData(ClipboardData(text: code));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Referral code copied to clipboard!'),
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.referralCopied),
                         backgroundColor: Colors.green,
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
                       ),
                     );
                   }
@@ -317,7 +317,7 @@ class _RewardsTabState extends State<RewardsTab> {
         final success = await context.read<RewardProvider>().redeemReward(type);
         if (success && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Reward redeemed successfully!'), backgroundColor: Colors.green),
+            SnackBar(content: Text(AppLocalizations.of(context)!.rewardRedeemedSuccess), backgroundColor: Colors.green),
           );
         } else if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

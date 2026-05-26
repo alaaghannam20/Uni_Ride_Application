@@ -17,10 +17,12 @@ class AppEndpoints {
   static const String approve           = 'Admin/approve';
   static const String reject            = 'Admin/reject';
   static const String dashboardStats    = 'Admin/dashboard-stats';
+  static const String adminSettings     = 'Admin/settings';
   static const String adminStudents     = 'admin/students';
   static const String adminTrips         = 'admin/Trips';
   static const String adminDrivers = 'admin/drivers';
-  static String toggleDriverStatus(String id) => 'admin/drivers/$id/toggle-status';
+  static String toggleDriverStatus(String id)  => 'admin/drivers/$id/toggle-status';
+  static String toggleStudentStatus(String id) => 'admin/students/$id/toggle-status';
 
   // Trip Endpoints
   static const String tripLocations   = 'Trip/locations';
@@ -53,9 +55,11 @@ class AppEndpoints {
   static String checkoutConfirmBooking(String sessionId) => 'Checkout/confirm-booking?session_id=$sessionId';
   static const String checkoutTopUp = 'Checkout/top-up';
   static String checkoutConfirmTopUp(String sessionId) => 'Checkout/confirm-top-up?session_id=$sessionId';
+  static const String checkoutBookTripWallet = 'Checkout/book-trip-wallet';
 
   // Rating Endpoints
-  static const String ratingSubmit = 'Rating/submit';
+  static const String ratingSubmit    = 'Rating/submit';
+  static const String ratingMyReviews = 'Rating/my-reviews';
 
   // Reward Endpoints
   static const String myRewards = 'Reward/my-rewards';

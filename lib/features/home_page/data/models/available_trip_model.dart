@@ -16,6 +16,8 @@ class AvailableTripModel {
   final String? description;
   final String status;
   final double driverRating;
+  final int totalDriverTrips;
+  final String driverPhone;
 
   const AvailableTripModel({
     required this.tripId,
@@ -33,6 +35,8 @@ class AvailableTripModel {
     this.description,
     required this.status,
     this.driverRating = 0.0,
+    this.totalDriverTrips = 0,
+    this.driverPhone = '',
   });
 
   factory AvailableTripModel.fromJson(Map<String, dynamic> json) {
@@ -58,6 +62,8 @@ class AvailableTripModel {
       description: json[ApiKeys.description],
       status: json[ApiKeys.status] ?? '',
       driverRating: double.tryParse((json[ApiKeys.driverRating] ?? json['rating'] ?? 0).toString()) ?? 0.0,
+      totalDriverTrips: (json[ApiKeys.totalDriverTrips] ?? 0).toInt(),
+      driverPhone: json[ApiKeys.driverPhone] ?? '',
     );
   }
 }

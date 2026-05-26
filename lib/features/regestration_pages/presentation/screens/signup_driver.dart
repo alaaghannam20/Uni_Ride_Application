@@ -405,7 +405,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
             CustomTextfiled(
               controller: fullNameController,
               labelText: l.fullName,
-              hintText: '',
+              hintText: 'Enter your full name',
               prefixIcon: const Icon(Icons.person_outline, color: AppColors.languagecolor),
               validator: (value) => AppValidators.validateFullName(context, value),
             ),
@@ -414,7 +414,7 @@ class _SignUpDriverScreenState extends State<SignUpDriverScreen> {
           CustomTextfiled(
             controller: emailController,
             labelText: l.emailAddress,
-            hintText: '',
+            hintText: 'Enter your email',
             keyboardType: TextInputType.emailAddress,
             prefixIcon: const Icon(Icons.email_outlined, color: AppColors.languagecolor),
             validator: (value) => AppValidators.validateEmail(context, value),

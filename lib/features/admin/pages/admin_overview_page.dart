@@ -92,8 +92,9 @@ class _AdminOverviewPageState extends State<AdminOverviewPage> {
                       const SizedBox(height: 32),
 
                       // ── Revenue & Active Trips ─────────────────────────
-                      Row(
-                        children: [
+                      IntrinsicHeight(
+                        child: Row(
+                          children: [
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.all(24),
@@ -124,22 +125,27 @@ class _AdminOverviewPageState extends State<AdminOverviewPage> {
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
-                                    '₪${stats?.todayTotalRevenue.toStringAsFixed(2) ?? '0.00'}',
+                                    '₪${stats?.totalRevenue.toStringAsFixed(2) ?? '0.00'}',
                                     style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 36, color: Colors.white),
                                   ),
                                   const SizedBox(height: 16),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        (stats?.revenueChangePercentage ?? 0) >= 0 ? Icons.arrow_upward : Icons.arrow_downward,
-                                        color: Colors.white, size: 14,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${stats?.revenueChangePercentage ?? 0}% ${l.fromYesterday}',
-                                        style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, color: Colors.white),
-                                      ),
-                                    ],
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.account_balance_wallet_outlined, color: Colors.white, size: 14),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          '${l.platformEarnings}: ₪${stats?.platformBalance.toStringAsFixed(2) ?? '0.00'}',
+                                          style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 12, color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -182,7 +188,8 @@ class _AdminOverviewPageState extends State<AdminOverviewPage> {
                               ),
                             ),
                           ),
-                        ],
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 32),
 

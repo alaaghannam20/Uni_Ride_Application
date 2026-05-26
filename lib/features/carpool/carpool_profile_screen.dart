@@ -8,6 +8,7 @@ import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
+import 'package:uni_ride_application/features/carpool/carpool_reviews_screen.dart';
 
 class CarpoolProfileScreen extends StatefulWidget {
   const CarpoolProfileScreen({super.key});
@@ -63,6 +64,67 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
               ratingValue:      rating,
               tripsValue:       trips,
               earnedValue:      earned,
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── My Reviews Row ────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CarpoolReviewsScreen()),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: context.bgCard,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: context.borderColor, width: 0.62),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40, height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.orangeprimary.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.star_rounded, size: 20, color: AppColors.orangeprimary),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'My Reviews',
+                              style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, color: context.textPrimary),
+                            ),
+                            const SizedBox(height: 2),
+                            Row(
+                              children: [
+                                const Icon(Icons.star_rounded, size: 13, color: AppColors.orangeprimary),
+                                const SizedBox(width: 4),
+                                Text(
+                                  rating,
+                                  style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.orangeprimary),
+                                ),
+                                Text(
+                                  '  •  See all feedback',
+                                  style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.chevron_right, size: 20, color: context.textHint),
+                    ],
+                  ),
+                ),
+              ),
             ),
 
             const SizedBox(height: 16),

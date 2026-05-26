@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
+import 'package:uni_ride_application/core/services/admin_service.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
@@ -23,11 +24,21 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   bool _emailNotifications = true;
   bool _smsNotifications = true;
   late final TextEditingController _appFeeController;
+  final _adminService = AdminService();
 
   @override
   void initState() {
     super.initState();
     _appFeeController = TextEditingController(text: '${AppPrefs.getAppFee()}');
+    _loadFeeFromApi();
+  }
+
+  Future<void> _loadFeeFromApi() async {
+    final fee = await _adminService.getPlatformFee();
+    if (fee != null && mounted) {
+      await AppPrefs.setAppFee(fee);
+      _appFeeController.text = '$fee';
+    }
   }
 
   @override
@@ -191,11 +202,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 final fee = int.tryParse(_appFeeController.text.trim()) ?? 3;
+                                final success = await _adminService.updatePlatformFee(fee);
                                 await AppPrefs.setAppFee(fee);
                                 if (!context.mounted) return;
+                                final l = AppLocalizations.of(context)!;
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('تم حفظ رسوم التطبيق بنجاح'),
+                                  SnackBar(
+                                    content: Text(success ? l.feeSavedSuccess : l.feeSavedLocalOnly),
                                     backgroundColor: AppColors.adminSecondary,
                                   ),
                                 );

@@ -423,7 +423,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get totalTripsCount => 'إجمالي الرحلات';
 
   @override
-  String get todayRevenue => 'إيرادات اليوم';
+  String get todayRevenue => 'إجمالي الأرباح';
 
   @override
   String get activeTripsNow => 'الرحلات النشطة الآن';
@@ -439,6 +439,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fromYesterday => 'من أمس';
+
+  @override
+  String get platformEarnings => 'أرباح التطبيق';
 
   @override
   String get systemConfiguration => 'ضبط النظام';
@@ -486,6 +489,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get feeSavedSuccess => 'تم حفظ رسوم التطبيق بنجاح';
+
+  @override
+  String get feeSavedLocalOnly => 'تم الحفظ محلياً — تحقق من الاتصال';
 
   @override
   String get save => 'حفظ';
@@ -1352,4 +1361,65 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get connectionTimeout => 'انتهت مهلة الاتصال، حاول مجدداً';
+
+  @override
+  String get loginNow => 'سجّل الدخول الآن';
+
+  @override
+  String get bookingFailed => 'فشل الحجز';
+
+  @override
+  String get seatTakenMessage =>
+      'عذراً، هذا المقعد حُجز للتو من طالب آخر. يرجى العودة والتحقق من المقاعد المتاحة.';
+
+  @override
+  String get goBack => 'العودة';
+
+  @override
+  String get walletPaymentSoon => 'الدفع بالمحفظة قريباً!';
+
+  @override
+  String get confirmingPayment => 'جاري تأكيد الدفع...';
+
+  @override
+  String get topUpSuccess => 'تم شحن المحفظة!';
+
+  @override
+  String get walletHasBeenCharged => 'تم شحن محفظتك بنجاح.';
+
+  @override
+  String get backToWallet => 'العودة للمحفظة';
+
+  @override
+  String get confirmationFailed => 'فشل التأكيد';
+
+  @override
+  String get rateDriver => 'تقييم السائق';
+
+  @override
+  String get ratingSubmittedSuccess => 'تم إرسال التقييم بنجاح!';
+
+  @override
+  String get noAchievementsFound => 'لا توجد إنجازات.';
+
+  @override
+  String get referralCopied => 'تم نسخ رمز الإحالة!';
+
+  @override
+  String get rewardRedeemedSuccess => 'تم استبدال المكافأة بنجاح!';
+
+  @override
+  String get profileMenuItem => 'الملف الشخصي';
+
+  @override
+  String get enterAmountILS => 'أدخل المبلغ (شيكل)';
+
+  @override
+  String get topUpAction => 'شحن';
+
+  @override
+  String get failedToGetTripId => 'فشل في الحصول على رقم الرحلة';
+
+  @override
+  String get profilePictureUpdated => 'تم تحديث صورة الملف الشخصي!';
 }

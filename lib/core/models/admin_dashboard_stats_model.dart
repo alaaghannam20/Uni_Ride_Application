@@ -8,6 +8,8 @@ class AdminDashboardStatsModel {
   final int    pendingApprovalsCount;
   final double todayTotalRevenue;
   final double todayCommission;
+  final double totalRevenue;
+  final double platformBalance;
   final int    revenueChangePercentage;
   final int    activeTripsNowCount;
   final List<AdminTripModel> recentTrips;
@@ -19,6 +21,8 @@ class AdminDashboardStatsModel {
     required this.pendingApprovalsCount,
     required this.todayTotalRevenue,
     required this.todayCommission,
+    required this.totalRevenue,
+    required this.platformBalance,
     required this.revenueChangePercentage,
     required this.activeTripsNowCount,
     required this.recentTrips,
@@ -35,6 +39,8 @@ class AdminDashboardStatsModel {
       pendingApprovalsCount:    (json[ApiKeys.pendingApprovalsCount]   ?? 0).toInt(),
       todayTotalRevenue:        (json[ApiKeys.todayTotalRevenue]       ?? 0).toDouble(),
       todayCommission:          (json[ApiKeys.todayCommission]         ?? 0).toDouble(),
+      totalRevenue:             (json[ApiKeys.totalRevenue]            ?? 0).toDouble(),
+      platformBalance:          (json[ApiKeys.platformBalance]         ?? 0).toDouble(),
       revenueChangePercentage:  (json[ApiKeys.revenueChangePercentage] ?? 0).toInt(),
       activeTripsNowCount:      (json[ApiKeys.activeTripsNowCount]     ?? 0).toInt(),
       recentTrips:              trips,

@@ -128,7 +128,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 CustomTextfiled(
                                   controller: emailOrPhoneController,
                                   labelText: AppLocalizations.of(context)!.emailOrPhone,
-                                  hintText: '',
+                                  hintText: 'Enter your email',
                                   keyboardType: TextInputType.emailAddress,
                                   prefixIcon: const Icon(
                                     Icons.badge,

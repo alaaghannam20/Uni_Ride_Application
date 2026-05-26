@@ -139,31 +139,53 @@ class _TripCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
+          if (isDesktop)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 52,
+                  child: Text(
                     '${locale.ils}${trip.price.toStringAsFixed(0)}',
-                    style: TextStyle(color: AppColors.adminPrice, fontWeight: FontWeight.bold, fontSize: isDesktop ? 16 : 14),
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(color: AppColors.adminPrice, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  if (isDesktop) ...[
-                    const SizedBox(width: 24),
-                    _statusBadge(locale, isCompleted, isOngoing),
+                ),
+                const SizedBox(width: 30),
+                SizedBox(
+                  width: 80,
+                  child: _driverTypeBadge() ?? const SizedBox.shrink(),
+                ),
+                const SizedBox(width: 30),
+                _statusBadge(locale, isCompleted, isOngoing),
+              ],
+            )
+          else
+            SizedBox(
+              width: 130,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 36,
+                    child: Text(
+                      '${locale.ils}${trip.price.toStringAsFixed(0)}',
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(color: AppColors.adminPrice, fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  _statusBadge(locale, isCompleted, isOngoing, small: true),
+                  if (_driverTypeBadge(small: true) != null) ...[
+                    const SizedBox(width: 4),
+                    _driverTypeBadge(small: true)!,
                   ],
                 ],
               ),
-              if (!isDesktop) ...[
-                const SizedBox(height: 4),
-                _statusBadge(locale, isCompleted, isOngoing, small: true),
-              ],
-            ],
-          ),
+            ),
           if (isDesktop) ...[
-            const SizedBox(width: 24),
+            const SizedBox(width: 30),
             SizedBox(
               width: 100,
               child: Text(trip.timeAgo, style: const TextStyle(color: AppColors.adminTextMuted, fontSize: 13), textAlign: TextAlign.end),
@@ -189,7 +211,21 @@ class _TripCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: small ? 8 : 10, vertical: small ? 2 : 4),
       decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(12)),
-      child: Text(label, style: TextStyle(color: color, fontSize: small ? 10 : 12, fontWeight: FontWeight.w500)),
+      alignment: Alignment.center,
+      child: Text(label, textAlign: TextAlign.center, style: TextStyle(color: color, fontSize: small ? 10 : 12, fontWeight: FontWeight.w500)),
+    );
+  }
+
+  Widget? _driverTypeBadge({bool small = false}) {
+    if (trip.driverType.isEmpty) return null;
+    final isCarpool = trip.driverType.toLowerCase() == 'carpool';
+    final color   = isCarpool ? const Color(0xFF7C3AED) : const Color(0xFF1D4ED8);
+    final bgColor = isCarpool ? const Color(0xFFF3E8FF) : const Color(0xFFDBEAFE);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: small ? 8 : 10, vertical: small ? 2 : 4),
+      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(12)),
+      alignment: Alignment.center,
+      child: Text(trip.driverType, textAlign: TextAlign.center, style: TextStyle(color: color, fontSize: small ? 10 : 12, fontWeight: FontWeight.w500)),
     );
   }
 }

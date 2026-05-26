@@ -425,7 +425,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get totalTripsCount => 'Total Trips';
 
   @override
-  String get todayRevenue => 'Today\'s Revenue';
+  String get todayRevenue => 'Total Revenue';
 
   @override
   String get activeTripsNow => 'Active Trips Now';
@@ -441,6 +441,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fromYesterday => 'from yesterday';
+
+  @override
+  String get platformEarnings => 'Platform earnings';
 
   @override
   String get systemConfiguration => 'System Configuration';
@@ -487,6 +490,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveChanges => 'Save Changes';
+
+  @override
+  String get feeSavedSuccess => 'App fee saved successfully';
+
+  @override
+  String get feeSavedLocalOnly => 'Saved locally — check connection';
 
   @override
   String get save => 'Save';
@@ -1358,4 +1367,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionTimeout => 'Connection timeout, try again';
+
+  @override
+  String get loginNow => 'Login Now';
+
+  @override
+  String get bookingFailed => 'Booking Failed';
+
+  @override
+  String get seatTakenMessage =>
+      'Sorry, this seat was just booked by another student. Please go back and check available seats.';
+
+  @override
+  String get goBack => 'Go Back';
+
+  @override
+  String get walletPaymentSoon => 'Wallet payment coming soon!';
+
+  @override
+  String get confirmingPayment => 'Confirming payment...';
+
+  @override
+  String get topUpSuccess => 'Wallet Topped Up!';
+
+  @override
+  String get walletHasBeenCharged =>
+      'Your wallet has been charged successfully.';
+
+  @override
+  String get backToWallet => 'Back to Wallet';
+
+  @override
+  String get confirmationFailed => 'Confirmation Failed';
+
+  @override
+  String get rateDriver => 'Rate Driver';
+
+  @override
+  String get ratingSubmittedSuccess => 'Rating submitted successfully!';
+
+  @override
+  String get noAchievementsFound => 'No achievements found.';
+
+  @override
+  String get referralCopied => 'Referral code copied to clipboard!';
+
+  @override
+  String get rewardRedeemedSuccess => 'Reward redeemed successfully!';
+
+  @override
+  String get profileMenuItem => 'Profile';
+
+  @override
+  String get enterAmountILS => 'Enter amount (ILS)';
+
+  @override
+  String get topUpAction => 'Top-up';
+
+  @override
+  String get failedToGetTripId => 'Failed to get trip ID';
+
+  @override
+  String get profilePictureUpdated => 'Profile picture updated!';
 }

@@ -73,6 +73,30 @@ class AdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> toggleStudentStatus(String id) async {
+    final result = await _adminService.toggleStudentStatus(id);
+    if (!result.success) {
+      _errorMessage = result.message;
+    } else {
+      final idx = _students.indexWhere((s) => s.id == id);
+      if (idx != -1) {
+        final s = _students[idx];
+        final newStatus = s.isActive ? 'inactive' : 'active';
+        _students[idx] = AdminStudentModel(
+          id:          s.id,
+          fullName:    s.fullName,
+          phoneNumber: s.phoneNumber,
+          email:       s.email,
+          totalTrips:  s.totalTrips,
+          joined:      s.joined,
+          status:      newStatus,
+        );
+        notifyListeners();
+      }
+    }
+    return result.success;
+  }
+
   Future<bool> toggleDriverStatus(String id) async {
     final result = await _adminService.toggleDriverStatus(id);
     if (!result.success) _errorMessage = result.message;

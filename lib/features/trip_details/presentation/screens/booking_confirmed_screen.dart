@@ -9,8 +9,9 @@ import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class BookingConfirmedScreen extends StatefulWidget {
-  final String sessionId;
-  const BookingConfirmedScreen({super.key, required this.sessionId});
+  final String? sessionId;
+  final bool preConfirmed;
+  const BookingConfirmedScreen({super.key, this.sessionId, this.preConfirmed = false});
 
   @override
   State<BookingConfirmedScreen> createState() => _BookingConfirmedScreenState();
@@ -28,9 +29,22 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
   }
 
   Future<void> _confirm() async {
+    final provider = context.read<PaymentProvider>();
+
+    // Wallet payment — booking already confirmed
+    if (widget.preConfirmed) {
+      if (mounted) {
+        setState(() {
+          _confirmedBooking = provider.confirmedBooking;
+          _isLoading = false;
+        });
+      }
+      return;
+    }
+
+    // Stripe payment — confirm via session
     try {
-      final provider = context.read<PaymentProvider>();
-      final success  = await provider.confirmBooking(widget.sessionId);
+      final success = await provider.confirmBooking(widget.sessionId ?? '');
       if (mounted) {
         setState(() {
           _confirmedBooking = success ? provider.confirmedBooking : null;
@@ -76,13 +90,13 @@ class _BookingConfirmedScreenState extends State<BookingConfirmedScreen> {
             children: [
               const Icon(Icons.error_outline, color: Colors.red, size: 64),
               const SizedBox(height: 16),
-              Text('Confirmation Failed', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(AppLocalizations.of(context)!.confirmationFailed, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               Text(_error, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Go Back'),
+                child: Text(AppLocalizations.of(context)!.goBack),
               ),
             ],
           ),

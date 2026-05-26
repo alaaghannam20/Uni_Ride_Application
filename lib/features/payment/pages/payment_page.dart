@@ -120,22 +120,19 @@ class _PaymentPageState extends State<PaymentPage> {
                 final isNoSeats = error.toLowerCase().contains('seat') ||
                     error.toLowerCase().contains('available') ||
                     error.toLowerCase().contains('full');
+                final l = AppLocalizations.of(context)!;
                 showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
-                    title: const Text('Booking Failed'),
-                    content: Text(
-                      isNoSeats
-                          ? 'Sorry, this seat was just booked by another student. Please go back and check available seats.'
-                          : error,
-                    ),
+                    title: Text(l.bookingFailed),
+                    content: Text(isNoSeats ? l.seatTakenMessage : error),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                           Navigator.pop(context);
                         },
-                        child: const Text('Go Back'),
+                        child: Text(l.goBack),
                       ),
                     ],
                   ),
@@ -150,9 +147,37 @@ class _PaymentPageState extends State<PaymentPage> {
                 }
               }
             } else {
-              // Wallet Payment - Not fully implemented in provider yet
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Wallet payment coming soon!")),
+              // Wallet Payment
+              final booking = await context.read<PaymentProvider>().bookTripWallet(
+                tripId: tripId,
+                seatCount: seats,
+              );
+              if (!context.mounted) return;
+              if (booking == null) {
+                final error = context.read<PaymentProvider>().errorMessage;
+                final l = AppLocalizations.of(context)!;
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: Text(l.bookingFailed),
+                    content: Text(error),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: Text(l.goBack),
+                      ),
+                    ],
+                  ),
+                );
+                return;
+              }
+              Navigator.pushNamed(
+                context,
+                Routes.bookingConfirmed,
+                arguments: {'preConfirmed': true},
               );
             }
           },

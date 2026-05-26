@@ -923,7 +923,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayRevenue.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s Revenue'**
+  /// **'Total Revenue'**
   String get todayRevenue;
 
   /// No description provided for @activeTripsNow.
@@ -955,6 +955,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'from yesterday'**
   String get fromYesterday;
+
+  /// No description provided for @platformEarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform earnings'**
+  String get platformEarnings;
 
   /// No description provided for @systemConfiguration.
   ///
@@ -1045,6 +1051,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Changes'**
   String get saveChanges;
+
+  /// No description provided for @feeSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'App fee saved successfully'**
+  String get feeSavedSuccess;
+
+  /// No description provided for @feeSavedLocalOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved locally — check connection'**
+  String get feeSavedLocalOnly;
 
   /// No description provided for @save.
   ///
@@ -2749,6 +2767,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connection timeout, try again'**
   String get connectionTimeout;
+
+  /// No description provided for @loginNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Now'**
+  String get loginNow;
+
+  /// No description provided for @bookingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Failed'**
+  String get bookingFailed;
+
+  /// No description provided for @seatTakenMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, this seat was just booked by another student. Please go back and check available seats.'**
+  String get seatTakenMessage;
+
+  /// No description provided for @goBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get goBack;
+
+  /// No description provided for @walletPaymentSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet payment coming soon!'**
+  String get walletPaymentSoon;
+
+  /// No description provided for @confirmingPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming payment...'**
+  String get confirmingPayment;
+
+  /// No description provided for @topUpSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Topped Up!'**
+  String get topUpSuccess;
+
+  /// No description provided for @walletHasBeenCharged.
+  ///
+  /// In en, this message translates to:
+  /// **'Your wallet has been charged successfully.'**
+  String get walletHasBeenCharged;
+
+  /// No description provided for @backToWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Wallet'**
+  String get backToWallet;
+
+  /// No description provided for @confirmationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation Failed'**
+  String get confirmationFailed;
+
+  /// No description provided for @rateDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Driver'**
+  String get rateDriver;
+
+  /// No description provided for @ratingSubmittedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating submitted successfully!'**
+  String get ratingSubmittedSuccess;
+
+  /// No description provided for @noAchievementsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No achievements found.'**
+  String get noAchievementsFound;
+
+  /// No description provided for @referralCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code copied to clipboard!'**
+  String get referralCopied;
+
+  /// No description provided for @rewardRedeemedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward redeemed successfully!'**
+  String get rewardRedeemedSuccess;
+
+  /// No description provided for @profileMenuItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileMenuItem;
+
+  /// No description provided for @enterAmountILS.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount (ILS)'**
+  String get enterAmountILS;
+
+  /// No description provided for @topUpAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-up'**
+  String get topUpAction;
+
+  /// No description provided for @failedToGetTripId.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get trip ID'**
+  String get failedToGetTripId;
+
+  /// No description provided for @profilePictureUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture updated!'**
+  String get profilePictureUpdated;
 }
 
 class _AppLocalizationsDelegate

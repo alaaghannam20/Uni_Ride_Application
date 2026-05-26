@@ -35,7 +35,10 @@ class Routes {
   static const driverhome       = '/DriverHomeScreen';
   static const createTrip       = '/CreateTripScreen';
   static const driverprofile    = '/DriverProfileScreen';
+  static const driverReviews    = '/DriverReviewsScreen';
   static const carpoolProfile   = '/CarpoolProfileScreen';
+  static const carpoolReviews   = '/CarpoolReviewsScreen';
   static const tripDetails = '/TripDetailsScreen';
   static const bookingConfirmed = '/BookingConfirmedScreen';
+  static const topUpConfirmed   = '/TopUpConfirmedScreen';
 }

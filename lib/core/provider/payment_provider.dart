@@ -106,6 +106,30 @@ class PaymentProvider extends ChangeNotifier {
     }
   }
 
+  Future<BookingModel?> bookTripWallet({
+    required int tripId,
+    required int seatCount,
+  }) async {
+    _checkoutState = PaymentState.loading;
+    notifyListeners();
+    try {
+      final booking = await _paymentService.bookTripWallet(
+        tripId: tripId,
+        seatCount: seatCount,
+      );
+      _confirmedBooking = booking;
+      await fetchWalletBalance();
+      _checkoutState = PaymentState.success;
+      notifyListeners();
+      return booking;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _checkoutState = PaymentState.error;
+      notifyListeners();
+      return null;
+    }
+  }
+
   Future<bool> confirmTopUp(String sessionId) async {
     _checkoutState = PaymentState.loading;
     notifyListeners();

@@ -22,9 +22,10 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
   TimeOfDay? _selectedTime;
   int  _seats         = 1;
   int  _price         = 8;
-  int  _duration      = 15;
+  int  _duration       = 15;
   bool _customDuration = false;
-  final _durationCtrl  = TextEditingController();
+  final _durationHrsCtrl = TextEditingController();
+  final _durationMinCtrl = TextEditingController();
   LocationModel? _selectedStop;
   final _customStopCtrl = TextEditingController();
   static final _otherLocation = LocationModel(id: -1, name: 'Other');
@@ -49,7 +50,8 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
   void dispose() {
     _pickupCtrl.dispose();
     _dropoffCtrl.dispose();
-    _durationCtrl.dispose();
+    _durationHrsCtrl.dispose();
+    _durationMinCtrl.dispose();
     _customStopCtrl.dispose();
     super.dispose();
   }
@@ -128,7 +130,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
         'T${t.hour.toString().padLeft(2,'0')}:${t.minute.toString().padLeft(2,'0')}:00';
 
     final duration = _customDuration
-        ? (int.tryParse(_durationCtrl.text) ?? _duration)
+        ? ((int.tryParse(_durationHrsCtrl.text) ?? 0) * 60 + (int.tryParse(_durationMinCtrl.text) ?? 0)).clamp(1, 9999)
         : _duration;
 
     final tripId = await context.read<TripProvider>().createTrip(
@@ -309,11 +311,30 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                   if (_customDuration) ...[
                     const SizedBox(width: 10),
                     SizedBox(
-                      width: 90,
+                      width: 72,
                       child: TextFormField(
-                        controller: _durationCtrl,
+                        controller: _durationHrsCtrl,
                         keyboardType: TextInputType.number,
                         autofocus: true,
+                        style: TextStyle(fontSize: 14, color: context.textPrimary, fontWeight: FontWeight.w600),
+                        decoration: InputDecoration(
+                          hintText: '0', suffixText: 'h',
+                          suffixStyle: TextStyle(fontSize: 12, color: context.textSecondary),
+                          filled: true, fillColor: context.bgSubtle,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                        ),
+                        onChanged: (_) => setState(() {}),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 72,
+                      child: TextFormField(
+                        controller: _durationMinCtrl,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(fontSize: 14, color: context.textPrimary, fontWeight: FontWeight.w600),
                         decoration: InputDecoration(
                           hintText: '0', suffixText: 'min',
@@ -324,7 +345,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
                           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
                         ),
-                        onChanged: (v) { final n = int.tryParse(v); if (n != null && n > 0) setState(() => _duration = n); },
+                        onChanged: (_) => setState(() {}),
                       ),
                     ),
                   ],

@@ -137,6 +137,21 @@ class _MyBookingCard extends StatefulWidget {
 class _MyBookingCardState extends State<_MyBookingCard> {
   bool _cancelling = false;
 
+  Future<void> _onRateDriver() async {
+    await Navigator.pushNamed(
+      context,
+      Routes.rateDriver,
+      arguments: {
+        'bookingId': widget.booking.bookingId,
+        'driverName': widget.booking.driverName,
+        'driverType': widget.booking.driverType,
+        'profilePicturePath': widget.booking.profilePicturePath,
+      },
+    );
+    if (!mounted) return;
+    context.read<BookingProvider>().fetchMyBookings();
+  }
+
   Future<void> _onCancel(AppLocalizations l) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -315,27 +330,14 @@ class _MyBookingCardState extends State<_MyBookingCard> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    Routes.rateDriver,
-                    arguments: {
-                      'bookingId': booking.bookingId,
-                      'driverName': booking.driverName,
-                    },
-                  ).then((value) {
-                    if (mounted) {
-                      context.read<BookingProvider>().fetchMyBookings();
-                    }
-                  });
-                },
+                onPressed: _onRateDriver,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.orangeprimary,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
-                child: Text('Rate Driver', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
+                child: Text(AppLocalizations.of(context)!.rateDriver, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
               ),
             ),
           ],

@@ -7,6 +7,7 @@ class AdminTripModel {
   final double price;
   final String status;
   final String timeAgo;
+  final String driverType;
 
   const AdminTripModel({
     required this.tripId,
@@ -15,6 +16,7 @@ class AdminTripModel {
     required this.price,
     required this.status,
     required this.timeAgo,
+    required this.driverType,
   });
 
   factory AdminTripModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class AdminTripModel {
       price:      (json[ApiKeys.price]      ?? 0).toDouble(),
       status:     json[ApiKeys.status]      ?? '',
       timeAgo:    json[ApiKeys.timeAgo]     ?? '',
+      driverType: json[ApiKeys.driverType]  ?? '',
     );
   }
 }

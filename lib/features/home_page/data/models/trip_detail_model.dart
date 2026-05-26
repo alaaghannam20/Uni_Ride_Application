@@ -1,4 +1,5 @@
 import 'package:uni_ride_application/core/constants/api_keys.dart';
+import 'package:uni_ride_application/core/constants/app_fee.dart';
 
 class TripStopModel {
   final String stopName;
@@ -38,6 +39,8 @@ class TripDetailModel {
   final String vehicleModel;
   final String? plateNumber;
   final String vehicleType;
+  final String driverPhone;
+  final int platformFee;
 
   const TripDetailModel({
     required this.tripId,
@@ -57,6 +60,8 @@ class TripDetailModel {
     required this.vehicleModel,
     this.plateNumber,
     required this.vehicleType,
+    required this.driverPhone,
+    this.platformFee = 0,
   });
 
   factory TripDetailModel.fromJson(Map<String, dynamic> json) {
@@ -79,6 +84,8 @@ class TripDetailModel {
       vehicleModel: json[ApiKeys.vehicleModel] ?? '',
       plateNumber: json[ApiKeys.plateNumber],
       vehicleType: json[ApiKeys.vehicleType] ?? '',
+      driverPhone: json[ApiKeys.driverPhone] ?? '',
+      platformFee: (json[ApiKeys.platformFee] ?? kAppFee).toInt(),
     );
   }
 }
