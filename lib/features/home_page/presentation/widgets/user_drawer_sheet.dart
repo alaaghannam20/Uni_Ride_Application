@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
@@ -11,6 +12,7 @@ import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 void showUserDrawer(BuildContext context) {
   context.read<ProfileProvider>().fetchMemberProfile();
+  context.read<BookingProvider>().fetchMyBookings();
 
   showModalBottomSheet(
     context: context,
@@ -34,10 +36,11 @@ class UserDrawerSheet extends StatelessWidget {
     final isCarpool = auth.userType == UserType.carpool;
     final profileRoute = isCarpool ? Routes.carpoolProfile : Routes.profile;
 
+    final bookings = context.watch<BookingProvider>().myBookings;
     final String fullName = profile?.fullName ?? auth.user?.fullName ?? '...';
     final String email = profile?.email ?? auth.user?.email ?? '...';
     final String initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : 'U';
-    final int totalTrips = profile?.totalTrips ?? 0;
+    final int totalTrips = bookings.where((b) => b.status == 'Completed').length;
     final int rewardPoints = profile?.rewardPoints ?? 0;
 
     return Container(
