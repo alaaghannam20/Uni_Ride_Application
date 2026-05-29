@@ -467,5 +467,14 @@
   "enterAmountILS": "Enter amount (ILS)",
   "topUpAction": "Top-up",
   "failedToGetTripId": "Failed to get trip ID",
-  "profilePictureUpdated": "Profile picture updated!"
+  "profilePictureUpdated": "Profile picture updated!",
+  "refundAutoMessage": "The full amount will be automatically refunded",
+  "refundWalletSuccess": "Cancelled — ₪{amount} refunded to your wallet",
+  "@refundWalletSuccess": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "refundStripeSuccess": "Cancelled — Your amount will be returned to your card within 3-5 days",
+  "cancelledSuccess": "Booking cancelled successfully"
 }

@@ -2887,6 +2887,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile picture updated!'**
   String get profilePictureUpdated;
+
+  /// No description provided for @refundAutoMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The full amount will be automatically refunded'**
+  String get refundAutoMessage;
+
+  /// No description provided for @refundWalletSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled — ₪{amount} refunded to your wallet'**
+  String refundWalletSuccess(String amount);
+
+  /// No description provided for @refundStripeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled — Your amount will be returned to your card within 3-5 days'**
+  String get refundStripeSuccess;
+
+  /// No description provided for @cancelledSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking cancelled successfully'**
+  String get cancelledSuccess;
 }
 
 class _AppLocalizationsDelegate

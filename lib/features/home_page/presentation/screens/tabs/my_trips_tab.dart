@@ -158,7 +158,31 @@ class _MyBookingCardState extends State<_MyBookingCard> {
       builder: (ctx) => AlertDialog(
         backgroundColor: context.bgCard,
         title: Text(l.cancel_the_trip, style: TextStyle(color: context.textPrimary)),
-        content: Text(l.booking_confirmed_sub, style: TextStyle(color: context.textSecondary)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.booking_confirmed_sub, style: TextStyle(color: context.textSecondary)),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.orangeprimary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(children: [
+                const Icon(Icons.info_outline, size: 16, color: AppColors.orangeprimary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l.refundAutoMessage,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.back_to_home)),
           TextButton(
@@ -174,7 +198,25 @@ class _MyBookingCardState extends State<_MyBookingCard> {
     if (!mounted) return;
     setState(() => _cancelling = false);
     if (ok) {
-      context.read<BookingProvider>().fetchMyBookings();
+      final provider = context.read<BookingProvider>();
+      provider.fetchMyBookings();
+      final amount  = provider.refundAmount;
+      final method  = provider.refundMethod;
+      String snackMsg;
+      if (method == 'Wallet' && amount != null) {
+        snackMsg = l.refundWalletSuccess(amount.toStringAsFixed(2));
+      } else if (method == 'Stripe') {
+        snackMsg = l.refundStripeSuccess;
+      } else {
+        snackMsg = l.cancelledSuccess;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackMsg),
+          backgroundColor: const Color(0xFF00A63E),
+          duration: const Duration(seconds: 3),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.read<BookingProvider>().errorMessage), backgroundColor: AppColors.errorRed),

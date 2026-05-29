@@ -469,5 +469,14 @@
   "enterAmountILS": "أدخل المبلغ (شيكل)",
   "topUpAction": "شحن",
   "failedToGetTripId": "فشل في الحصول على رقم الرحلة",
-  "profilePictureUpdated": "تم تحديث صورة الملف الشخصي!"
+  "profilePictureUpdated": "تم تحديث صورة الملف الشخصي!",
+  "refundAutoMessage": "سيُسترد المبلغ كاملاً تلقائياً",
+  "refundWalletSuccess": "تم الإلغاء — استُرد ₪{amount} لمحفظتك",
+  "@refundWalletSuccess": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "refundStripeSuccess": "تم الإلغاء — سيُعاد المبلغ لبطاقتك خلال 3-5 أيام",
+  "cancelledSuccess": "تم إلغاء الحجز بنجاح"
 }

@@ -31,9 +31,13 @@ class BookingService {
     }
   }
 
-  Future<void> cancelBooking(int bookingId) async {
+  Future<Map<String, dynamic>> cancelBooking(int bookingId) async {
     try {
-      await DioFactory.post(AppEndpoints.bookingCancel(bookingId));
+      final response = await DioFactory.post(AppEndpoints.bookingCancel(bookingId));
+      final data = (response.data is Map && response.data['data'] != null)
+          ? response.data['data']
+          : response.data;
+      return (data as Map<String, dynamic>?) ?? {};
     } catch (e) {
       throw Exception(_cleanError(e));
     }

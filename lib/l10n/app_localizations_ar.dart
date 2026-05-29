@@ -1422,4 +1422,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profilePictureUpdated => 'تم تحديث صورة الملف الشخصي!';
+
+  @override
+  String get refundAutoMessage => 'سيُسترد المبلغ كاملاً تلقائياً';
+
+  @override
+  String refundWalletSuccess(String amount) => 'تم الإلغاء — استُرد ₪$amount لمحفظتك';
+
+  @override
+  String get refundStripeSuccess => 'تم الإلغاء — سيُعاد المبلغ لبطاقتك خلال 3-5 أيام';
+
+  @override
+  String get cancelledSuccess => 'تم إلغاء الحجز بنجاح';
 }

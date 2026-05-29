@@ -1429,4 +1429,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profilePictureUpdated => 'Profile picture updated!';
+
+  @override
+  String get refundAutoMessage => 'The full amount will be automatically refunded';
+
+  @override
+  String refundWalletSuccess(String amount) => 'Cancelled — ₪$amount refunded to your wallet';
+
+  @override
+  String get refundStripeSuccess => 'Cancelled — Your amount will be returned to your card within 3-5 days';
+
+  @override
+  String get cancelledSuccess => 'Booking cancelled successfully';
 }
