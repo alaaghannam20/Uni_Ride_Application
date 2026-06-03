@@ -18,9 +18,10 @@ Future<void> main() async {
 
   await AppPrefs.init();
 
- await OneSignalService().initialize(
-  languageCode: AppPrefs.getLanguageCode(),
-);
+  await OneSignalService().initialize(
+    languageCode: AppPrefs.languageCode ?? 'en',
+  );
+
   runApp(
     MultiProvider(
       providers: [
