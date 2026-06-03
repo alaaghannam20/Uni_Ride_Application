@@ -1,0 +1,52 @@
+name: uni_ride_application
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flutter_svg: ^2.2.3
+  shared_preferences: ^2.5.4
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  provider: ^6.1.5+1
+  pin_code_fields: ^9.1.0
+  dio: ^5.9.2
+  image_picker: ^1.2.1
+  permission_handler: ^11.3.1
+  onesignal_flutter: ^5.0.0
+  google_maps_flutter: ^2.7.0
+  http: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_logo.png"
+  adaptive_icon_background: "#CF8307"
+  adaptive_icon_foreground: "assets/images/app_logo.pngapp_logo.png"
+  min_sdk_android: 21
+  web:
+    generate: false
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/images/
