@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/admin_provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
-import 'package:uni_ride_application/core/provider/admin_provider.dart';
-import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
+import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/app_router.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
+import 'package:uni_ride_application/core/provider/one_signal_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await AppPrefs.init();
+
+  await OneSignalService().initialize(
+    languageCode: AppPrefs.languageCode ?? 'en',
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -27,21 +34,41 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: const MainApp(),
-    )
+    ),
   );
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  String? _lastLanguageCode;
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<AppLanguageProvider, AppThemeProvider>(
       builder: (context, languageProvider, themeProvider, child) {
+        final languageCode = languageProvider.locale.languageCode;
+
+        if (_lastLanguageCode != languageCode) {
+          _lastLanguageCode = languageCode;
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            OneSignalService().initialize(
+              languageCode: languageCode,
+            );
+          });
+        }
+
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           locale: languageProvider.locale,
           themeMode: themeProvider.themeMode,
+
           theme: ThemeData(
             useMaterial3: false,
             brightness: Brightness.light,
@@ -57,6 +84,7 @@ class MainApp extends StatelessWidget {
               surface: Color(0xFFFFFFFF),
             ),
           ),
+
           darkTheme: ThemeData(
             useMaterial3: false,
             brightness: Brightness.dark,
@@ -73,10 +101,14 @@ class MainApp extends StatelessWidget {
               onSurface: Color(0xFFE8ECF4),
             ),
           ),
+
           initialRoute: Routes.splash,
           onGenerateRoute: AppRouter.onGenerateRoute,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+
+          localizationsDelegates:
+              AppLocalizations.localizationsDelegates,
+          supportedLocales:
+              AppLocalizations.supportedLocales,
         );
       },
     );
