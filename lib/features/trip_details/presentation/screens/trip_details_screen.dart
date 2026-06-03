@@ -5,6 +5,7 @@ import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
+import 'trip_gps_screen.dart';
 
 class TripDetailsScreen extends StatefulWidget {
   final int tripId;
@@ -66,6 +67,8 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                       _buildGoldenCard(trip.pickupLocation, trip.dropoffLocation, trip.departureTime),
                       const SizedBox(height: 16),
                       _buildDriverInfo(context, l, trip.driverName, trip.profilePicturePath, trip.driverRating, trip.totalDriverTrips, trip.vehicleModel, trip.vehicleType),
+                      const SizedBox(height: 16),
+                      _buildTrackTripButton(context, l, trip.driverName, trip.driverRating, trip.vehicleModel, trip.vehicleType),
                       if (trip.stops.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPickupPoints(l, trip.stops),
@@ -200,6 +203,62 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTrackTripButton(BuildContext context, AppLocalizations l, String driverName, double driverRating, String vehicleModel, String vehicleType) {
+    return GestureDetector(
+      onTap: () {
+        final gpsArgs = TripGpsArgs(
+          driverName: driverName,
+          driverRating: driverRating,
+          carModel: vehicleModel,
+          carColor: vehicleType,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TripGpsScreen(args: gpsArgs),
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFF3F4F6), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFCF8307).withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Track Your Trip', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.greyDark)),
+                const SizedBox(height: 4),
+                Text('View driver location & checkpoints', style: const TextStyle(color: AppColors.greySecondary, fontSize: 12)),
+              ],
+            ),
+            Container(
+              width: 40, height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0xFFCF8307),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.location_on, color: Colors.white, size: 20),
+            ),
+          ],
+        ),
       ),
     );
   }
