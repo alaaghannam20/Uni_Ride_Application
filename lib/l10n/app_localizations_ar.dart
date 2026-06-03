@@ -1427,10 +1427,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get refundAutoMessage => 'سيُسترد المبلغ كاملاً تلقائياً';
 
   @override
-  String refundWalletSuccess(String amount) => 'تم الإلغاء — استُرد ₪$amount لمحفظتك';
+  String refundWalletSuccess(String amount) {
+    return 'تم الإلغاء — استُرد ₪$amount لمحفظتك';
+  }
 
   @override
-  String get refundStripeSuccess => 'تم الإلغاء — سيُعاد المبلغ لبطاقتك خلال 3-5 أيام';
+  String get refundStripeSuccess =>
+      'تم الإلغاء — سيُعاد المبلغ لبطاقتك خلال 3-5 أيام';
 
   @override
   String get cancelledSuccess => 'تم إلغاء الحجز بنجاح';
