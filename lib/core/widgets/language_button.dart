@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
@@ -30,8 +31,8 @@ class LanguageButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
         decoration: BoxDecoration(
-          color: AppColors.backgroundcontainerlanguage,
-          border: Border.all(color: AppColors.bordercontainerlanguage, width: 1),
+          color: context.bgCard,
+          border: Border.all(color: context.borderColor, width: 1),
           borderRadius: BorderRadius.circular(30),
           boxShadow: const [
             BoxShadow(color: Color(0x19000000), blurRadius: 3, offset: Offset(0, 1)),

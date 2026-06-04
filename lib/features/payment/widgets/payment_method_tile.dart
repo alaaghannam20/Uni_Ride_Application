@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 
 class PaymentMethodTile extends StatelessWidget {
@@ -20,22 +21,23 @@ class PaymentMethodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 382,
+        width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.bgCard,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppColors.orangeprimary : AppColors.greyLight,
+            color: isSelected ? AppColors.orangeprimary : context.borderColor,
             width: isSelected ? 1.85 : 0.62,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -48,12 +50,12 @@ class PaymentMethodTile extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.orangeprimary : AppColors.greyBackground,
+                color: isSelected ? AppColors.orangeprimary : context.bgSubtle,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: isSelected ? Colors.white : AppColors.greySecondary,
+                color: isSelected ? Colors.white : context.textSecondary,
               ),
             ),
             const SizedBox(width: 16),
@@ -63,11 +65,11 @@ class PaymentMethodTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppStyle.paymentMethodTitleStyle,
+                    style: AppStyle.paymentMethodTitle(context),
                   ),
                   Text(
                     subtitle,
-                    style: AppStyle.paymentMethodSubtitleStyle,
+                    style: AppStyle.paymentMethodSubtitle(context),
                   ),
                 ],
               ),
@@ -78,7 +80,7 @@ class PaymentMethodTile extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? AppColors.orangeprimary : AppColors.greyHint,
+                  color: isSelected ? AppColors.orangeprimary : context.textHint,
                   width: 1.5,
                 ),
               ),

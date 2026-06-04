@@ -44,11 +44,11 @@ class PendingApprovalModel {
       vehicleModel: json[ApiKeys.driverVehicleModel] ?? json[ApiKeys.vehicleModel]         ?? '',
       plateNumber:  json[ApiKeys.driverPlateNumber]  ?? json[ApiKeys.plateNumber]          ?? '',
       type:               json[ApiKeys.type]                ?? json['Type']              ?? 'Driver',
-      profileImage:       json[ApiKeys.profileImage]       ?? json[ApiKeys.driverProfileImage],
+      profileImage:       (json[ApiKeys.profilePicturePath] ?? json[ApiKeys.profileImage] ?? json[ApiKeys.driverProfileImage])?.replaceAll('\\', '/'),
       licenseNumber:      json[ApiKeys.licenseNumber]      ?? json['LicenseNumber'],
       seatCapacity:       json[ApiKeys.seatCapacity] != null ? (json[ApiKeys.seatCapacity]).toInt() : null,
-      driverLicenseImage:  json['licenseImagePath']        ?? json[ApiKeys.driverLicenseImageUrl]  ?? json['DriverLicenseImage'],
-      vehicleLicenseImage: json['vehicleLicenseImagePath'] ?? json[ApiKeys.vehicleLicenseImageUrl] ?? json['VehicleLicenseImage'],
+      driverLicenseImage:  (json['licenseImagePath']        ?? json[ApiKeys.driverLicenseImageUrl]  ?? json['DriverLicenseImage'])?.replaceAll('\\', '/'),
+      vehicleLicenseImage: (json['vehicleLicenseImagePath'] ?? json[ApiKeys.vehicleLicenseImageUrl] ?? json['VehicleLicenseImage'])?.replaceAll('\\', '/'),
     );
   }
 

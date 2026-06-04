@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/pending_approval_model.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
@@ -8,14 +9,50 @@ import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 const String _base = 'http://uniride.runasp.net/';
 
-class AdminDriverDetailsPage extends StatelessWidget {
-  final PendingApprovalModel driver;
-  const AdminDriverDetailsPage({super.key, required this.driver});
+DateTime _parseUtc(String raw) {
+  final normalized = raw.endsWith('Z') ? raw : '${raw}Z';
+  return DateTime.parse(normalized).toLocal();
+}
+
+String _formatDateFull(String raw) {
+  if (raw.isEmpty) return '—';
+  try {
+    return DateFormat('EEEE, MMMM d, y  •  h:mm a').format(_parseUtc(raw));
+  } catch (_) {
+    return raw;
+  }
+}
+
+String _formatDateShort(String raw) {
+  if (raw.isEmpty) return '';
+  try {
+    return DateFormat('MMM d, y').format(_parseUtc(raw));
+  } catch (_) {
+    return raw;
+  }
+}
+
+class AdminDriverDetailsPage extends StatefulWidget {
+  final String id;
+  final String type;
+  const AdminDriverDetailsPage({super.key, required this.id, required this.type});
+
+  @override
+  State<AdminDriverDetailsPage> createState() => _AdminDriverDetailsPageState();
+}
+
+class _AdminDriverDetailsPageState extends State<AdminDriverDetailsPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AdminProvider>().fetchPendingApprovalDetails(widget.id, widget.type);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final l       = AppLocalizations.of(context)!;
-    final initial = driver.fullName.isNotEmpty ? driver.fullName[0].toUpperCase() : '?';
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: context.bgColor,
@@ -35,171 +72,210 @@ class AdminDriverDetailsPage extends StatelessWidget {
           child: Container(height: 1, color: context.borderColor),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 760),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+      body: Consumer<AdminProvider>(
+        builder: (context, provider, _) {
+          if (provider.detailsState == AdminState.loading) {
+            return const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary));
+          }
 
-                // ── Profile Header Card ───────────────────────────────────
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [AppColors.orangeprimary, AppColors.adminGradientEnd],
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.orangeprimary.withValues(alpha: 0.25),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 76, height: 76,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: 0.2),
-                          border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 2),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: driver.profileImage != null
-                            ? Image.network(
-                                '$_base${driver.profileImage}',
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Center(
-                                  child: Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28)),
-                                ),
-                              )
-                            : Center(
-                                child: Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28)),
-                              ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(driver.fullName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20)),
-                            const SizedBox(height: 4),
-                            Text(driver.email, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13)),
-                            const SizedBox(height: 10),
-                            Wrap(
-                              spacing: 8,
-                              children: [
-                                _chip(driver.type),
-                                if (driver.appliedAt.isNotEmpty) _chip(driver.appliedAt),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // ── Personal Information ──────────────────────────────────
-                _sectionTitle(context, l.personalInformation),
-                const SizedBox(height: 12),
-                _InfoCard(context: context, items: [
-                  _InfoItem(icon: Icons.person_outline,  label: l.fullName,    value: driver.fullName),
-                  _InfoItem(icon: Icons.email_outlined,  label: l.emailAddress,value: driver.email),
-                  _InfoItem(icon: Icons.phone_outlined,  label: l.phoneNumber, value: driver.phoneNumber.isEmpty ? '—' : driver.phoneNumber),
-                ]),
-
-                const SizedBox(height: 24),
-
-                // ── Vehicle Information ───────────────────────────────────
-                _sectionTitle(context, l.vehicleInformation),
-                const SizedBox(height: 12),
-                _InfoCard(context: context, items: [
-                  _InfoItem(icon: Icons.directions_car_outlined, label: l.vehicleType,    value: driver.vehicleType.isEmpty    ? '—' : driver.vehicleType),
-                  _InfoItem(icon: Icons.car_repair,              label: l.vehicleDetails, value: driver.vehicleModel.isEmpty   ? '—' : driver.vehicleModel),
-                  _InfoItem(icon: Icons.pin_outlined,            label: l.plateNumber,    value: driver.plateNumber.isEmpty    ? '—' : driver.plateNumber),
-                  if (driver.seatCapacity != null)
-                    _InfoItem(icon: Icons.event_seat_outlined,   label: l.numberOfSeats, value: '${driver.seatCapacity}'),
-                ]),
-
-                const SizedBox(height: 24),
-
-                // ── License & Documents ───────────────────────────────────
-                _sectionTitle(context, l.driverDocuments),
-                const SizedBox(height: 12),
-                _InfoCard(context: context, items: [
-                  if (driver.licenseNumber != null && driver.licenseNumber!.isNotEmpty)
-                    _InfoItem(icon: Icons.badge_outlined, label: l.licenseNumber, value: driver.licenseNumber!),
-                  _InfoItem(icon: Icons.calendar_today,  label: l.appliedDate,   value: driver.appliedAt.isEmpty ? '—' : driver.appliedAt),
-                  _InfoItem(icon: Icons.badge_outlined,  label: l.applicationType, value: driver.type),
-                ]),
-
-                // Document Images
-                if (driver.driverLicenseImage != null || driver.vehicleLicenseImage != null) ...[
-                  const SizedBox(height: 24),
-                  _sectionTitle(context, l.uploadedDocuments),
+          if (provider.detailsState == AdminState.error || provider.selectedApproval == null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: AppColors.errorRed),
                   const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      if (driver.driverLicenseImage != null)
-                        Expanded(child: _DocImageCard(
-                          context: context,
-                          label: l.uploadDriverLicense,
-                          url: '$_base${driver.driverLicenseImage}',
-                        )),
-                      if (driver.driverLicenseImage != null && driver.vehicleLicenseImage != null)
-                        const SizedBox(width: 16),
-                      if (driver.vehicleLicenseImage != null)
-                        Expanded(child: _DocImageCard(
-                          context: context,
-                          label: l.uploadVehicleLicense,
-                          url: '$_base${driver.vehicleLicenseImage}',
-                        )),
-                    ],
+                  Text(provider.errorMessage, style: TextStyle(color: context.textSecondary)),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => provider.fetchPendingApprovalDetails(widget.id, widget.type),
+                    child: Text(l.retry),
                   ),
                 ],
+              ),
+            );
+          }
 
-                const SizedBox(height: 32),
+          return _DetailsBody(driver: provider.selectedApproval!, l: l);
+        },
+      ),
+    );
+  }
+}
 
-                // ── Action Buttons ────────────────────────────────────────
-                Row(
-                  children: [
-                    Expanded(
-                      child: _ActionBtn(
-                        label: l.rejectApplication,
-                        icon: Icons.cancel_outlined,
-                        bgColor: AppColors.adminErrorBG,
-                        textColor: AppColors.errorRed,
-                        borderColor: AppColors.lightRedBorder,
-                        onTap: () => _onReject(context, l),
-                      ),
+class _DetailsBody extends StatelessWidget {
+  final PendingApprovalModel driver;
+  final AppLocalizations l;
+  const _DetailsBody({required this.driver, required this.l});
+
+  @override
+  Widget build(BuildContext context) {
+    final initial = driver.fullName.isNotEmpty ? driver.fullName[0].toUpperCase() : '?';
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 760),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              // ── Profile Header Card ───────────────────────────────────
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.orangeprimary, AppColors.adminGradientEnd],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.orangeprimary.withValues(alpha: 0.25),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
                     ),
-                    const SizedBox(width: 16),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 76, height: 76,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.2),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 2),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: driver.profileImage != null
+                          ? Image.network(
+                              '$_base${driver.profileImage}',
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) => Center(
+                                child: Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28)),
+                              ),
+                            )
+                          : Center(
+                              child: Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28)),
+                            ),
+                    ),
+                    const SizedBox(width: 20),
                     Expanded(
-                      child: _ActionBtn(
-                        label: l.approveApplication,
-                        icon: Icons.check_circle_outline,
-                        bgColor: AppColors.adminSuccessBG,
-                        textColor: AppColors.adminSuccessText,
-                        borderColor: AppColors.adminSuccessText.withValues(alpha: 0.3),
-                        onTap: () => _onApprove(context, l),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(driver.fullName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20)),
+                          const SizedBox(height: 4),
+                          Text(driver.email, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13)),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8,
+                            children: [
+                              _chip(driver.type),
+                              if (driver.appliedAt.isNotEmpty) _chip(_formatDateShort(driver.appliedAt)),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // ── Personal Information ──────────────────────────────────
+              _sectionTitle(context, l.personalInformation),
+              const SizedBox(height: 12),
+              _InfoCard(context: context, items: [
+                _InfoItem(icon: Icons.person_outline,  label: l.fullName,     value: driver.fullName),
+                _InfoItem(icon: Icons.email_outlined,  label: l.emailAddress, value: driver.email),
+                _InfoItem(icon: Icons.phone_outlined,  label: l.phoneNumber,  value: driver.phoneNumber.isEmpty ? '—' : driver.phoneNumber),
+              ]),
+
+              const SizedBox(height: 24),
+
+              // ── Vehicle Information ───────────────────────────────────
+              _sectionTitle(context, l.vehicleInformation),
+              const SizedBox(height: 12),
+              _InfoCard(context: context, items: [
+                _InfoItem(icon: Icons.directions_car_outlined, label: l.vehicleType,    value: driver.vehicleType.isEmpty  ? '—' : driver.vehicleType),
+                _InfoItem(icon: Icons.car_repair,              label: l.vehicleDetails, value: driver.vehicleModel.isEmpty  ? '—' : driver.vehicleModel),
+                _InfoItem(icon: Icons.pin_outlined,            label: l.plateNumber,    value: driver.plateNumber.isEmpty  ? '—' : driver.plateNumber),
+                if (driver.seatCapacity != null)
+                  _InfoItem(icon: Icons.event_seat_outlined,   label: l.numberOfSeats, value: '${driver.seatCapacity}'),
+              ]),
+
+              const SizedBox(height: 24),
+
+              // ── License & Documents ───────────────────────────────────
+              _sectionTitle(context, l.driverDocuments),
+              const SizedBox(height: 12),
+              _InfoCard(context: context, items: [
+                if (driver.licenseNumber != null && driver.licenseNumber!.isNotEmpty)
+                  _InfoItem(icon: Icons.badge_outlined, label: l.licenseNumber,    value: driver.licenseNumber!),
+                _InfoItem(icon: Icons.calendar_today,  label: l.appliedDate,      value: _formatDateFull(driver.appliedAt)),
+                _InfoItem(icon: Icons.badge_outlined,  label: l.applicationType,  value: driver.type),
+              ]),
+
+              // Document Images
+              if (driver.driverLicenseImage != null || driver.vehicleLicenseImage != null) ...[
                 const SizedBox(height: 24),
+                _sectionTitle(context, l.uploadedDocuments),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    if (driver.driverLicenseImage != null)
+                      Expanded(child: _DocImageCard(
+                        context: context,
+                        label: l.uploadDriverLicense,
+                        url: '$_base${driver.driverLicenseImage}',
+                      )),
+                    if (driver.driverLicenseImage != null && driver.vehicleLicenseImage != null)
+                      const SizedBox(width: 16),
+                    if (driver.vehicleLicenseImage != null)
+                      Expanded(child: _DocImageCard(
+                        context: context,
+                        label: l.uploadVehicleLicense,
+                        url: '$_base${driver.vehicleLicenseImage}',
+                      )),
+                  ],
+                ),
               ],
-            ),
+
+              const SizedBox(height: 32),
+
+              // ── Action Buttons ────────────────────────────────────────
+              Row(
+                children: [
+                  Expanded(
+                    child: _ActionBtn(
+                      label: l.rejectApplication,
+                      icon: Icons.cancel_outlined,
+                      bgColor: AppColors.adminErrorBG,
+                      textColor: AppColors.errorRed,
+                      borderColor: AppColors.lightRedBorder,
+                      onTap: () => _onReject(context, l),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _ActionBtn(
+                      label: l.approveApplication,
+                      icon: Icons.check_circle_outline,
+                      bgColor: AppColors.adminSuccessBG,
+                      textColor: AppColors.adminSuccessText,
+                      borderColor: AppColors.adminSuccessText.withValues(alpha: 0.3),
+                      onTap: () => _onApprove(context, l),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+            ],
           ),
         ),
       ),
@@ -340,7 +416,7 @@ class _DocImageCard extends StatelessWidget {
             child: Image.network(
               url,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Center(
+              errorBuilder: (_, _, _) => Center(
                 child: Icon(Icons.image_not_supported_outlined, size: 40, color: context.textHint),
               ),
               loadingBuilder: (_, child, progress) =>

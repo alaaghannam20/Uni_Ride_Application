@@ -423,7 +423,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get totalTripsCount => 'إجمالي الرحلات';
 
   @override
-  String get todayRevenue => 'إيرادات اليوم';
+  String get todayRevenue => 'إجمالي الأرباح';
 
   @override
   String get activeTripsNow => 'الرحلات النشطة الآن';
@@ -439,6 +439,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get fromYesterday => 'من أمس';
+
+  @override
+  String get platformEarnings => 'أرباح التطبيق';
 
   @override
   String get systemConfiguration => 'ضبط النظام';
@@ -472,7 +475,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get perKilometer => 'لكل كيلومتر (₪)';
 
   @override
+  String get appFee => 'رسوم التطبيق';
+
+  @override
+  String get included => 'مشمولة';
+
+  @override
+  String get appFeePerTrip => 'رسوم التطبيق لكل رحلة (₪)';
+
+  @override
+  String get appFeePerTripDesc =>
+      'تُضاف تلقائياً على سعر السائق ويدفعها الطالب';
+
+  @override
   String get saveChanges => 'حفظ التغييرات';
+
+  @override
+  String get feeSavedSuccess => 'تم حفظ رسوم التطبيق بنجاح';
+
+  @override
+  String get feeSavedLocalOnly => 'تم الحفظ محلياً — تحقق من الاتصال';
 
   @override
   String get save => 'حفظ';
@@ -819,10 +841,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pickup_ptuk_gate => 'البوابة الرئيسية - خضوري';
 
   @override
-  String get pickup_eng_building => 'مبنى الهندسة';
+  String get pickup_eng_building => 'البوابة الصناعية';
 
   @override
-  String get pickup_student_housing => 'سكن الطلاب';
+  String get pickup_student_housing => 'بوابة الطاقة';
+
+  @override
+  String get selectPickupPoint => 'اختر نقطة التوقف';
+
+  @override
+  String get other => 'أخرى';
 
   @override
   String get all => 'الكل';
@@ -921,7 +949,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get set_price => 'حدد سعرك بالشيكل (₪)';
 
   @override
-  String get suggested_price_range => 'نطاق السعر المقترح: ₪5-₪12 لكل مقعد';
+  String get suggested_price_range => 'سيُضاف ₪3 على سعرك الأصلي للتطبيق';
 
   @override
   String get additional_notes_optional => 'ملاحظات إضافية (اختياري)';
@@ -1272,6 +1300,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStudentsFound => 'لا يوجد طلاب';
 
   @override
+  String get noDriversFound => 'لا يوجد سائقون';
+
+  @override
+  String get scheduleATrip => 'جدولة رحلة';
+
+  @override
+  String get scheduleTrip => 'جدول الرحلة';
+
+  @override
+  String get newTrip => 'رحلة جديدة';
+
+  @override
+  String get dateAndTime => 'التاريخ والوقت';
+
+  @override
+  String get tripDuration => 'مدة الرحلة';
+
+  @override
+  String get estimatedTripTime => 'الوقت المتوقع للرحلة';
+
+  @override
+  String get howManyPassengers => 'كم راكباً تستطيع استيعابه؟';
+
+  @override
+  String get setPriceInILS => 'حدد سعرك بالشيكل (₪)';
+
+  @override
+  String get pleaseSelectDateTime => 'الرجاء تحديد التاريخ والوقت';
+
+  @override
+  String get custom => 'مخصص...';
+
+  @override
+  String get publish => 'نشر';
+
+  @override
   String get selectDate => 'اختر التاريخ';
 
   @override
@@ -1297,4 +1361,80 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get connectionTimeout => 'انتهت مهلة الاتصال، حاول مجدداً';
+
+  @override
+  String get loginNow => 'سجّل الدخول الآن';
+
+  @override
+  String get bookingFailed => 'فشل الحجز';
+
+  @override
+  String get seatTakenMessage =>
+      'عذراً، هذا المقعد حُجز للتو من طالب آخر. يرجى العودة والتحقق من المقاعد المتاحة.';
+
+  @override
+  String get goBack => 'العودة';
+
+  @override
+  String get walletPaymentSoon => 'الدفع بالمحفظة قريباً!';
+
+  @override
+  String get confirmingPayment => 'جاري تأكيد الدفع...';
+
+  @override
+  String get topUpSuccess => 'تم شحن المحفظة!';
+
+  @override
+  String get walletHasBeenCharged => 'تم شحن محفظتك بنجاح.';
+
+  @override
+  String get backToWallet => 'العودة للمحفظة';
+
+  @override
+  String get confirmationFailed => 'فشل التأكيد';
+
+  @override
+  String get rateDriver => 'تقييم السائق';
+
+  @override
+  String get ratingSubmittedSuccess => 'تم إرسال التقييم بنجاح!';
+
+  @override
+  String get noAchievementsFound => 'لا توجد إنجازات.';
+
+  @override
+  String get referralCopied => 'تم نسخ رمز الإحالة!';
+
+  @override
+  String get rewardRedeemedSuccess => 'تم استبدال المكافأة بنجاح!';
+
+  @override
+  String get profileMenuItem => 'الملف الشخصي';
+
+  @override
+  String get enterAmountILS => 'أدخل المبلغ (شيكل)';
+
+  @override
+  String get topUpAction => 'شحن';
+
+  @override
+  String get failedToGetTripId => 'فشل في الحصول على رقم الرحلة';
+
+  @override
+  String get profilePictureUpdated => 'تم تحديث صورة الملف الشخصي!';
+
+  @override
+  String get refundAutoMessage => 'سيُسترد المبلغ كاملاً تلقائياً';
+
+  @override
+  String refundWalletSuccess(String amount) {
+    return 'تم الإلغاء — استُرد ₪$amount لمحفظتك';
+  }
+
+  @override
+  String get refundStripeSuccess =>
+      'تم الإلغاء — سيُعاد المبلغ لبطاقتك خلال 3-5 أيام';
+
+  @override
+  String get cancelledSuccess => 'تم إلغاء الحجز بنجاح';
 }

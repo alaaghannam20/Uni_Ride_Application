@@ -73,8 +73,13 @@ class DioFactory {
       if (e.type == DioExceptionType.badResponse) {
         final status = e.response?.statusCode;
         final data   = e.response?.data;
-        print('❌ HTTP $status | ${e.requestOptions.path} | $data');
-        if (data is Map && data['message'] != null) return data['message'] as String;
+        if (data is Map) {
+          final msg   = data['message']?.toString();
+          final inner = data['inner']?.toString();
+          if (msg != null && msg.isNotEmpty) {
+            return inner != null && inner.isNotEmpty ? '$msg\n$inner' : msg;
+          }
+        }
         return 'Server error ($status)';
       }
       if (e.type == DioExceptionType.cancel) {

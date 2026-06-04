@@ -113,7 +113,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     AppLocalizations.of(context)!.welcomeBack,
                                     style: AppStyle.custombuttonstyle.copyWith(
                                       fontSize: 20,
-                                      color: AppColors.skiptextcolor,
+                                      color: context.textPrimary,
                                     ),
                                   ),
                                 ],
@@ -128,7 +128,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 CustomTextfiled(
                                   controller: emailOrPhoneController,
                                   labelText: AppLocalizations.of(context)!.emailOrPhone,
-                                  hintText: '@student.ptuk.edu.ps',
+                                  hintText: 'Enter your email',
                                   keyboardType: TextInputType.emailAddress,
                                   prefixIcon: const Icon(
                                     Icons.badge,
@@ -190,7 +190,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                               AppLocalizations.of(context)!.rememberMe,
                                               overflow: TextOverflow.ellipsis,
                                               style: AppStyle.passwordStyle.copyWith(
-                                                color: AppColors.black,
+                                                color: context.textPrimary,
                                               ),
                                             ),
                                           ),

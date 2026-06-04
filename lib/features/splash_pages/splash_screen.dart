@@ -27,12 +27,23 @@ class _SplashScreenState extends State<SplashScreen> {
 
   if (!seenOnboarding) {
     Navigator.pushReplacementNamed(context, Routes.onboarding1);
-  }
-  else {
+  } else {
     if (token != null && token.isNotEmpty) {
-      Navigator.pushReplacementNamed(context, Routes.home);
-    } 
-    else {
+      final userType = AppPrefs.getUserType();
+      switch (userType) {
+        case 'admin':
+          Navigator.pushReplacementNamed(context, Routes.adminOverview);
+          break;
+        case 'driver':
+          Navigator.pushReplacementNamed(context, Routes.driverhome);
+          break;
+        case 'carpool':
+          Navigator.pushReplacementNamed(context, Routes.home);
+          break;
+        default:
+          Navigator.pushReplacementNamed(context, Routes.home);
+      }
+    } else {
       Navigator.pushReplacementNamed(context, Routes.signIn);
     }
   }

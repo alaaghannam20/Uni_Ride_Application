@@ -923,7 +923,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayRevenue.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s Revenue'**
+  /// **'Total Revenue'**
   String get todayRevenue;
 
   /// No description provided for @activeTripsNow.
@@ -955,6 +955,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'from yesterday'**
   String get fromYesterday;
+
+  /// No description provided for @platformEarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform earnings'**
+  String get platformEarnings;
 
   /// No description provided for @systemConfiguration.
   ///
@@ -1016,11 +1022,47 @@ abstract class AppLocalizations {
   /// **'Per Kilometer (₪)'**
   String get perKilometer;
 
+  /// No description provided for @appFee.
+  ///
+  /// In en, this message translates to:
+  /// **'App Fee'**
+  String get appFee;
+
+  /// No description provided for @included.
+  ///
+  /// In en, this message translates to:
+  /// **'included'**
+  String get included;
+
+  /// No description provided for @appFeePerTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform Fee per Trip (₪)'**
+  String get appFeePerTrip;
+
+  /// No description provided for @appFeePerTripDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically added on top of driver price and paid by the student'**
+  String get appFeePerTripDesc;
+
   /// No description provided for @saveChanges.
   ///
   /// In en, this message translates to:
   /// **'Save Changes'**
   String get saveChanges;
+
+  /// No description provided for @feeSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'App fee saved successfully'**
+  String get feeSavedSuccess;
+
+  /// No description provided for @feeSavedLocalOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved locally — check connection'**
+  String get feeSavedLocalOnly;
 
   /// No description provided for @save.
   ///
@@ -1523,7 +1565,7 @@ abstract class AppLocalizations {
   /// No description provided for @refer_sub.
   ///
   /// In en, this message translates to:
-  /// **'Get 50 points for each referral'**
+  /// **'Get 10 points for each referral'**
   String get refer_sub;
 
   /// No description provided for @friends_joined.
@@ -1709,14 +1751,26 @@ abstract class AppLocalizations {
   /// No description provided for @pickup_eng_building.
   ///
   /// In en, this message translates to:
-  /// **'Engineering Building'**
+  /// **'Industry Gateway'**
   String get pickup_eng_building;
 
   /// No description provided for @pickup_student_housing.
   ///
   /// In en, this message translates to:
-  /// **'Student Housing'**
+  /// **'Energy Gateway'**
   String get pickup_student_housing;
+
+  /// No description provided for @selectPickupPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select pickup point'**
+  String get selectPickupPoint;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
 
   /// No description provided for @all.
   ///
@@ -1907,7 +1961,7 @@ abstract class AppLocalizations {
   /// No description provided for @suggested_price_range.
   ///
   /// In en, this message translates to:
-  /// **'Suggested price range: ₪5-₪12 per seat'**
+  /// **'₪3 will be added to your price for the app'**
   String get suggested_price_range;
 
   /// No description provided for @additional_notes_optional.
@@ -2588,6 +2642,78 @@ abstract class AppLocalizations {
   /// **'No students found'**
   String get noStudentsFound;
 
+  /// No description provided for @noDriversFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No drivers found'**
+  String get noDriversFound;
+
+  /// No description provided for @scheduleATrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule a Trip'**
+  String get scheduleATrip;
+
+  /// No description provided for @scheduleTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule Trip'**
+  String get scheduleTrip;
+
+  /// No description provided for @newTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'New Trip'**
+  String get newTrip;
+
+  /// No description provided for @dateAndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & Time'**
+  String get dateAndTime;
+
+  /// No description provided for @tripDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip Duration'**
+  String get tripDuration;
+
+  /// No description provided for @estimatedTripTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated trip time'**
+  String get estimatedTripTime;
+
+  /// No description provided for @howManyPassengers.
+  ///
+  /// In en, this message translates to:
+  /// **'How many passengers can you take?'**
+  String get howManyPassengers;
+
+  /// No description provided for @setPriceInILS.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your price in ILS (₪)'**
+  String get setPriceInILS;
+
+  /// No description provided for @pleaseSelectDateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select date and time'**
+  String get pleaseSelectDateTime;
+
+  /// No description provided for @custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom...'**
+  String get custom;
+
+  /// No description provided for @publish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get publish;
+
   /// No description provided for @selectDate.
   ///
   /// In en, this message translates to:
@@ -2641,6 +2767,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connection timeout, try again'**
   String get connectionTimeout;
+
+  /// No description provided for @loginNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Now'**
+  String get loginNow;
+
+  /// No description provided for @bookingFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Failed'**
+  String get bookingFailed;
+
+  /// No description provided for @seatTakenMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, this seat was just booked by another student. Please go back and check available seats.'**
+  String get seatTakenMessage;
+
+  /// No description provided for @goBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get goBack;
+
+  /// No description provided for @walletPaymentSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet payment coming soon!'**
+  String get walletPaymentSoon;
+
+  /// No description provided for @confirmingPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming payment...'**
+  String get confirmingPayment;
+
+  /// No description provided for @topUpSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet Topped Up!'**
+  String get topUpSuccess;
+
+  /// No description provided for @walletHasBeenCharged.
+  ///
+  /// In en, this message translates to:
+  /// **'Your wallet has been charged successfully.'**
+  String get walletHasBeenCharged;
+
+  /// No description provided for @backToWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Wallet'**
+  String get backToWallet;
+
+  /// No description provided for @confirmationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation Failed'**
+  String get confirmationFailed;
+
+  /// No description provided for @rateDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Driver'**
+  String get rateDriver;
+
+  /// No description provided for @ratingSubmittedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating submitted successfully!'**
+  String get ratingSubmittedSuccess;
+
+  /// No description provided for @noAchievementsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No achievements found.'**
+  String get noAchievementsFound;
+
+  /// No description provided for @referralCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code copied to clipboard!'**
+  String get referralCopied;
+
+  /// No description provided for @rewardRedeemedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward redeemed successfully!'**
+  String get rewardRedeemedSuccess;
+
+  /// No description provided for @profileMenuItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileMenuItem;
+
+  /// No description provided for @enterAmountILS.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter amount (ILS)'**
+  String get enterAmountILS;
+
+  /// No description provided for @topUpAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-up'**
+  String get topUpAction;
+
+  /// No description provided for @failedToGetTripId.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get trip ID'**
+  String get failedToGetTripId;
+
+  /// No description provided for @profilePictureUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture updated!'**
+  String get profilePictureUpdated;
+
+  /// No description provided for @refundAutoMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The full amount will be automatically refunded'**
+  String get refundAutoMessage;
+
+  /// No description provided for @refundWalletSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled — ₪{amount} refunded to your wallet'**
+  String refundWalletSuccess(String amount);
+
+  /// No description provided for @refundStripeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled — Your amount will be returned to your card within 3-5 days'**
+  String get refundStripeSuccess;
+
+  /// No description provided for @cancelledSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking cancelled successfully'**
+  String get cancelledSuccess;
 }
 
 class _AppLocalizationsDelegate

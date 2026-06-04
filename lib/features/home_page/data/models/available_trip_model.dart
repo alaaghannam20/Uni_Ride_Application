@@ -15,6 +15,9 @@ class AvailableTripModel {
   final String? profilePicturePath;
   final String? description;
   final String status;
+  final double driverRating;
+  final int totalDriverTrips;
+  final String driverPhone;
 
   const AvailableTripModel({
     required this.tripId,
@@ -31,6 +34,9 @@ class AvailableTripModel {
     this.profilePicturePath,
     this.description,
     required this.status,
+    this.driverRating = 0.0,
+    this.totalDriverTrips = 0,
+    this.driverPhone = '',
   });
 
   factory AvailableTripModel.fromJson(Map<String, dynamic> json) {
@@ -43,12 +49,21 @@ class AvailableTripModel {
       departureTime: json[ApiKeys.departureTime] ?? '',
       pricePerSeat: (json[ApiKeys.pricePerSeat] ?? 0).toInt(),
       availableSeats: (json[ApiKeys.availableSeats] ?? 0).toInt(),
-      estimatedDurationMinutes: (json[ApiKeys.estimatedDurationMinutes] ?? 0).toInt(),
+      estimatedDurationMinutes: (() {
+        final fromApi = (json[ApiKeys.estimatedDurationMinutes] ?? 0).toInt();
+        if (fromApi > 0) return fromApi;
+        final desc = (json[ApiKeys.description] ?? '') as String;
+        final match = RegExp(r'estimatedDurationMinutes\s*:\s*(\d+)').firstMatch(desc);
+        return match != null ? int.tryParse(match.group(1)!) ?? 0 : 0;
+      })(),
       driverType: json[ApiKeys.driverType] ?? '',
       vehicleModel: json[ApiKeys.vehicleModel] ?? '',
       profilePicturePath: json[ApiKeys.profilePicturePath],
       description: json[ApiKeys.description],
       status: json[ApiKeys.status] ?? '',
+      driverRating: double.tryParse((json[ApiKeys.driverRating] ?? json['rating'] ?? 0).toString()) ?? 0.0,
+      totalDriverTrips: (json[ApiKeys.totalDriverTrips] ?? 0).toInt(),
+      driverPhone: json[ApiKeys.driverPhone] ?? '',
     );
   }
 }

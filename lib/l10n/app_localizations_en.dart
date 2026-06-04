@@ -425,7 +425,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get totalTripsCount => 'Total Trips';
 
   @override
-  String get todayRevenue => 'Today\'s Revenue';
+  String get todayRevenue => 'Total Revenue';
 
   @override
   String get activeTripsNow => 'Active Trips Now';
@@ -441,6 +441,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fromYesterday => 'from yesterday';
+
+  @override
+  String get platformEarnings => 'Platform earnings';
 
   @override
   String get systemConfiguration => 'System Configuration';
@@ -473,7 +476,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get perKilometer => 'Per Kilometer (₪)';
 
   @override
+  String get appFee => 'App Fee';
+
+  @override
+  String get included => 'included';
+
+  @override
+  String get appFeePerTrip => 'Platform Fee per Trip (₪)';
+
+  @override
+  String get appFeePerTripDesc =>
+      'Automatically added on top of driver price and paid by the student';
+
+  @override
   String get saveChanges => 'Save Changes';
+
+  @override
+  String get feeSavedSuccess => 'App fee saved successfully';
+
+  @override
+  String get feeSavedLocalOnly => 'Saved locally — check connection';
 
   @override
   String get save => 'Save';
@@ -728,7 +750,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get refer_a_friend => 'Refer a Friend';
 
   @override
-  String get refer_sub => 'Get 50 points for each referral';
+  String get refer_sub => 'Get 10 points for each referral';
 
   @override
   String get friends_joined => '3 friends joined · +150 pts earned';
@@ -821,10 +843,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickup_ptuk_gate => 'PTUK Main Gate';
 
   @override
-  String get pickup_eng_building => 'Engineering Building';
+  String get pickup_eng_building => 'Industry Gateway';
 
   @override
-  String get pickup_student_housing => 'Student Housing';
+  String get pickup_student_housing => 'Energy Gateway';
+
+  @override
+  String get selectPickupPoint => 'Select pickup point';
+
+  @override
+  String get other => 'Other';
 
   @override
   String get all => 'All';
@@ -923,7 +951,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get set_price => 'Set your price in ILS (₪)';
 
   @override
-  String get suggested_price_range => 'Suggested price range: ₪5-₪12 per seat';
+  String get suggested_price_range =>
+      '₪3 will be added to your price for the app';
 
   @override
   String get additional_notes_optional => 'Additional Notes (Optional)';
@@ -1277,6 +1306,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStudentsFound => 'No students found';
 
   @override
+  String get noDriversFound => 'No drivers found';
+
+  @override
+  String get scheduleATrip => 'Schedule a Trip';
+
+  @override
+  String get scheduleTrip => 'Schedule Trip';
+
+  @override
+  String get newTrip => 'New Trip';
+
+  @override
+  String get dateAndTime => 'Date & Time';
+
+  @override
+  String get tripDuration => 'Trip Duration';
+
+  @override
+  String get estimatedTripTime => 'Estimated trip time';
+
+  @override
+  String get howManyPassengers => 'How many passengers can you take?';
+
+  @override
+  String get setPriceInILS => 'Set your price in ILS (₪)';
+
+  @override
+  String get pleaseSelectDateTime => 'Please select date and time';
+
+  @override
+  String get custom => 'Custom...';
+
+  @override
+  String get publish => 'Publish';
+
+  @override
   String get selectDate => 'Select Date';
 
   @override
@@ -1302,4 +1367,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionTimeout => 'Connection timeout, try again';
+
+  @override
+  String get loginNow => 'Login Now';
+
+  @override
+  String get bookingFailed => 'Booking Failed';
+
+  @override
+  String get seatTakenMessage =>
+      'Sorry, this seat was just booked by another student. Please go back and check available seats.';
+
+  @override
+  String get goBack => 'Go Back';
+
+  @override
+  String get walletPaymentSoon => 'Wallet payment coming soon!';
+
+  @override
+  String get confirmingPayment => 'Confirming payment...';
+
+  @override
+  String get topUpSuccess => 'Wallet Topped Up!';
+
+  @override
+  String get walletHasBeenCharged =>
+      'Your wallet has been charged successfully.';
+
+  @override
+  String get backToWallet => 'Back to Wallet';
+
+  @override
+  String get confirmationFailed => 'Confirmation Failed';
+
+  @override
+  String get rateDriver => 'Rate Driver';
+
+  @override
+  String get ratingSubmittedSuccess => 'Rating submitted successfully!';
+
+  @override
+  String get noAchievementsFound => 'No achievements found.';
+
+  @override
+  String get referralCopied => 'Referral code copied to clipboard!';
+
+  @override
+  String get rewardRedeemedSuccess => 'Reward redeemed successfully!';
+
+  @override
+  String get profileMenuItem => 'Profile';
+
+  @override
+  String get enterAmountILS => 'Enter amount (ILS)';
+
+  @override
+  String get topUpAction => 'Top-up';
+
+  @override
+  String get failedToGetTripId => 'Failed to get trip ID';
+
+  @override
+  String get profilePictureUpdated => 'Profile picture updated!';
+
+  @override
+  String get refundAutoMessage =>
+      'The full amount will be automatically refunded';
+
+  @override
+  String refundWalletSuccess(String amount) {
+    return 'Cancelled — ₪$amount refunded to your wallet';
+  }
+
+  @override
+  String get refundStripeSuccess =>
+      'Cancelled — Your amount will be returned to your card within 3-5 days';
+
+  @override
+  String get cancelledSuccess => 'Booking cancelled successfully';
 }

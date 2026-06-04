@@ -16,6 +16,9 @@ class BookingModel {
   final String paymentStatus;
   final String status;
 
+  final bool isRated;
+  final String driverType;
+
   const BookingModel({
     required this.bookingId,
     required this.bookingCode,
@@ -31,6 +34,8 @@ class BookingModel {
     required this.totalAmount,
     required this.paymentStatus,
     required this.status,
+    this.isRated = false,
+    this.driverType = 'Driver',
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
@@ -49,6 +54,8 @@ class BookingModel {
       totalAmount:                (json[ApiKeys.totalAmount] ?? 0).toDouble(),
       paymentStatus:              json[ApiKeys.paymentStatus] ?? '',
       status:                     json[ApiKeys.status] ?? '',
+      isRated:                    json['isRated'] ?? false,
+      driverType:                 json['driverType'] ?? json['DriverType'] ?? 'Driver',
     );
   }
 }

@@ -107,4 +107,17 @@ class AppColors {
   static const Color infoDarkBlue = Color(0xFF1D4ED8);
   static const Color successGreen = Color(0xFF16A34A);
   static const Color darkGreen = Color(0xFF15803D);
+
+  // ── Orange Tint ──
+  static const Color orangeLightBg    = Color(0xFFFEF3DF); // light bg for badges/steppers
+  static const Color orangeProgressBg = Color(0xFFFFDCA4); // progress ring background
+
+  // ── Extended Success Palette ──
+  static const Color successDarkGreen  = Color(0xFF059669); // medium-dark green
+  static const Color successLightGreen = Color(0xFF34D399); // light green (dark mode text)
+  static const Color successDeepDark   = Color(0xFF064E3B); // very dark green bg (dark mode)
+  static const Color successDarkText   = Color(0xFF027A48); // dark text on light green bg
+
+  // ── Blue Accent (dark mode) ──
+  static const Color lightBlueAccent = Color(0xFF60A5FA); // lighter blue for dark mode icons
 }

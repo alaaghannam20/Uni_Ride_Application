@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:uni_ride_application/core/constants/api_keys.dart';
 import 'package:uni_ride_application/core/models/booking_model.dart';
 import 'package:uni_ride_application/core/network/app_endpoints.dart';
@@ -30,9 +31,13 @@ class BookingService {
     }
   }
 
-  Future<void> cancelBooking(int bookingId) async {
+  Future<Map<String, dynamic>> cancelBooking(int bookingId) async {
     try {
-      await DioFactory.post(AppEndpoints.bookingCancel(bookingId));
+      final response = await DioFactory.post(AppEndpoints.bookingCancel(bookingId));
+      final data = (response.data is Map && response.data['data'] != null)
+          ? response.data['data']
+          : response.data;
+      return (data as Map<String, dynamic>?) ?? {};
     } catch (e) {
       throw Exception(_cleanError(e));
     }
@@ -46,6 +51,8 @@ class BookingService {
       );
       final data = response.data;
       List<dynamic> list = data is List ? data : [];
+      if (list.isNotEmpty) debugPrint('=== BOOKING KEYS: ${(list.first as Map).keys.toList()}');
+      if (list.isNotEmpty) debugPrint('=== BOOKING SAMPLE: ${list.first}');
       return list.map((item) => BookingModel.fromJson(item)).toList();
     } catch (e) {
       throw Exception(_cleanError(e));

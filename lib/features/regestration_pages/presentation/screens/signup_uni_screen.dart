@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -26,6 +28,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
   final TextEditingController uniEmailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController referralCodeController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -33,6 +36,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
     uniEmailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    referralCodeController.dispose();
     super.dispose();
   }
 
@@ -71,7 +75,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
     final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: context.bgColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -103,7 +107,6 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                                 });
                               },
                               onDriverTap: () {
-                                // ✅ التعديل هون بس
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -117,7 +120,7 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                             CustomTextfiled(
                               controller: uniEmailController,
                               labelText: AppLocalizations.of(context)!.emailAddress,
-                              hintText: '@student.ptuk.edu.ps',
+                              hintText: 'Enter your email',
                               keyboardType: TextInputType.emailAddress,
                               prefixIcon: const Icon(
                                 Icons.email_sharp,
@@ -189,16 +192,12 @@ class _SignupUniScreenState extends State<SignupUniScreen> {
                             const SizedBox(height: 4),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, '/signIn');
+                                Navigator.pushNamed(context, Routes.signIn);
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Login Now', style: AppStyle.loginNowStyle),
-                                  const SizedBox(width: 4),
-                                  Text('|', style: AppStyle.loginNowStyle),
-                                  const SizedBox(width: 4),
-                                  Text('تسجيل الدخول', style: AppStyle.loginNowStyle),
+                                  Text(AppLocalizations.of(context)!.loginNow, style: AppStyle.loginNowStyle),
                                 ],
                               ),
                             ),

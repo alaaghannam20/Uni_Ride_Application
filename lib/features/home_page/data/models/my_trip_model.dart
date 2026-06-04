@@ -10,6 +10,7 @@ class MyTripModel {
   final String driverName;
   final String vehicleModel;
   final String status;
+  final int estimatedDurationMinutes;
 
   const MyTripModel({
     required this.tripId,
@@ -21,9 +22,12 @@ class MyTripModel {
     required this.driverName,
     required this.vehicleModel,
     required this.status,
+    this.estimatedDurationMinutes = 0,
   });
 
   factory MyTripModel.fromJson(Map<String, dynamic> json) {
+    final rawDur = json['estimatedDurationMinutes'] ?? json['EstimatedDurationMinutes'];
+    final dur = rawDur == null ? 0 : (rawDur is int ? rawDur : int.tryParse(rawDur.toString()) ?? 0);
     return MyTripModel(
       tripId: (json[ApiKeys.tripId] ?? 0).toInt(),
       tripCode: json[ApiKeys.tripCode] ?? '',
@@ -34,6 +38,7 @@ class MyTripModel {
       driverName: json[ApiKeys.driverName] ?? '',
       vehicleModel: json[ApiKeys.vehicleModel] ?? '',
       status: json[ApiKeys.status] ?? '',
+      estimatedDurationMinutes: dur,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:uni_ride_application/core/models/admin_dashboard_stats_model.dart';
+import 'package:uni_ride_application/core/models/admin_driver_model.dart';
 import 'package:uni_ride_application/core/models/admin_student_model.dart';
 import 'package:uni_ride_application/core/models/admin_trip_model.dart';
 import 'package:uni_ride_application/core/models/pending_approval_model.dart';
@@ -20,6 +21,21 @@ class AdminService {
             .toList();
       }
       return [];
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<PendingApprovalModel> getPendingApprovalDetails(String id, String type) async {
+    try {
+      final response = await DioFactory.get(
+        AppEndpoints.pendingApprovalDetails(id),
+        queryParameters: {'type': type},
+      );
+      final data = (response.data is Map && response.data['data'] != null)
+          ? response.data['data'] as Map<String, dynamic>
+          : response.data as Map<String, dynamic>;
+      return PendingApprovalModel.fromJson(data);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -57,7 +73,16 @@ class AdminService {
   Future<List<AdminStudentModel>> getStudents() async {
     final response = await DioFactory.get(AppEndpoints.adminStudents);
     final list = response.data as List? ?? [];
-    return list.map((e) => AdminStudentModel.fromJson(e)).toList();
+return list.map((e) => AdminStudentModel.fromJson(e)).toList();
+  }
+
+  Future<ApiResponseModel> toggleStudentStatus(String id) async {
+    try {
+      final response = await DioFactory.put(AppEndpoints.toggleStudentStatus(id));
+      return ApiResponseModel.fromJson(response.data);
+    } catch (e) {
+      return ApiResponseModel(success: false, message: e.toString());
+    }
   }
 
   Future<ApiResponseModel> toggleDriverStatus(String id) async {
@@ -69,9 +94,44 @@ class AdminService {
     }
   }
 
+  Future<List<AdminDriverModel>> getDriversList() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.adminDrivers);
+      final list = response.data as List? ?? [];
+      return list.map((e) => AdminDriverModel.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Future<List<AdminTripModel>> getAdminTrips() async {
     final response = await DioFactory.get(AppEndpoints.adminTrips);
     final list = response.data as List? ?? [];
     return list.map((e) => AdminTripModel.fromJson(e)).toList();
+  }
+
+  Future<int?> getPlatformFee() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.adminSettings);
+      final data = (response.data is Map && response.data['data'] != null)
+          ? response.data['data']
+          : response.data;
+      return (data['platformFee'] ?? data['platform_fee'])?.toInt();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<bool> updatePlatformFee(int fee) async {
+    try {
+      final response = await DioFactory.put(
+        AppEndpoints.adminSettings,
+        data: {'platformFee': fee},
+      );
+      final success = response.data?['success'] ?? response.statusCode == 200;
+      return success == true;
+    } catch (_) {
+      return false;
+    }
   }
 }

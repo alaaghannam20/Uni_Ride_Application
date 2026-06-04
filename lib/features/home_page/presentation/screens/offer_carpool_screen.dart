@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/features/home_page/data/models/location_model.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class OfferCarpoolScreen extends StatefulWidget {
@@ -12,35 +15,100 @@ class OfferCarpoolScreen extends StatefulWidget {
 }
 
 class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
-  String? _carType;
-  String? _carSeats;
-  String _pickupLocation = '';
-  String _dropoffLocation = '';
+  final _pickupCtrl  = TextEditingController();
+  final _dropoffCtrl = TextEditingController();
   String _date = '';
   String _time = '';
   int _availableSeats = 1;
   int _pricePerSeat = 8;
-  final _notesController = TextEditingController();
+  int _duration = 15;
+  bool _customDuration = false;
+  final _durationHrsCtrl = TextEditingController();
+  final _durationMinCtrl = TextEditingController();
+
+  static const _durationOptions = [15, 30, 45, 60, 90, 120];
+
+  // Stop state
+  LocationModel? _selectedStop;
+  final _customStopCtrl = TextEditingController();
+  static final _otherLocation = LocationModel(id: -1, name: 'Other');
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  String _durationLabel(int v) {
+    if (v < 60) return '$v min';
+    if (v == 60) return '1 hour';
+    if (v % 60 == 0) return '${v ~/ 60} hours';
+    return '${v ~/ 60}h ${v % 60}m';
+  }
 
   @override
   void dispose() {
-    _notesController.dispose();
+    _pickupCtrl.dispose();
+    _dropoffCtrl.dispose();
+    _durationHrsCtrl.dispose();
+    _durationMinCtrl.dispose();
+    _customStopCtrl.dispose();
     super.dispose();
   }
 
   int get _estimatedEarnings => _availableSeats * _pricePerSeat;
 
+  String _formatDisplayDate(String iso) {
+    try {
+      final dt = DateTime.parse(iso);
+      const days   = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return '${days[dt.weekday-1]}, ${months[dt.month-1]} ${dt.day}, ${dt.year}';
+    } catch (_) { return iso; }
+  }
+
+  // Build ISO datetime string from a date string and time string
+  String _buildDateTime(String dateStr, String timeStr) {
+    try {
+      final timeParts = timeStr.trim().split(RegExp(r'[\s:]'));
+      int hour   = int.tryParse(timeParts[0]) ?? 0;
+      int minute = int.tryParse(timeParts[1]) ?? 0;
+      final isPM = timeStr.toUpperCase().contains('PM');
+      if (isPM && hour != 12) hour += 12;
+      if (!isPM && hour == 12) hour = 0;
+      DateTime? dt;
+      try { dt = DateTime.parse(dateStr); } catch (_) {}
+      dt ??= DateTime.now();
+      return '${dt.year}-${dt.month.toString().padLeft(2,'0')}-${dt.day.toString().padLeft(2,'0')}'
+             'T${hour.toString().padLeft(2,'0')}:${minute.toString().padLeft(2,'0')}:00';
+    } catch (_) {
+      return '${DateTime.now().toIso8601String().substring(0, 10)}T00:00:00';
+    }
+  }
+
   void _continueToPreview() {
+    final date = _date.isEmpty ? 'Saturday, Dec 11' : _date;
+    final time = _time.isEmpty ? '4:40 AM' : _time;
+
+    final List<Map<String, dynamic>> stops = (_selectedStop != null && _selectedStop!.id > 0)
+        ? [{
+            'locationId':           _selectedStop!.id,
+            'estimatedArrivalTime': _buildDateTime(date, time),
+            'stopOrder':            1,
+          }]
+        : [];
+
     Navigator.pushNamed(
       context,
       Routes.previewCarpool,
       arguments: {
-        'pickupLocation': _pickupLocation.isEmpty ? 'City Center' : _pickupLocation,
-        'dropoffLocation': _dropoffLocation.isEmpty ? 'PTUK University' : _dropoffLocation,
-        'date': _date.isEmpty ? 'Saturday, Dec 11' : _date,
-        'time': _time.isEmpty ? '4:40 AM' : _time,
-        'availableSeats': _availableSeats,
-        'pricePerSeat': _pricePerSeat,
+        'pickupLocation':  _pickupCtrl.text.trim().isEmpty ? 'City Center' : _pickupCtrl.text.trim(),
+        'dropoffLocation': _dropoffCtrl.text.trim().isEmpty ? 'PTUK University' : _dropoffCtrl.text.trim(),
+        'date':            date,
+        'time':            time,
+        'availableSeats':  _availableSeats,
+        'pricePerSeat':    _pricePerSeat,
+        'duration':        _customDuration ? ((int.tryParse(_durationHrsCtrl.text) ?? 0) * 60 + (int.tryParse(_durationMinCtrl.text) ?? 0)).clamp(1, 9999) : _duration,
+        'stops':           stops,
       },
     );
   }
@@ -50,7 +118,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
     final l = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.bgWhite,
       body: SafeArea(
         child: Column(
           children: [
@@ -65,11 +133,11 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: AppColors.greyBackground,
+                        color: context.bgSubtle,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.greyF2F),
+                        border: Border.all(color: context.borderColor),
                       ),
-                      child: const Icon(Icons.arrow_back, size: 20, color: AppColors.greyDark),
+                      child: Icon(Icons.arrow_back, size: 20, color: context.textPrimary),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -78,11 +146,11 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                     children: [
                       Text(
                         l.offer_a_carpool,
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.greyDark),
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: context.textPrimary),
                       ),
                       Text(
                         l.offer_carpool_sub,
-                        style: const TextStyle(fontSize: 14, color: AppColors.grey667),
+                        style: TextStyle(fontSize: 14, color: context.textSecondary),
                       ),
                     ],
                   ),
@@ -97,24 +165,29 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── Car Details (Image 1 Specs) ──
-                    SizedBox(
-                      height: 203.4, // Specified height
+                    // ── Route ──
+                    _sectionTitle("Route"),
+                    const SizedBox(height: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: context.bgCard,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: context.borderColor),
+                      ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _sectionTitle(l.car_details),
-                          const SizedBox(height: 12),
-                          _buildPickerField(
-                            label: l.car_type,
-                            value: _carType ?? 'Sedan',
-                            onTap: () => _showOptions(context, l.car_type, ['Sedan', 'SUV', 'Bus', 'Van']),
+                          _locationField(
+                            controller: _pickupCtrl,
+                            hint: 'Pickup Location',
+                            icon: Icons.circle,
+                            iconColor: AppColors.orangeprimary,
                           ),
-                          const SizedBox(height: 12), // Gap 12
-                          _buildPickerField(
-                            label: l.number_of_car_seats,
-                            value: _carSeats ?? '4 Seats',
-                            onTap: () => _showOptions(context, l.number_of_car_seats, ['2', '4', '5', '7']),
+                          Divider(height: 1, indent: 52, color: context.borderColor),
+                          _locationField(
+                            controller: _dropoffCtrl,
+                            hint: 'Dropoff Location',
+                            icon: Icons.location_on,
+                            iconColor: context.textSecondary,
                           ),
                         ],
                       ),
@@ -122,71 +195,49 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
 
                     const SizedBox(height: 15.99),
 
-                    // ── Route Details (Image 2 Specs) ──
-                    SizedBox(
-                      height: 203.4, // Specified height
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _sectionTitle(l.route_details),
-                          const SizedBox(height: 12),
-                          _buildPickerField(
-                            label: l.pickup_loc,
-                            value: _pickupLocation.isEmpty ? 'City Center' : _pickupLocation,
-                            leadingIcon: Icons.location_on,
-                            iconColor: AppColors.adminPrice,
-                            onTap: () => _updateLocation(true),
-                          ),
-                          const SizedBox(height: 12), // Gap 12
-                          _buildPickerField(
-                            label: l.dropoff_loc,
-                            value: _dropoffLocation.isEmpty ? 'PTUK University' : _dropoffLocation,
-                            leadingIcon: Icons.location_on,
-                            iconColor: AppColors.greyBlueLight,
-                            onTap: () => _updateLocation(false),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // ── Pickup Points (Stops) ──
+                    _buildStopsSection(l),
 
                     const SizedBox(height: 15.99),
 
                     // ── Timing (Image 3 Specs) ──
-                    Container(
-                      height: 113.7, // Specified height
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _sectionTitle(l.when_leaving),
-                          const SizedBox(height: 8), // Slightly reduced from 12 to save space
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _sectionTitle(l.when_leaving),
+                        const SizedBox(height: 8),
                           Row(
                             children: [
                               Expanded(
+                                flex: 5,
                                 child: _buildPickerField(
                                   label: l.date,
-                                  value: _date.isEmpty ? 'Sat, Dec 11, 2024' : _date,
+                                  isSubHeader: true,
+                                  value: _date.isEmpty ? 'Sat, Dec 11, 2024' : _formatDisplayDate(_date),
                                   leadingIcon: Icons.calendar_today_outlined,
                                   onTap: _pickDate,
-                                  fontSize: 13, // Slightly smaller font for date
+                                  fontSize: 12,
                                 ),
                               ),
-                              const SizedBox(width: 8), // Gap 8 instead of 12 for more horizontal space
+                              const SizedBox(width: 8),
                               Expanded(
+                                flex: 4,
                                 child: _buildPickerField(
                                   label: l.time,
+                                  isSubHeader: true,
                                   value: _time.isEmpty ? '4:40 AM' : _time,
                                   leadingIcon: Icons.access_time,
                                   onTap: _pickTime,
-                                  fontSize: 13,
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                    ),
 
                     const SizedBox(height: 15.99),
+
+                    // ── Available Seats (Image 4 Specs) ──
 
                     // ── Available Seats (Image 4 Specs) ──
                     _buildCounterSection(
@@ -198,18 +249,13 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
 
                     const SizedBox(height: 15.99),
 
+                    // ── Trip Duration ──
+                    _buildDurationSection(l),
+
+                    const SizedBox(height: 15.99),
+
                     // ── Price per Seat (Image 5 Specs) ──
                     _buildPriceSection(l),
-
-                    const SizedBox(height: 24),
-
-                    // ── Notes (Image 1 Specs) ──
-                    _sectionTitle(l.additional_notes_optional),
-                    const SizedBox(height: 12),
-                    Container(
-                      height: 177.8, // Specified height
-                      child: _buildNotesField(l),
-                    ),
 
                     const SizedBox(height: 24),
 
@@ -227,10 +273,10 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               width: double.infinity,
               height: 88,
               padding: const EdgeInsets.fromLTRB(23.99, 16.61, 23.99, 0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: context.bgWhite,
                 border: Border(
-                  top: BorderSide(color: AppColors.greyLight, width: 0.62),
+                  top: BorderSide(color: context.borderColor, width: 0.62),
                 ),
               ),
               child: Column(
@@ -281,10 +327,16 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
     );
   }
 
-  Widget _sectionTitle(String text) => Text(
-        text,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.greyDark),
-      );
+  Widget _sectionTitle(String title, {bool isSub = false}) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: isSub ? 14 : 16,
+        fontWeight: isSub ? FontWeight.normal : FontWeight.bold,
+        color: isSub ? context.textSecondary : context.textPrimary,
+      ),
+    );
+  }
 
   Widget _buildPickerField({
     required String label,
@@ -292,41 +344,53 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
     required VoidCallback onTap,
     IconData? leadingIcon,
     Color? iconColor,
-    double fontSize = 15,
+    double? fontSize,
+    bool isSubHeader = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 14, color: AppColors.grey344, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 6),
-        InkWell(
+        ...[
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: isSubHeader ? FontWeight.normal : FontWeight.bold,
+              color: isSubHeader ? context.textSecondary : context.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+        GestureDetector(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12), // Slightly reduced padding
+            width: double.infinity,
+            height: 56, // Reverted to original height
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.bgCard,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.greyF2F),
+              border: Border.all(color: context.borderColor, width: 0.62),
             ),
             child: Row(
               children: [
                 if (leadingIcon != null) ...[
-                  Icon(leadingIcon, size: 16, color: iconColor ?? AppColors.adminPrice),
-                  const SizedBox(width: 8),
+                  Icon(leadingIcon, color: iconColor ?? AppColors.orangeprimary, size: 20),
+                  const SizedBox(width: 12),
                 ],
                 Expanded(
                   child: Text(
                     value ?? '',
-                    style: TextStyle(fontSize: fontSize, color: AppColors.greyDark, height: 1.2),
-                    maxLines: 1,
+                    maxLines: 1, // Reverted to single line
                     overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: context.textPrimary,
+                      fontSize: fontSize ?? 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-                const Icon(Icons.chevron_right, size: 16, color: AppColors.borderLightGrey),
+                Icon(Icons.chevron_right, color: context.textHint, size: 18),
               ],
             ),
           ),
@@ -346,7 +410,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
       height: 115.97,
       padding: const EdgeInsets.symmetric(horizontal: 19.99),
       decoration: BoxDecoration(
-        color: AppColors.greyBackground,
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -359,12 +423,12 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.greyDark),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: context.textPrimary),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: const TextStyle(fontSize: 12, color: AppColors.grey667),
+                  style: TextStyle(fontSize: 12, color: context.textSecondary),
                 ),
               ],
             ),
@@ -374,21 +438,23 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               _stepButton(
                 icon: Icons.remove,
                 onTap: value > 1 ? () => onChanged(value - 1) : null,
-                color: AppColors.borderadmincolor,
-                iconColor: AppColors.grey667,
+                color: context.isDark ? const Color(0xFF1E293B) : Colors.white,
+                iconColor: AppColors.orangeprimary,
+                hasShadow: !context.isDark,
               ),
               const SizedBox(width: 12),
               Container(
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.orangeprimary,
-                  borderRadius: BorderRadius.circular(12), // Squircle-like
+                  color: context.isDark ? const Color(0xFF1E293B) : context.bgWhite,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: context.borderColor),
                 ),
                 child: Center(
                   child: Text(
                     '$value',
-                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: AppColors.orangeprimary, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -396,12 +462,98 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
               _stepButton(
                 icon: Icons.add,
                 onTap: () => onChanged(value + 1),
-                color: Colors.white,
+                color: context.isDark ? const Color(0xFF1E293B) : Colors.white,
                 iconColor: AppColors.orangeprimary,
-                hasShadow: true,
+                hasShadow: !context.isDark,
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDurationSection(AppLocalizations l) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l.tripDuration, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
+          const SizedBox(height: 2),
+          Text(l.estimatedTripTime, style: TextStyle(fontSize: 12, color: context.textSecondary)),
+          const SizedBox(height: 10),
+          Row(children: [
+            Expanded(
+              child: DropdownButtonFormField<int>(
+                initialValue: _customDuration ? null : _duration,
+                dropdownColor: context.bgCard,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: context.textPrimary),
+                decoration: InputDecoration(
+                  filled: true, fillColor: context.bgSubtle,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                ),
+                hint: Text(l.selectTime, style: TextStyle(color: context.textHint)),
+                items: [
+                  ..._durationOptions.map((v) => DropdownMenuItem(value: v, child: Text(_durationLabel(v)))),
+                  DropdownMenuItem(value: -1, child: Text(l.custom, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.w600))),
+                ],
+                onChanged: (v) {
+                  if (v == -1) { setState(() => _customDuration = true); }
+                  else if (v != null) { setState(() { _customDuration = false; _duration = v; }); }
+                },
+              ),
+            ),
+            if (_customDuration) ...[
+              const SizedBox(width: 10),
+              SizedBox(
+                width: 72,
+                child: TextFormField(
+                  controller: _durationHrsCtrl,
+                  keyboardType: TextInputType.number,
+                  autofocus: true,
+                  style: TextStyle(fontSize: 14, color: context.textPrimary, fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(
+                    hintText: '0', suffixText: 'h',
+                    suffixStyle: TextStyle(fontSize: 12, color: context.textSecondary),
+                    filled: true, fillColor: context.bgSubtle,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                  ),
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 72,
+                child: TextFormField(
+                  controller: _durationMinCtrl,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(fontSize: 14, color: context.textPrimary, fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(
+                    hintText: '0', suffixText: 'min',
+                    suffixStyle: TextStyle(fontSize: 12, color: context.textSecondary),
+                    filled: true, fillColor: context.bgSubtle,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary, width: 1.5)),
+                  ),
+                  onChanged: (_) => setState(() {}),
+                ),
+              ),
+            ],
+          ]),
         ],
       ),
     );
@@ -413,7 +565,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
       height: 145.96,
       padding: const EdgeInsets.all(19.99),
       decoration: BoxDecoration(
-        color: AppColors.greyBackground,
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -427,12 +579,12 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                   children: [
                     Text(
                       l.price_per_seat_label,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.greyDark),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: context.textPrimary),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       l.set_price,
-                      style: const TextStyle(fontSize: 12, color: AppColors.grey667),
+                      style: TextStyle(fontSize: 12, color: context.textSecondary),
                     ),
                   ],
                 ),
@@ -442,21 +594,21 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                   _stepButton(
                     icon: Icons.remove,
                     onTap: _pricePerSeat > 1 ? () => setState(() => _pricePerSeat--) : null,
-                    color: Colors.white,
+                    color: context.isDark ? const Color(0xFF1E293B) : Colors.white,
                     iconColor: AppColors.orangeprimary,
-                    hasShadow: true,
+                    hasShadow: !context.isDark,
                   ),
                   const SizedBox(width: 12),
                   Container(
                     width: 52,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.isDark ? const Color(0xFF1E293B) : context.bgWhite,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.greyF2F),
-                      boxShadow: [
+                      border: Border.all(color: context.borderColor),
+                      boxShadow: context.isDark ? [] : [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -473,9 +625,9 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
                   _stepButton(
                     icon: Icons.add,
                     onTap: () => setState(() => _pricePerSeat++),
-                    color: Colors.white,
+                    color: context.isDark ? const Color(0xFF1E293B) : Colors.white,
                     iconColor: AppColors.orangeprimary,
-                    hasShadow: true,
+                    hasShadow: !context.isDark,
                   ),
                 ],
               ),
@@ -485,21 +637,28 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.adminInfoBG,
+              color: context.isDark ? const Color(0xFF1E293B) : AppColors.adminInfoBG,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(color: AppColors.lightBlueBg, shape: BoxShape.circle),
-                  child: const Icon(Icons.attach_money, size: 14, color: AppColors.infoDarkBlue),
+                  decoration: BoxDecoration(
+                    color: context.isDark ? const Color(0xFF334155) : AppColors.lightBlueBg,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.attach_money, size: 14, color: context.isDark ? const Color(0xFF94A3B8) : AppColors.infoDarkBlue),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     l.suggested_price_range,
-                    style: const TextStyle(fontSize: 13, color: AppColors.infoDarkBlue, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: context.isDark ? const Color(0xFFCBD5E1) : AppColors.infoDarkBlue,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -528,7 +687,7 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
           boxShadow: hasShadow
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -540,55 +699,59 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
     );
   }
 
-  Widget _buildNotesField(AppLocalizations l) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyF2F),
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 4), // Added padding for baseline alignment
-                child: Icon(Icons.chat_bubble_outline, size: 20, color: AppColors.greyBlueLight),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: _notesController,
-                  maxLines: 4,
-                  maxLength: 200,
-                  style: const TextStyle(fontSize: 15, color: AppColors.greyDark),
-                  decoration: InputDecoration(
-                    hintText: l.notes_hint,
-                    hintStyle: const TextStyle(color: AppColors.greyBlueLight, fontSize: 14),
-                    border: InputBorder.none,
-                    counterText: '',
-                    isDense: true, // Makes content more compact to match icon alignment
-                    contentPadding: const EdgeInsets.symmetric(vertical: 4), // Aligns first line with icon
-                  ),
-                  onChanged: (_) => setState(() {}),
-                ),
-              ),
-            ],
+  Widget _buildStopsSection(AppLocalizations l) {
+    final locations = context.watch<TripProvider>().locations;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionTitle(l.pickup_points),
+        const SizedBox(height: 12),
+
+        // ── Location Dropdown ──
+        DropdownButtonFormField<LocationModel>(
+          dropdownColor: context.bgCard,
+          initialValue: _selectedStop,
+          hint: Text(l.selectPickupPoint, style: TextStyle(color: context.textHint, fontSize: 14)),
+          style: TextStyle(color: context.textPrimary, fontSize: 14),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border:        OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary)),
           ),
-          const Spacer(),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Text(
-              '${_notesController.text.length}/200',
-              style: const TextStyle(fontSize: 12, color: AppColors.greyBlueLight),
+          items: [
+            ...locations.map((loc) => DropdownMenuItem(value: loc, child: Text(loc.name))),
+            DropdownMenuItem(value: _otherLocation, child: Text(l.other)),
+          ],
+          onChanged: (val) => setState(() {
+            _selectedStop = val;
+            _customStopCtrl.clear();
+          }),
+        ),
+
+        if (_selectedStop?.id == -1) ...[
+          const SizedBox(height: 12),
+          TextField(
+            controller: _customStopCtrl,
+            autofocus: true,
+            style: TextStyle(fontSize: 14, color: context.textPrimary),
+            decoration: InputDecoration(
+              hintText: l.pickupLocation,
+              hintStyle: TextStyle(color: context.textHint, fontSize: 14),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              border:        OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: context.borderColor)),
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppColors.orangeprimary)),
             ),
+            onChanged: (_) => setState(() {}),
           ),
         ],
-      ),
+
+      ],
     );
   }
+
 
   Widget _buildEarningsCard(AppLocalizations l) {
     return Container(
@@ -596,14 +759,16 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
       height: 123.9,
       padding: const EdgeInsets.symmetric(horizontal: 16), // Reduced vertical padding to prevent overflow
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        color: context.isDark ? const Color(0xFF064E3B).withValues(alpha: 0.3) : AppColors.successBGStart,
+        gradient: context.isDark ? null : const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [AppColors.successBGStart, AppColors.successBGEnd],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: const Border(
-          top: BorderSide(color: AppColors.successBorder, width: 0.62),
+        border: Border.all(
+          color: context.isDark ? const Color(0xFF059669) : AppColors.successBorder,
+          width: 0.62,
         ),
       ),
       child: Column(
@@ -612,83 +777,55 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
         children: [
           Text(
             l.estimated_earnings,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.darkGreen),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.isDark ? const Color(0xFF34D399) : AppColors.darkGreen),
           ),
           const SizedBox(height: 4), // Reduced from 8
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              const Text('₪', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.darkGreen)),
+              Text('₪', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFF34D399) : AppColors.darkGreen)),
               const SizedBox(width: 4),
               Text(
                 '$_estimatedEarnings',
-                style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.darkGreen),
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: context.isDark ? const Color(0xFF34D399) : AppColors.darkGreen),
               ),
             ],
           ),
           const SizedBox(height: 2), // Reduced from 4
           Text(
             '$_availableSeats ${l.localeName == 'ar' ? (_availableSeats > 1 ? 'مقاعد' : 'مقعد') : (_availableSeats > 1 ? 'seats' : 'seat')} × ₪$_pricePerSeat ${l.per_seat}',
-            style: const TextStyle(fontSize: 12, color: AppColors.darkGreen),
+            style: TextStyle(fontSize: 12, color: context.isDark ? const Color(0xFF34D399).withValues(alpha: 0.8) : AppColors.darkGreen),
           ),
         ],
       ),
     );
   }
 
-  void _showOptions(BuildContext ctx, String title, List<String> options) {
-    showModalBottomSheet(
-      context: ctx,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-            const SizedBox(height: 16),
-            ...options.map((o) => ListTile(
-                  title: Text(o),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  onTap: () {
-                    setState(() {
-                      if (title == AppLocalizations.of(context)!.car_type) _carType = o;
-                      if (title == AppLocalizations.of(context)!.number_of_car_seats) _carSeats = o;
-                    });
-                    Navigator.pop(ctx);
-                  },
-                )),
-          ],
-        ),
-      ),
-    );
-  }
 
-  void _updateLocation(bool isPickup) {
-    final l = AppLocalizations.of(context)!;
-    final controller = TextEditingController(text: isPickup ? _pickupLocation : _dropoffLocation);
-    
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(isPickup ? l.pickup_loc : l.dropoff_loc),
-        content: TextField(
-          controller: controller,
-          decoration: InputDecoration(hintText: isPickup ? l.enterPickupLocation : l.enterDropoffLocation),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel)),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                if (isPickup) _pickupLocation = controller.text;
-                else _dropoffLocation = controller.text;
-              });
-              Navigator.pop(ctx);
-            },
-            child: Text(l.oK),
+  Widget _locationField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    required Color iconColor,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 12, color: iconColor),
+          const SizedBox(width: 12),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              style: TextStyle(fontSize: 14, color: context.textPrimary, fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: TextStyle(color: context.textHint, fontSize: 14),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
           ),
         ],
       ),
@@ -696,112 +833,51 @@ class _OfferCarpoolScreenState extends State<OfferCarpoolScreen> {
   }
 
   Future<void> _pickDate() async {
-    final DateTime now = DateTime.now();
-    DateTime tempDate = now;
-
-    showModalBottomSheet(
+    final now = DateTime.now();
+    final picked = await showDatePicker(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) {
-        return Container(
-          height: 350,
-          padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.grey667)),
-                  ),
-                  Text(AppLocalizations.of(context)!.selectDate, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.greyDark)),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        final weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                        final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                        final dayName = weekdays[tempDate.weekday - 1];
-                        _date = "$dayName, ${months[tempDate.month - 1]} ${tempDate.day}, ${tempDate.year}";
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text(AppLocalizations.of(context)!.done, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-              const Divider(height: 32),
-              Expanded(
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.date,
-                  initialDateTime: now,
-                  minimumDate: now,
-                  maximumDate: DateTime(2030), // Fix: increased to avoid crash if system date is in 2026
-                  onDateTimeChanged: (date) => tempDate = date,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      initialDate: now,
+      firstDate: now,
+      lastDate: DateTime(2030),
+      builder: (ctx, child) => Theme(data: _pickerTheme, child: child!),
     );
+    if (picked != null) {
+      setState(() {
+        // Store as ISO so preview can parse it correctly
+        _date = '${picked.year}-${picked.month.toString().padLeft(2,'0')}-${picked.day.toString().padLeft(2,'0')}';
+      });
+    }
   }
 
-  Future<void> _pickTime() async {
-    final DateTime now = DateTime.now();
-    DateTime tempTime = now;
 
-    showModalBottomSheet(
+  ThemeData get _pickerTheme => ThemeData.light().copyWith(
+    colorScheme: const ColorScheme.light(
+      primary:              AppColors.orangeprimary,
+      onPrimary:            Colors.white,
+      onSurface:            Color(0xFF1A1A2E),
+      tertiaryContainer:    AppColors.orangeprimary,
+      onTertiaryContainer:  Colors.white,
+      secondaryContainer:   AppColors.orangeprimary,
+      onSecondaryContainer: Colors.white,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: AppColors.orangeprimary),
+    ),
+  );
+
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-      builder: (context) {
-        return Container(
-          height: 350,
-          padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(color: AppColors.grey667)),
-                  ),
-                  Text(AppLocalizations.of(context)!.selectTime, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.greyDark)),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        final hour = tempTime.hour > 12 ? tempTime.hour - 12 : (tempTime.hour == 0 ? 12 : tempTime.hour);
-                        final amPm = tempTime.hour >= 12 ? 'PM' : 'AM';
-                        final minute = tempTime.minute.toString().padLeft(2, '0');
-                        _time = "$hour:$minute $amPm";
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text(AppLocalizations.of(context)!.done, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-              const Divider(height: 32),
-              Expanded(
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.time,
-                  initialDateTime: now,
-                  onDateTimeChanged: (date) => tempTime = date,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+      initialTime: TimeOfDay.now(),
+      builder: (ctx, child) => Theme(data: _pickerTheme, child: child!),
     );
+    if (picked != null) {
+      setState(() {
+        final h      = picked.hourOfPeriod == 0 ? 12 : picked.hourOfPeriod;
+        final m      = picked.minute.toString().padLeft(2, '0');
+        final period = picked.period == DayPeriod.am ? 'AM' : 'PM';
+        _time = '$h:$m $period';
+      });
+    }
   }
 }

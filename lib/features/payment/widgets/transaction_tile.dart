@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 
@@ -28,39 +29,49 @@ class TransactionTile extends StatelessWidget {
     Color iconColor;
     IconData iconData;
     Color amountColor;
+    Color statusBgColor;
+    Color statusTextColor;
+
+    final isDark = context.isDark;
 
     switch (type) {
       case TransactionType.payment:
-        iconBackgroundColor = const Color(0xFFFEF2F2);
-        iconColor = const Color(0xFFEF4444);
+        iconColor = AppColors.adminErrorText;
+        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminErrorBG;
         iconData = Icons.arrow_outward;
-        amountColor = const Color(0xFFEF4444);
+        amountColor = AppColors.adminErrorText;
+        statusBgColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminErrorBG;
+        statusTextColor = AppColors.adminErrorText;
         break;
       case TransactionType.topUp:
-        iconBackgroundColor = const Color(0xFFEFF6FF);
-        iconColor = const Color(0xFF3B82F6);
+        iconColor = AppColors.adminInfoText;
+        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminInfoBG;
         iconData = Icons.add;
-        amountColor = const Color(0xFF12B76A);
+        amountColor = AppColors.adminSuccessText;
+        statusTextColor = AppColors.adminSuccessText;
+        statusBgColor = isDark ? statusTextColor.withValues(alpha: 0.15) : AppColors.adminSuccessBG;
         break;
       case TransactionType.refund:
-        iconBackgroundColor = const Color(0xFFECFDF3);
-        iconColor = const Color(0xFF12B76A);
+        iconColor = AppColors.adminSuccessText;
+        iconBackgroundColor = isDark ? iconColor.withValues(alpha: 0.15) : AppColors.adminSuccessBG;
         iconData = Icons.call_received;
-        amountColor = const Color(0xFF12B76A);
+        amountColor = AppColors.adminSuccessText;
+        statusTextColor = AppColors.adminSuccessText;
+        statusBgColor = isDark ? statusTextColor.withValues(alpha: 0.15) : AppColors.adminSuccessBG;
         break;
     }
 
     return Container(
-      width: 345,
+      width: double.infinity,
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyLight, width: 0.61),
+        border: Border.all(color: context.borderColor, width: 0.61),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 3,
             offset: const Offset(0, 1),
           ),
@@ -89,23 +100,21 @@ class TransactionTile extends StatelessWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: AppStyle.transactionTitleStyle,
+                        style: AppStyle.transactionTitle(context),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Text(
                       amount,
-                      style: AppStyle.transactionAmountStyle.copyWith(
-                        color: amountColor,
-                      ),
+                      style: AppStyle.transactionAmount(context, amountColor),
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: AppStyle.transactionSubtitleStyle,
+                  style: AppStyle.transactionSubtitle(context),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -113,19 +122,19 @@ class TransactionTile extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(dateTime, style: AppStyle.transactionDateStyle),
+                    Text(dateTime, style: AppStyle.transactionDate(context)),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECFDF3),
+                        color: statusBgColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         status,
-                        style: AppStyle.transactionStatusStyle,
+                        style: AppStyle.transactionStatus(context, statusTextColor),
                       ),
                     ),
                   ],

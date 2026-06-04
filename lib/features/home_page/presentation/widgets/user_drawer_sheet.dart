@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 void showUserDrawer(BuildContext context) {
   context.read<ProfileProvider>().fetchMemberProfile();
+  context.read<BookingProvider>().fetchMyBookings();
 
   showModalBottomSheet(
     context: context,
@@ -33,16 +36,17 @@ class UserDrawerSheet extends StatelessWidget {
     final isCarpool = auth.userType == UserType.carpool;
     final profileRoute = isCarpool ? Routes.carpoolProfile : Routes.profile;
 
+    final bookings = context.watch<BookingProvider>().myBookings;
     final String fullName = profile?.fullName ?? auth.user?.fullName ?? '...';
     final String email = profile?.email ?? auth.user?.email ?? '...';
     final String initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : 'U';
-    final int totalTrips = profile?.totalTrips ?? 0;
+    final int totalTrips = bookings.where((b) => b.status == 'Completed').length;
     final int rewardPoints = profile?.rewardPoints ?? 0;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: context.bgWhite,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
       child: Column(
@@ -72,11 +76,11 @@ class UserDrawerSheet extends StatelessWidget {
                       child: Container(
                         width: 56,
                         height: 56,
-                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                        decoration: BoxDecoration(color: context.bgWhite, shape: BoxShape.circle),
                         clipBehavior: Clip.antiAlias,
-                        child: auth.user?.profileImage != null
+                        child: (profile?.profilePicturePath ?? auth.user?.profileImage) != null
                             ? Image.network(
-                                'http://uniride.runasp.net/${auth.user!.profileImage}',
+                                'http://uniride.runasp.net/${profile?.profilePicturePath ?? auth.user!.profileImage}',
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stack) => Center(
                                   child: Text(initial, style: const TextStyle(color: AppColors.orangeprimary, fontWeight: FontWeight.bold, fontSize: 22)),
@@ -143,9 +147,9 @@ class UserDrawerSheet extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: AppColors.walletCardBg,
+                color: context.isDark ? context.bgSubtle : AppColors.walletCardBg,
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.walletCardBorder),
+                border: Border.all(color: context.isDark ? context.borderColor : AppColors.walletCardBorder),
               ),
               child: Row(
                 children: [
@@ -162,13 +166,13 @@ class UserDrawerSheet extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:[
-                        Text(l.walletBalance, style: const TextStyle(fontSize: 12, color: AppColors.greyHint)),
-                        SizedBox(height: 2),
-                        Text('₪${profile?.walletBalance.toStringAsFixed(2) ?? '0.00'}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.greyDark)),
+                        Text(l.walletBalance, style: TextStyle(fontSize: 12, color: context.textSecondary)),
+                        const SizedBox(height: 2),
+                        Text('₪${profile?.walletBalance.toStringAsFixed(2) ?? '0.00'}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right, color: AppColors.greyCCC),
+                  Icon(Icons.chevron_right, color: context.textHint),
                 ],
               ),
             ),
@@ -181,7 +185,7 @@ class UserDrawerSheet extends StatelessWidget {
             context,
             icon: Icons.person_outline,
             iconColor: AppColors.adminInfoText,
-            iconBg: AppColors.adminInfoBG,
+            iconBg: context.isDark ? context.bgSubtle : AppColors.adminInfoBG,
             title: l.myProfile,
             subtitle: l.viewAndEditProfile,
             onTap: () {
@@ -193,7 +197,7 @@ class UserDrawerSheet extends StatelessWidget {
             context,
             icon: Icons.access_time,
             iconColor: AppColors.emeraldGreen,
-            iconBg: AppColors.emeraldGreenBg,
+            iconBg: context.isDark ? context.bgSubtle : AppColors.emeraldGreenBg,
             title: l.my_trips,
             subtitle: l.viewTripHistory,
             onTap: () {
@@ -205,7 +209,7 @@ class UserDrawerSheet extends StatelessWidget {
             context,
             icon: Icons.card_giftcard_outlined,
             iconColor: AppColors.amberWarning,
-            iconBg: AppColors.amberWarningBg,
+            iconBg: context.isDark ? context.bgSubtle : AppColors.amberWarningBg,
             title: l.rewardsAndPoints,
             subtitle: l.rewards,
             onTap: () {
@@ -214,7 +218,7 @@ class UserDrawerSheet extends StatelessWidget {
             },
           ),
 
-          const Divider(height: 24, color: AppColors.greyLight),
+          Divider(height: 24, color: context.borderColor),
 
           // ─── Log Out ───────────────────────────────────────────────
           GestureDetector(
@@ -246,7 +250,7 @@ class UserDrawerSheet extends StatelessWidget {
                 child: const Center(child: Text('P', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold))),
               ),
               const SizedBox(width: 6),
-              const Text('Powered by PTUK Engineering', style: TextStyle(fontSize: 11, color: AppColors.greyHint)),
+              Text('${AppLocalizations.of(context)!.poweredBy}${AppLocalizations.of(context)!.ptukEngineering}', style: TextStyle(fontSize: 11, color: context.textSecondary)),
             ],
           ),
         ],
@@ -290,12 +294,12 @@ class UserDrawerSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.greyDark)),
-                  Text(subtitle, style: const TextStyle(fontSize: 12, color: AppColors.greyHint)),
+                  Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary)),
+                  Text(subtitle, style: TextStyle(fontSize: 12, color: context.textSecondary)),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.greyCCC, size: 20),
+            Icon(Icons.chevron_right, color: context.textHint, size: 20),
           ],
         ),
       ),

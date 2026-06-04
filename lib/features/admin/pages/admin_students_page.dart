@@ -18,12 +18,27 @@ class AdminStudentsPage extends StatefulWidget {
 }
 
 class _AdminStudentsPageState extends State<AdminStudentsPage> {
+  String _query = '';
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AdminProvider>().fetchStudents();
     });
+  }
+
+  Future<void> _toggleStatus(AdminStudentModel student) async {
+    final success = await context.read<AdminProvider>().toggleStudentStatus(student.id);
+    if (!mounted) return;
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.read<AdminProvider>().errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -39,6 +54,7 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
             title: locale.studentManagement,
             showSearchAndFilter: true,
             searchHint: 'Search students...',
+            onSearch: (val) => setState(() => _query = val.trim().toLowerCase()),
           ),
           Expanded(
             child: Consumer<AdminProvider>(
@@ -50,7 +66,12 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
                   return Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red)));
                 }
 
-                final students = provider.students;
+                final students = _query.isEmpty
+                    ? provider.students
+                    : provider.students.where((s) =>
+                        s.fullName.toLowerCase().contains(_query) ||
+                        s.email.toLowerCase().contains(_query),
+                      ).toList();
 
                 return SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: isDesktop ? 25 : 12, vertical: 25),
@@ -94,6 +115,7 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
                               return _StudentRow(
                                 student: students[index],
                                 showBottomBorder: index < students.length - 1,
+                                onToggleStatus: () => _toggleStatus(students[index]),
                               );
                             },
                           ),
@@ -112,9 +134,14 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
 
 class _StudentRow extends StatelessWidget {
   final AdminStudentModel student;
-  final bool showBottomBorder;
+  final bool              showBottomBorder;
+  final VoidCallback      onToggleStatus;
 
-  const _StudentRow({required this.student, this.showBottomBorder = true});
+  const _StudentRow({
+    required this.student,
+    required this.onToggleStatus,
+    this.showBottomBorder = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +172,8 @@ class _StudentRow extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(student.fullName, style: AppStyle.adminCardName(context, fontSize: 16)),
-                      Text(student.phoneNumber.isEmpty ? '—' : student.phoneNumber, style: AppStyle.adminCardContact(context)),
+                      if (student.phoneNumber.isNotEmpty)
+                        Text(student.phoneNumber, style: AppStyle.adminCardContact(context)),
                     ],
                   ),
                 ),
@@ -201,12 +229,50 @@ class _StudentRow extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(icon: const Icon(Icons.visibility_outlined, size: 20, color: AppColors.adminIcon), onPressed: () {}),
-                IconButton(icon: const Icon(Icons.more_vert,           size: 20, color: AppColors.adminIcon), onPressed: () {}),
+                _moreMenu(context),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _moreMenu(BuildContext context) {
+    final locale   = AppLocalizations.of(context)!;
+    final isActive = student.isActive;
+    return PopupMenuButton<String>(
+      icon: Icon(Icons.more_vert, size: 20, color: context.textSecondary),
+      color: context.bgCard,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: context.borderColor),
+      ),
+      onSelected: (value) {
+        if (value == 'toggle') onToggleStatus();
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: 'toggle',
+          child: Row(
+            children: [
+              Icon(
+                isActive ? Icons.block : Icons.check_circle_outline,
+                size: 18,
+                color: isActive ? AppColors.errorRed : AppColors.adminSuccessText,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                isActive ? locale.deactivate : locale.activate,
+                style: TextStyle(
+                  color: isActive ? AppColors.errorRed : AppColors.adminSuccessText,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

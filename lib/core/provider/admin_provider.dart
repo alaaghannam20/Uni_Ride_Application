@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/models/admin_dashboard_stats_model.dart';
+import 'package:uni_ride_application/core/models/admin_driver_model.dart';
 import 'package:uni_ride_application/core/models/admin_student_model.dart';
 import 'package:uni_ride_application/core/models/admin_trip_model.dart';
 import 'package:uni_ride_application/core/models/pending_approval_model.dart';
@@ -14,24 +15,32 @@ class AdminProvider extends ChangeNotifier {
   AdminState _dashboardState  = AdminState.idle;
   AdminState _studentsState   = AdminState.idle;
   AdminState _tripsState      = AdminState.idle;
+  AdminState _detailsState    = AdminState.idle;
+  AdminState _driversState    = AdminState.idle;
 
   AdminState get state          => _state;
   AdminState get dashboardState => _dashboardState;
   AdminState get studentsState  => _studentsState;
   AdminState get tripsState     => _tripsState;
+  AdminState get detailsState   => _detailsState;
+  AdminState get driversState   => _driversState;
 
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
 
-  List<PendingApprovalModel>    _pendingApprovals = [];
+  List<PendingApprovalModel>    _pendingApprovals  = [];
   AdminDashboardStatsModel?     _dashboardStats;
-  List<AdminStudentModel>       _students         = [];
-  List<AdminTripModel>          _adminTrips       = [];
+  List<AdminStudentModel>       _students          = [];
+  List<AdminTripModel>          _adminTrips        = [];
+  PendingApprovalModel?         _selectedApproval;
+  List<AdminDriverModel>        _drivers           = [];
 
-  List<PendingApprovalModel>    get pendingApprovals => _pendingApprovals;
-  AdminDashboardStatsModel?     get dashboardStats   => _dashboardStats;
-  List<AdminStudentModel>       get students         => _students;
-  List<AdminTripModel>          get adminTrips       => _adminTrips;
+  List<PendingApprovalModel>    get pendingApprovals  => _pendingApprovals;
+  AdminDashboardStatsModel?     get dashboardStats    => _dashboardStats;
+  List<AdminStudentModel>       get students          => _students;
+  List<AdminTripModel>          get adminTrips        => _adminTrips;
+  PendingApprovalModel?         get selectedApproval  => _selectedApproval;
+  List<AdminDriverModel>        get drivers           => _drivers;
 
   void _setState(AdminState newState) {
     _state = newState;
@@ -64,6 +73,30 @@ class AdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> toggleStudentStatus(String id) async {
+    final result = await _adminService.toggleStudentStatus(id);
+    if (!result.success) {
+      _errorMessage = result.message;
+    } else {
+      final idx = _students.indexWhere((s) => s.id == id);
+      if (idx != -1) {
+        final s = _students[idx];
+        final newStatus = s.isActive ? 'inactive' : 'active';
+        _students[idx] = AdminStudentModel(
+          id:          s.id,
+          fullName:    s.fullName,
+          phoneNumber: s.phoneNumber,
+          email:       s.email,
+          totalTrips:  s.totalTrips,
+          joined:      s.joined,
+          status:      newStatus,
+        );
+        notifyListeners();
+      }
+    }
+    return result.success;
+  }
+
   Future<bool> toggleDriverStatus(String id) async {
     final result = await _adminService.toggleDriverStatus(id);
     if (!result.success) _errorMessage = result.message;
@@ -79,6 +112,32 @@ class AdminProvider extends ChangeNotifier {
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       _tripsState   = AdminState.error;
+    }
+    notifyListeners();
+  }
+
+  Future<void> fetchDriversList() async {
+    _driversState = AdminState.loading;
+    notifyListeners();
+    try {
+      _drivers      = await _adminService.getDriversList();
+      _driversState = AdminState.success;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _driversState = AdminState.error;
+    }
+    notifyListeners();
+  }
+
+  Future<void> fetchPendingApprovalDetails(String id, String type) async {
+    _detailsState = AdminState.loading;
+    notifyListeners();
+    try {
+      _selectedApproval = await _adminService.getPendingApprovalDetails(id, type);
+      _detailsState = AdminState.success;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _detailsState = AdminState.error;
     }
     notifyListeners();
   }

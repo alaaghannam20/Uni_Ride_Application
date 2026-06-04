@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/widgets/language_button.dart';
 
@@ -15,7 +15,7 @@ class TobbarRegestrationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.white,
+      backgroundColor: context.bgColor,
       automaticallyImplyLeading: false,
       surfaceTintColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -31,7 +31,12 @@ class TobbarRegestrationWidget extends StatelessWidget {
 
       elevation: 0,
 
-      actions: const [LanguageButton(showText: false)],
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          child: LanguageButton(showText: false),
+        ),
+      ],
 
   
     );

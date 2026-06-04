@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 
 class CustomTextfiled extends StatefulWidget {
   final Color? backcgroundcolor;
@@ -62,8 +63,8 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor = widget.backcgroundcolor ?? AppColors.white;
-    final Color borderColor = AppColors.bordercontainerlanguage;
+    final Color backgroundColor = widget.backcgroundcolor ?? context.bgCard;
+    final Color borderColor = context.borderColor;
 
     return SizedBox(
       width: widget.width ?? 303,
@@ -73,7 +74,7 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
         children: [
           Text(
             widget.labelText ?? '',
-            style: widget.labelStyle ?? AppStyle.lablestyle,
+            style: widget.labelStyle ?? AppStyle.lablestyle.copyWith(color: context.textPrimary),
           ),
           SizedBox(height: 6),
           SizedBox(
@@ -84,6 +85,7 @@ class _CustomTextfiledState extends State<CustomTextfiled> {
               keyboardType: widget.keyboardType,
               obscureText: obscure,
               validator: widget.validator,
+              style: TextStyle(color: context.textPrimary),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: backgroundColor,

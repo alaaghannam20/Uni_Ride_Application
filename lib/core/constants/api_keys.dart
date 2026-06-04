@@ -73,6 +73,9 @@ class ApiKeys {
   static const String id             = 'id';
   static const String joined         = 'joined';
 
+  // Settings Keys
+  static const String platformFee = 'platformFee';
+
   // Admin Dashboard Stats Keys
   static const String totalUsersCount         = 'totalUsersCount';
   static const String activeDriversCount      = 'activeDriversCount';
@@ -80,6 +83,8 @@ class ApiKeys {
   static const String pendingApprovalsCount   = 'pendingApprovalsCount';
   static const String todayTotalRevenue       = 'todayTotalRevenue';
   static const String todayCommission         = 'todayCommission';
+  static const String totalRevenue            = 'totalRevenue';
+  static const String platformBalance         = 'platformBalance';
   static const String revenueChangePercentage = 'revenueChangePercentage';
   static const String activeTripsNowCount     = 'activeTripsNowCount';
   static const String recentTrips             = 'recentTrips';

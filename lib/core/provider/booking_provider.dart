@@ -13,14 +13,18 @@ class BookingProvider extends ChangeNotifier {
 
   BookingModel?        _createdBooking;
   List<BookingModel>   _myBookings = [];
-  String               _errorMessage = '';
+  String               _errorMessage  = '';
+  double?              _refundAmount;
+  String               _refundMethod  = '';
 
-  BookingState      get createState    => _createState;
-  BookingState      get cancelState    => _cancelState;
-  BookingState      get listState      => _listState;
-  BookingModel?     get createdBooking => _createdBooking;
-  List<BookingModel> get myBookings    => _myBookings;
-  String            get errorMessage   => _errorMessage;
+  BookingState       get createState    => _createState;
+  BookingState       get cancelState    => _cancelState;
+  BookingState       get listState      => _listState;
+  BookingModel?      get createdBooking => _createdBooking;
+  List<BookingModel> get myBookings     => _myBookings;
+  String             get errorMessage   => _errorMessage;
+  double?            get refundAmount   => _refundAmount;
+  String             get refundMethod   => _refundMethod;
 
   Future<BookingModel?> createBooking({
     required int tripId,
@@ -48,7 +52,10 @@ class BookingProvider extends ChangeNotifier {
     _cancelState = BookingState.loading;
     notifyListeners();
     try {
-      await _service.cancelBooking(bookingId);
+      final result = await _service.cancelBooking(bookingId);
+      final rawAmount = result['refundAmount'] ?? result['RefundAmount'];
+      _refundAmount = rawAmount != null ? (rawAmount as num).toDouble() : null;
+      _refundMethod = (result['refundMethod'] ?? result['RefundMethod'] ?? '').toString();
       _cancelState = BookingState.success;
       notifyListeners();
       return true;

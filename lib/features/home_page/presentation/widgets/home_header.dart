@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
+import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/features/home_page/presentation/widgets/user_drawer_sheet.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
@@ -11,20 +13,22 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final user = context.watch<AuthProvider>().user;
+    final user        = context.watch<AuthProvider>().user;
+    final profile     = context.watch<ProfileProvider>().memberProfile;
 
-    final fullName = user?.fullName ?? '';
+    final fullName  = user?.fullName ?? '';
     final firstName = fullName.split(' ').first;
-    final initial = fullName.isNotEmpty ? fullName[0].toUpperCase() : '?';
-    final imageUrl = user?.profileImage != null
-        ? 'http://uniride.runasp.net/${user!.profileImage}'
+    final initial   = fullName.isNotEmpty ? fullName[0].toUpperCase() : '?';
+    final imagePath = profile?.profilePicturePath ?? user?.profileImage;
+    final imageUrl  = imagePath != null
+        ? 'http://uniride.runasp.net/$imagePath'
         : null;
 
     return Container(
       width: double.infinity,
       height: 105.98,
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: Colors.white,
+      color: context.bgCard,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -35,23 +39,23 @@ class HomeHeader extends StatelessWidget {
               children: [
                 Text(
                   '${l.hello_user}$firstName 👋',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w400,
                     fontSize: 14,
                     height: 21 / 14,
-                    color: Color(0xFF6A7282),
+                    color: context.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   l.where_to_today,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
                     fontSize: 28,
                     height: 35 / 28,
-                    color: Color(0xFF101828),
+                    color: context.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -59,14 +63,14 @@ class HomeHeader extends StatelessWidget {
                   children: [
                     const Icon(Icons.location_on, size: 14, color: AppColors.orangeprimary),
                     const SizedBox(width: 4),
-                    const Text(
+                    Text(
                       'Tulkarm, Kadori St',
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                         height: 18 / 12,
-                        color: Color(0xFF364153),
+                        color: context.textSecondary,
                       ),
                     ),
                   ],

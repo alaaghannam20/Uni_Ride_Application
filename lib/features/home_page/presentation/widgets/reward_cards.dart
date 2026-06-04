@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 
 class AchievementCard extends StatelessWidget {
   final String title;
@@ -27,12 +28,10 @@ class AchievementCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF3F4F6), width: 0.62),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2)),
-        ],
+        border: Border.all(color: context.borderColor, width: 0.62),
+        boxShadow: context.isDark ? [] : [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2))],
       ),
       child: Column(
         children: [
@@ -41,19 +40,19 @@ class AchievementCard extends StatelessWidget {
               Container(
                 width: 48, height: 48,
                 decoration: BoxDecoration(
-                  color: isCompleted ? AppColors.orangeprimary : const Color(0xFFF9FAFB),
+                  color: isCompleted ? AppColors.orangeprimary : context.bgSubtle,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: isCompleted ? Colors.white : const Color(0xFFD1D5DB), size: 24),
+                child: Icon(icon, color: isCompleted ? Colors.white : context.textHint, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF101828))),
+                    Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: context.textPrimary)),
                     const SizedBox(height: 2),
-                    Text(subtitle, style: const TextStyle(color: Color(0xFF667085), fontSize: 11)),
+                    Text(subtitle, style: TextStyle(color: context.textSecondary, fontSize: 11)),
                   ],
                 ),
               ),
@@ -70,8 +69,8 @@ class AchievementCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(progressLabel, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Color(0xFF667085))),
-              Text('${(progress * 100).toInt()}%', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF101828))),
+              Text(progressLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: context.textSecondary)),
+              Text('${(progress * 100).toInt()}%', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: context.textPrimary)),
             ],
           ),
           const SizedBox(height: 8),
@@ -83,7 +82,7 @@ class AchievementCard extends StatelessWidget {
               curve: Curves.easeOutCubic,
               builder: (context, val, _) => LinearProgressIndicator(
                 value: val,
-                backgroundColor: const Color(0xFFF3F4F6),
+                backgroundColor: context.borderColor,
                 color: AppColors.orangeprimary,
                 minHeight: 8,
               ),
@@ -115,12 +114,10 @@ class RedeemCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFF3F4F6), width: 1),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2)),
-        ],
+        border: Border.all(color: context.borderColor),
+        boxShadow: context.isDark ? [] : [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2))],
       ),
       child: Column(
         children: [
@@ -130,9 +127,9 @@ class RedeemCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF101828))),
+                    Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: context.textPrimary)),
                     const SizedBox(height: 4),
-                    Text(subtitle, style: const TextStyle(color: Color(0xFF667085), fontSize: 12)),
+                    Text(subtitle, style: TextStyle(color: context.textSecondary, fontSize: 12)),
                   ],
                 ),
               ),
@@ -151,13 +148,16 @@ class RedeemCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.star, color: AppColors.orangeprimary, size: 16),
                   const SizedBox(width: 4),
-                  Text('$points points', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF101828))),
+                  Text('$points points', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: context.textPrimary)),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: const Color(0xFFECFDF3), borderRadius: BorderRadius.circular(6)),
-                child: Text(percentage, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Color(0xFF027A48))),
+                decoration: BoxDecoration(
+                  color: context.isDark ? AppColors.successDarkGreen.withValues(alpha: 0.2) : AppColors.successSolid.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(percentage, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: context.isDark ? AppColors.successLightGreen : AppColors.successDarkText)),
               ),
             ],
           ),

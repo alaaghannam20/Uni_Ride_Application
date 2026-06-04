@@ -183,12 +183,19 @@ class AuthProvider extends ChangeNotifier {
   // Verify OTP
   Future<bool> verifyOtp(String email, String otpCode) async {
     _setState(AuthState.loading);
-    final result = await _authService.verifyOtp(email, otpCode);
-    if (result.success) {
+    try {
+      final userResult = await _authService.verifyOtp(email, otpCode);
+      _user = userResult;
+      await AppPrefs.setToken(userResult.token);
+      await AppPrefs.setUserType(userResult.userType.name);
+      await AppPrefs.setFullName(userResult.fullName);
+      await AppPrefs.setEmail(userResult.email);
+      await AppPrefs.setProfileImage(userResult.profileImage);
+      _userType = userResult.userType;
       _setState(AuthState.success);
       return true;
-    } else {
-      _errorMessage = result.message;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
       _setState(AuthState.error);
       return false;
     }

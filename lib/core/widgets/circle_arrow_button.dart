@@ -63,12 +63,12 @@ class _CircleProgressPainter extends CustomPainter {
     final center = size.center(Offset.zero);
     final radius = (size.width / 2) - strokeWidth / 2;
     final backgroundPaint = Paint()
-      ..color = const Color(0xFFFFDCA4)
+      ..color = AppColors.orangeProgressBg
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
     canvas.drawCircle(center, radius, backgroundPaint);
     final progressPaint = Paint()
-      ..color = const Color(0xFFCF8307)
+      ..color = AppColors.orangeprimary
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;

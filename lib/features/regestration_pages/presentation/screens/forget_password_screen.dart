@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
 import 'package:uni_ride_application/core/validators/app_validators.dart';
 import 'package:uni_ride_application/core/widgets/custom_button.dart';
@@ -60,7 +61,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     final isLoading = context.watch<AuthProvider>().state == AuthState.loading;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: context.bgColor,
       body: SafeArea(
         child: Column(
           children: [

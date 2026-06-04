@@ -3,8 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/booking_model.dart';
 import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
-
+import 'package:uni_ride_application/core/routes/routes.dart';
 class MyTripsTab extends StatefulWidget {
   const MyTripsTab({super.key});
 
@@ -47,23 +48,23 @@ class _MyTripsTabState extends State<MyTripsTab> {
           children: [
             Container(
               height: 50.5,
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _filterTab(l.all,       bookings.length,  _filterIndex == 0, () => _onFilterChanged(0)),
+                    _filterTab(context, l.all,       bookings.length,  _filterIndex == 0, () => _onFilterChanged(0)),
                     const SizedBox(width: 20),
-                    _filterTab(l.upcoming,  upcoming.length,  _filterIndex == 1, () => _onFilterChanged(1)),
+                    _filterTab(context, l.upcoming,  upcoming.length,  _filterIndex == 1, () => _onFilterChanged(1)),
                     const SizedBox(width: 20),
-                    _filterTab(l.completed, completed.length, _filterIndex == 2, () => _onFilterChanged(2)),
+                    _filterTab(context, l.completed, completed.length, _filterIndex == 2, () => _onFilterChanged(2)),
                     const SizedBox(width: 20),
-                    _filterTab(l.cancelled, cancelled.length, _filterIndex == 3, () => _onFilterChanged(3)),
+                    _filterTab(context, l.cancelled, cancelled.length, _filterIndex == 3, () => _onFilterChanged(3)),
                   ],
                 ),
               ),
             ),
-            const Divider(height: 1, color: AppColors.greyE5E),
+            Divider(height: 1, color: context.borderColor),
             Expanded(child: _buildBody(provider, filtered, l)),
           ],
         );
@@ -88,7 +89,7 @@ class _MyTripsTabState extends State<MyTripsTab> {
     );
   }
 
-  Widget _filterTab(String label, int count, bool isActive, VoidCallback onTap) {
+  Widget _filterTab(BuildContext context, String label, int count, bool isActive, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -101,17 +102,17 @@ class _MyTripsTabState extends State<MyTripsTab> {
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  color: isActive ? AppColors.orangeprimary : AppColors.greySecondary,
+                  color: isActive ? AppColors.orangeprimary : context.textSecondary,
                 ),
               ),
               const SizedBox(width: 6),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isActive ? AppColors.orangeprimary : AppColors.greyE5E,
+                  color: isActive ? AppColors.orangeprimary : context.bgSubtle,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text('$count', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isActive ? Colors.white : AppColors.greySecondary)),
+                child: Text('$count', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: isActive ? Colors.white : context.textSecondary)),
               ),
             ],
           ),
@@ -136,12 +137,52 @@ class _MyBookingCard extends StatefulWidget {
 class _MyBookingCardState extends State<_MyBookingCard> {
   bool _cancelling = false;
 
+  Future<void> _onRateDriver() async {
+    await Navigator.pushNamed(
+      context,
+      Routes.rateDriver,
+      arguments: {
+        'bookingId': widget.booking.bookingId,
+        'driverName': widget.booking.driverName,
+        'driverType': widget.booking.driverType,
+        'profilePicturePath': widget.booking.profilePicturePath,
+      },
+    );
+    if (!mounted) return;
+    context.read<BookingProvider>().fetchMyBookings();
+  }
+
   Future<void> _onCancel(AppLocalizations l) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l.cancel_the_trip),
-        content: Text(l.booking_confirmed_sub),
+        backgroundColor: context.bgCard,
+        title: Text(l.cancel_the_trip, style: TextStyle(color: context.textPrimary)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l.booking_confirmed_sub, style: TextStyle(color: context.textSecondary)),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.orangeprimary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(children: [
+                const Icon(Icons.info_outline, size: 16, color: AppColors.orangeprimary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l.refundAutoMessage,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ]),
+            ),
+          ],
+        ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.back_to_home)),
           TextButton(
@@ -157,7 +198,25 @@ class _MyBookingCardState extends State<_MyBookingCard> {
     if (!mounted) return;
     setState(() => _cancelling = false);
     if (ok) {
-      context.read<BookingProvider>().fetchMyBookings();
+      final provider = context.read<BookingProvider>();
+      provider.fetchMyBookings();
+      final amount  = provider.refundAmount;
+      final method  = provider.refundMethod;
+      String snackMsg;
+      if (method == 'Wallet' && amount != null) {
+        snackMsg = l.refundWalletSuccess(amount.toStringAsFixed(2));
+      } else if (method == 'Stripe') {
+        snackMsg = l.refundStripeSuccess;
+      } else {
+        snackMsg = l.cancelledSuccess;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(snackMsg),
+          backgroundColor: const Color(0xFF00A63E),
+          duration: const Duration(seconds: 3),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.read<BookingProvider>().errorMessage), backgroundColor: AppColors.errorRed),
@@ -179,19 +238,19 @@ class _MyBookingCardState extends State<_MyBookingCard> {
     switch (booking.status) {
       case 'Completed':
         statusColor = const Color(0xFF00A63E);
-        statusBg    = const Color(0xFFEFFBF3);
+        statusBg    = context.isDark ? const Color(0xFF00A63E).withValues(alpha: 0.15) : const Color(0xFFEFFBF3);
         statusIcon  = Icons.check_circle_outline;
         statusLabel = l.completed;
         break;
       case 'Cancelled':
         statusColor = const Color(0xFFE7000B);
-        statusBg    = const Color(0xFFFFF2F2);
+        statusBg    = context.isDark ? const Color(0xFFE7000B).withValues(alpha: 0.15) : const Color(0xFFFFF2F2);
         statusIcon  = Icons.cancel_outlined;
         statusLabel = l.cancelled;
         break;
       default:
         statusColor = AppColors.orangeprimary;
-        statusBg    = const Color(0xFFFFFAEE);
+        statusBg    = context.isDark ? AppColors.orangeprimary.withValues(alpha: 0.15) : const Color(0xFFFFFAEE);
         statusIcon  = Icons.access_time;
         statusLabel = l.upcoming;
     }
@@ -211,9 +270,9 @@ class _MyBookingCardState extends State<_MyBookingCard> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF3F4F6), width: 1),
+        border: Border.all(color: context.borderColor),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(
@@ -232,7 +291,7 @@ class _MyBookingCardState extends State<_MyBookingCard> {
                   Text(statusLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: statusColor)),
                 ]),
               ),
-              const Icon(Icons.chevron_right, size: 18, color: AppColors.greySecondary),
+              Icon(Icons.chevron_right, size: 18, color: context.textSecondary),
             ],
           ),
           const SizedBox(height: 14),
@@ -241,26 +300,26 @@ class _MyBookingCardState extends State<_MyBookingCard> {
           Row(children: [
             const Icon(Icons.circle, size: 10, color: AppColors.orangeprimary),
             const SizedBox(width: 10),
-            Expanded(child: Text(booking.pickupLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.greyDark))),
+            Expanded(child: Text(booking.pickupLocation, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14, color: context.textPrimary))),
           ]),
           Row(children: [
             SizedBox(width: 10, child: Center(child: Column(
               children: List.generate(4, (_) => Container(
                 width: 1.5, height: 4,
                 margin: const EdgeInsets.symmetric(vertical: 2),
-                color: AppColors.greySecondary,
+                color: context.textHint,
               )),
             ))),
             const SizedBox(width: 10),
-            if (duration.isNotEmpty) Text(duration, style: const TextStyle(fontFamily: 'Inter', fontSize: 11, color: AppColors.greyHint)),
+            if (duration.isNotEmpty) Text(duration, style: TextStyle(fontFamily: 'Inter', fontSize: 11, color: context.textHint)),
           ]),
           Row(children: [
-            Icon(Icons.circle, size: 10, color: Colors.grey[400]),
+            Icon(Icons.circle, size: 10, color: context.textHint),
             const SizedBox(width: 10),
-            Expanded(child: Text(booking.dropoffLocation, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.greyDark))),
+            Expanded(child: Text(booking.dropoffLocation, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 14, color: context.textPrimary))),
           ]),
           const SizedBox(height: 14),
-          const Divider(height: 1, color: AppColors.greyE5E),
+          Divider(height: 1, color: context.borderColor),
           const SizedBox(height: 10),
 
           // ── Date row ──────────────────────────────────────────────
@@ -268,9 +327,9 @@ class _MyBookingCardState extends State<_MyBookingCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(children: [
-                const Icon(Icons.calendar_today_outlined, size: 13, color: AppColors.greySecondary),
+                Icon(Icons.calendar_today_outlined, size: 13, color: context.textSecondary),
                 const SizedBox(width: 6),
-                Text(formattedDate, style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+                Text(formattedDate, style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
               ]),
               RichText(text: TextSpan(children: [
                 const TextSpan(text: '₪ ', style: TextStyle(color: AppColors.orangeprimary, fontSize: 12, fontWeight: FontWeight.bold)),
@@ -282,9 +341,9 @@ class _MyBookingCardState extends State<_MyBookingCard> {
 
           // ── Driver + seats row ────────────────────────────────────
           Row(children: [
-            const Icon(Icons.people_outline, size: 14, color: AppColors.greySecondary),
+            Icon(Icons.people_outline, size: 14, color: context.textSecondary),
             const SizedBox(width: 6),
-            Text('${booking.driverName} · ${booking.seatCount} seat', style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+            Text('${booking.driverName} · ${booking.seatCount} seat', style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
           ]),
 
           // ── Cancel Button ─────────────────────────────────────────
@@ -295,14 +354,32 @@ class _MyBookingCardState extends State<_MyBookingCard> {
               child: OutlinedButton(
                 onPressed: _cancelling ? null : () => _onCancel(l),
                 style: OutlinedButton.styleFrom(
+                  backgroundColor: context.bgCard,
                   foregroundColor: AppColors.errorRed,
-                  side: const BorderSide(color: AppColors.errorRed),
+                  side: BorderSide(color: AppColors.errorRed.withValues(alpha: 0.4)),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 child: _cancelling
                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: AppColors.errorRed, strokeWidth: 2))
-                    : Text(l.cancel_the_trip, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    : Text(l.cancel_the_trip, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.errorRed)),
+              ),
+            ),
+          ],
+          
+          if (booking.status == 'Completed' && !booking.isRated) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _onRateDriver,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.orangeprimary,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: Text(AppLocalizations.of(context)!.rateDriver, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
               ),
             ),
           ],

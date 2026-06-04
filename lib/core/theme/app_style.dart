@@ -294,7 +294,6 @@ class AppStyle {
   static TextStyle adminSettingsItemDesc(BuildContext ctx) =>
       TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 13, color: ctx.textSecondary);
 
-  // ── Payment & Wallet Styles ──
   static TextStyle paymentTitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w700,
@@ -303,6 +302,9 @@ class AppStyle {
     color: AppColors.greyDark,
   );
 
+  static TextStyle paymentTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 24, height: 30 / 24, color: ctx.textPrimary);
+
   static TextStyle paymentSubtitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
@@ -310,6 +312,9 @@ class AppStyle {
     height: 21 / 14,
     color: AppColors.greySecondary,
   );
+
+  static TextStyle paymentSubtitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 14, height: 21 / 14, color: ctx.textSecondary);
 
   static TextStyle walletBalanceStyle = const TextStyle(
     fontFamily: 'Inter',
@@ -366,6 +371,9 @@ class AppStyle {
     height: 22.5 / 15,
   );
 
+  static TextStyle paymentMethodTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 15, color: ctx.textPrimary, height: 22.5 / 15);
+
   static TextStyle paymentMethodSubtitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
@@ -373,6 +381,9 @@ class AppStyle {
     color: AppColors.greySecondary,
     height: 18 / 12,
   );
+
+  static TextStyle paymentMethodSubtitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, color: ctx.textSecondary, height: 18 / 12);
 
   // ── Transaction Tile Styles ──
   static TextStyle transactionTitleStyle = const TextStyle(
@@ -383,6 +394,9 @@ class AppStyle {
     color: AppColors.greyDark,
   );
 
+  static TextStyle transactionTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 15, height: 1.5, color: ctx.textPrimary);
+
   static TextStyle transactionAmountStyle = const TextStyle(
     // Note: can be updated to accept color if dynamic
     fontFamily: 'Inter',
@@ -392,6 +406,9 @@ class AppStyle {
     color: AppColors.errorRed,
   );
 
+  static TextStyle transactionAmount(BuildContext ctx, Color color) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 16, height: 1.5, color: color);
+
   static TextStyle transactionSubtitleStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
@@ -399,6 +416,9 @@ class AppStyle {
     height: 1.5,
     color: AppColors.greySecondary,
   );
+
+  static TextStyle transactionSubtitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 13, height: 1.5, color: ctx.textSecondary);
 
   static TextStyle transactionDateStyle = const TextStyle(
     fontFamily: 'Inter',
@@ -408,6 +428,9 @@ class AppStyle {
     color: AppColors.greyHint,
   );
 
+  static TextStyle transactionDate(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, height: 1.5, color: ctx.textHint);
+
   static TextStyle transactionStatusStyle = const TextStyle(
     fontFamily: 'Inter',
     fontWeight: FontWeight.w400,
@@ -415,6 +438,9 @@ class AppStyle {
     height: 1.5,
     color: AppColors.successSolid,
   );
+
+  static TextStyle transactionStatus(BuildContext ctx, Color color) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 11, height: 1.5, color: color);
 
   // ── Rating Screen Styles ──
   static TextStyle ratingTitleStyle = const TextStyle(
@@ -545,6 +571,25 @@ class AppStyle {
     fontSize: 15,
     color: AppColors.redColor,
   );
+
+  // ── Context-aware Profile Styles ──
+  static TextStyle profileSectionTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 14, color: ctx.textPrimary);
+
+  static TextStyle profileItemLabel(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 11, color: ctx.textSecondary);
+
+  static TextStyle profileItemValue(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 13, color: ctx.textPrimary);
+
+  static TextStyle profileLogout(BuildContext ctx) =>
+      const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.redColor);
+
+  static TextStyle ratingTitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 20, color: ctx.textPrimary);
+
+  static TextStyle ratingSubtitle(BuildContext ctx) =>
+      TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 14, color: ctx.textSecondary);
 
   // ── Common Body Styles ──
   static const TextStyle headingLarge = TextStyle(

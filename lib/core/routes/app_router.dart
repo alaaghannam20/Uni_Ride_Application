@@ -18,7 +18,6 @@ import 'package:uni_ride_application/features/admin/pages/admin_pending_approval
 import 'package:uni_ride_application/features/admin/pages/admin_drivers_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_students_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_trips_page.dart';
-import 'package:uni_ride_application/core/models/pending_approval_model.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_driver_details_page.dart';
 import 'package:uni_ride_application/features/admin/pages/admin_settings_page.dart';
 import 'package:uni_ride_application/features/payment/pages/payment_page.dart';
@@ -31,11 +30,14 @@ import 'package:uni_ride_application/features/home_page/presentation/screens/off
 import 'package:uni_ride_application/features/home_page/presentation/screens/preview_carpool_screen.dart';
 import 'package:uni_ride_application/features/home_page/presentation/screens/offer_confirmation_screen.dart';
 import 'package:uni_ride_application/features/driver/presentation/screens/driver_home_screen.dart';
+import 'package:uni_ride_application/features/driver/presentation/screens/create_trip_screen.dart';
 import 'package:uni_ride_application/features/carpool/carpool_profile_screen.dart';
+import 'package:uni_ride_application/features/carpool/carpool_reviews_screen.dart';
 import 'package:uni_ride_application/features/driver/driver_profile_screen.dart';
-import 'package:uni_ride_application/core/models/booking_model.dart';
+import 'package:uni_ride_application/features/driver/presentation/screens/driver_reviews_screen.dart';
 import 'package:uni_ride_application/features/trip_details/presentation/screens/trip_details_screen.dart';
 import 'package:uni_ride_application/features/trip_details/presentation/screens/booking_confirmed_screen.dart';
+import 'package:uni_ride_application/features/payment/pages/topup_confirmed_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -178,69 +180,93 @@ class AppRouter {
 
       case Routes.home:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const HomeScreen(),
         );
 
       case Routes.adminOverview:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const AdminOverviewPage(),
         );
 
       case Routes.adminPendingApprovals:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const AdminPendingApprovalsPage(),
         );
 
       case Routes.adminDrivers:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const AdminDriversPage(),
         );
 
       case Routes.adminStudents:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const AdminStudentsPage(),
         );
 
       case Routes.adminTrips:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const AdminTripsPage(),
         );
 
       case Routes.adminSettings:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const AdminSettingsPage(),
         );
 
       case Routes.adminDriverDetails:
-        final driver = settings.arguments as PendingApprovalModel;
+        final args = settings.arguments as Map<String, String>;
         return MaterialPageRoute(
-          builder: (_) => AdminDriverDetailsPage(driver: driver),
+          settings: settings,
+          builder: (_) => AdminDriverDetailsPage(id: args['id']!, type: args['type']!),
         );
 
       case Routes.payment:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const PaymentPage(),
         );
 
       case Routes.myWallet:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const MyWalletPage(),
         );
 
       case Routes.rateDriver:
+        final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (_) => const RateDriverPage(),
+          settings: settings,
+          builder: (_) => RateDriverPage(
+            bookingId: args['bookingId'],
+            driverName: args['driverName'] ?? 'Ali M.',
+            driverType: args['driverType'] ?? 'Driver',
+            profilePicturePath: args['profilePicturePath'],
+          ),
         );
 
       case Routes.profile:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => const ProfilePage(),
         );
 
       case Routes.allAvailableTrips:
-        return MaterialPageRoute(builder: (_) => const AllAvailableTripsScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const AllAvailableTripsScreen(),
+        );
       case Routes.offerCarpool:
-        return MaterialPageRoute(builder: (_) => const OfferCarpoolScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const OfferCarpoolScreen(),
+        );
       case Routes.previewCarpool:
         final args = settings.arguments as Map<String, dynamic>? ?? {
           'pickupLocation': 'PTUK Main Gate',
@@ -251,6 +277,7 @@ class AppRouter {
           'pricePerSeat': 8,
         };
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => PreviewCarpoolScreen(
             pickupLocation: args['pickupLocation'],
             dropoffLocation: args['dropoffLocation'],
@@ -258,6 +285,8 @@ class AppRouter {
             time: args['time'],
             availableSeats: args['availableSeats'],
             pricePerSeat: args['pricePerSeat'],
+            duration: args['duration'] ?? 15,
+            stops: List<Map<String, dynamic>>.from(args['stops'] ?? []),
           ),
         );
       case Routes.offerConfirmation:
@@ -270,6 +299,7 @@ class AppRouter {
           'pricePerSeat': 8,
         };
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => OfferConfirmationScreen(
             pickupLocation: args['pickupLocation'],
             dropoffLocation: args['dropoffLocation'],
@@ -280,17 +310,57 @@ class AppRouter {
           ),
         );
       case Routes.driverhome:
-        return MaterialPageRoute(builder: (_) => const DriverHomeScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const DriverHomeScreen(),
+        );
+      case Routes.createTrip:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const CreateTripScreen(),
+        );
       case Routes.driverprofile:
-        return MaterialPageRoute(builder: (_) => const DriverProfileScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const DriverProfileScreen(),
+        );
+      case Routes.driverReviews:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const DriverReviewsScreen(),
+        );
       case Routes.carpoolProfile:
-        return MaterialPageRoute(builder: (_) => const CarpoolProfileScreen());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const CarpoolProfileScreen(),
+        );
+      case Routes.carpoolReviews:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const CarpoolReviewsScreen(),
+        );
       case Routes.tripDetails:
         final tripId = settings.arguments as int;
-        return MaterialPageRoute(builder: (_) => TripDetailsScreen(tripId: tripId));
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => TripDetailsScreen(tripId: tripId),
+        );
       case Routes.bookingConfirmed:
-        final booking = settings.arguments as BookingModel;
-        return MaterialPageRoute(builder: (_) => BookingConfirmedScreen(booking: booking));
+        final args = settings.arguments;
+        final isPreConfirmed = args is Map && args['preConfirmed'] == true;
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => BookingConfirmedScreen(
+            sessionId: isPreConfirmed ? null : args as String,
+            preConfirmed: isPreConfirmed,
+          ),
+        );
+      case Routes.topUpConfirmed:
+        final sessionId = settings.arguments as String;
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => TopUpConfirmedScreen(sessionId: sessionId),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

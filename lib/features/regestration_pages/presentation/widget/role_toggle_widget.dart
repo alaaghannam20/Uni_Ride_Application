@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 
@@ -20,7 +21,7 @@ class RoleToggleWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F1F1),
+        color: context.bgSubtle,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -31,7 +32,7 @@ class RoleToggleWidget extends StatelessWidget {
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isStudDocSelected ? Colors.white : Colors.transparent,
+                  color: isStudDocSelected ? AppColors.orangeprimary : Colors.transparent,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 alignment: Alignment.center,
@@ -42,8 +43,8 @@ class RoleToggleWidget extends StatelessWidget {
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: isStudDocSelected
-                        ? AppColors.orangeprimary
-                        : Colors.grey,
+                        ? Colors.white
+                        : context.textSecondary,
                   ),
                 ),
               ),
@@ -58,7 +59,7 @@ class RoleToggleWidget extends StatelessWidget {
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  color: !isStudDocSelected ? Colors.white : Colors.transparent,
+                  color: !isStudDocSelected ? AppColors.orangeprimary : Colors.transparent,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 alignment: Alignment.center,
@@ -69,8 +70,8 @@ class RoleToggleWidget extends StatelessWidget {
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: !isStudDocSelected
-                        ? AppColors.orangeprimary
-                        : Colors.grey,
+                        ? Colors.white
+                        : context.textSecondary,
                   ),
                 ),
               ),

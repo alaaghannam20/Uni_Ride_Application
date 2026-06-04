@@ -87,18 +87,18 @@ class Onboarding1Screen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Powered by',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.poweredBy,
+                          style: const TextStyle(
                             color: AppColors.languagecolor,
                             fontSize: 12,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SizedBox(width: 4,),
+                        const SizedBox(width: 4),
                         Text(
-                          'PTUK Engineering',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!.ptukEngineering,
+                          style: const TextStyle(
                             color: AppColors.white,
                             fontSize: 12,
                             fontFamily: 'Inter',

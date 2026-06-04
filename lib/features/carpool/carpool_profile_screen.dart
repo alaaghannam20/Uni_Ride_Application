@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
+import 'package:uni_ride_application/features/carpool/carpool_reviews_screen.dart';
 
 class CarpoolProfileScreen extends StatefulWidget {
   const CarpoolProfileScreen({super.key});
@@ -45,22 +47,84 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
     final earned  = '₪${profile?.earned ?? 0}';
 
     return Scaffold(
-      backgroundColor: AppColors.greyBackground,
+      backgroundColor: context.bgColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Header ────────────────────────────────────────────────
             _CarpoolHeader(
-              name:        name,
-              initial:     initial,
-              statusLabel: l.carpoolActiveStatus,
-              ratingLabel: l.rating,
-              tripsLabel:  l.totalTrips,
-              earnedLabel: l.earned,
-              ratingValue: rating,
-              tripsValue:  trips,
-              earnedValue: earned,
+              name:             name,
+              initial:          initial,
+              profileImagePath: profile?.profilePicturePath,
+              statusLabel:      l.carpoolActiveStatus,
+              ratingLabel:      l.rating,
+              tripsLabel:       l.totalTrips,
+              earnedLabel:      l.earned,
+              ratingValue:      rating,
+              tripsValue:       trips,
+              earnedValue:      earned,
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── My Reviews Row ────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CarpoolReviewsScreen()),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: context.bgCard,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: context.borderColor, width: 0.62),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40, height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.orangeprimary.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.star_rounded, size: 20, color: AppColors.orangeprimary),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'My Reviews',
+                              style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, color: context.textPrimary),
+                            ),
+                            const SizedBox(height: 2),
+                            Row(
+                              children: [
+                                const Icon(Icons.star_rounded, size: 13, color: AppColors.orangeprimary),
+                                const SizedBox(width: 4),
+                                Text(
+                                  rating,
+                                  style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.orangeprimary),
+                                ),
+                                Text(
+                                  '  •  See all feedback',
+                                  style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.chevron_right, size: 20, color: context.textHint),
+                    ],
+                  ),
+                ),
+              ),
             ),
 
             const SizedBox(height: 16),
@@ -114,7 +178,7 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
                         activeThumbColor:   Colors.white,
                         activeTrackColor:   AppColors.orangeprimary,
                         inactiveThumbColor: Colors.white,
-                        inactiveTrackColor: AppColors.borderadmincolor,
+                        inactiveTrackColor: context.borderColor,
                       ),
                     ),
                   ]),
@@ -136,7 +200,7 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
                   const SizedBox(height: 24),
 
                   Center(
-                    child: Text(l.version, style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+                    child: Text(l.version, style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
                   ),
 
                   const SizedBox(height: 32),
@@ -151,7 +215,7 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
 
   Widget _langToggle(BuildContext context, bool isArabic) {
     return Container(
-      decoration: BoxDecoration(color: AppColors.greyLight, borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(color: context.bgSubtle, borderRadius: BorderRadius.circular(20)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -171,7 +235,7 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
           color: active ? AppColors.orangeprimary : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(label, style: TextStyle(color: active ? Colors.white : AppColors.greySecondary, fontWeight: FontWeight.w600, fontSize: 10)),
+        child: Text(label, style: TextStyle(color: active ? Colors.white : context.textSecondary, fontWeight: FontWeight.w600, fontSize: 10)),
       ),
     );
   }
@@ -179,23 +243,25 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
 
 // ── Header Card ───────────────────────────────────────────────────────────────
 class _CarpoolHeader extends StatelessWidget {
-  final String name, initial, statusLabel;
-  final String ratingLabel, tripsLabel, earnedLabel;
-  final String ratingValue, tripsValue, earnedValue;
+  final String  name, initial, statusLabel;
+  final String  ratingLabel, tripsLabel, earnedLabel;
+  final String  ratingValue, tripsValue, earnedValue;
+  final String? profileImagePath;
 
   const _CarpoolHeader({
     required this.name, required this.initial, required this.statusLabel,
     required this.ratingLabel, required this.tripsLabel, required this.earnedLabel,
     required this.ratingValue, required this.tripsValue, required this.earnedValue,
+    this.profileImagePath,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: AppColors.white,
-        border: Border(bottom: BorderSide(color: AppColors.greyLight, width: 0.62)),
+      decoration: BoxDecoration(
+        color: context.bgCard,
+        border: Border(bottom: BorderSide(color: context.borderColor, width: 0.62)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 56, 24, 24),
       child: Column(
@@ -207,13 +273,14 @@ class _CarpoolHeader extends StatelessWidget {
                 onTap: () => Navigator.pop(context),
                 child: Container(
                   width: 40, height: 40,
-                  decoration: const BoxDecoration(color: AppColors.greyBackground, shape: BoxShape.circle),
-                  child: const Icon(Icons.arrow_back, size: 20, color: AppColors.greyDark),
+                  decoration: BoxDecoration(color: context.bgSubtle, shape: BoxShape.circle),
+                  child: Icon(Icons.arrow_back, size: 20, color: context.textPrimary),
                 ),
               ),
               const SizedBox(width: 16),
               Container(
                 width: 56, height: 56,
+                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: const LinearGradient(
@@ -223,14 +290,22 @@ class _CarpoolHeader extends StatelessWidget {
                   boxShadow: [BoxShadow(color: AppColors.orangeprimary.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))],
                 ),
                 alignment: Alignment.center,
-                child: Text(initial, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 22, color: Colors.white)),
+                child: profileImagePath != null
+                    ? Image.network(
+                        'http://uniride.runasp.net/$profileImagePath',
+                        fit: BoxFit.cover,
+                        width: 56,
+                        height: 56,
+                        errorBuilder: (_, _, _) => Text(initial, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 22, color: Colors.white)),
+                      )
+                    : Text(initial, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 22, color: Colors.white)),
               ),
               const SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name,        style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 20, height: 1.5, color: AppColors.greyDark)),
-                  Text(statusLabel, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 14, height: 1.5, color: AppColors.greySecondary)),
+                  Text(name,        style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 20, height: 1.5, color: context.textPrimary)),
+                  Text(statusLabel, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 14, height: 1.5, color: context.textSecondary)),
                 ],
               ),
             ],
@@ -259,12 +334,12 @@ class _Stat extends StatelessWidget {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(color: AppColors.greyBackground, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(color: context.bgSubtle, borderRadius: BorderRadius.circular(12)),
         child: Column(
           children: [
-            Text(value, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 18, color: AppColors.greyDark)),
+            Text(value, textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 18, color: context.textPrimary)),
             const SizedBox(height: 4),
-            Text(label, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, color: AppColors.greySecondary)),
+            Text(label, textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12, color: context.textSecondary)),
           ],
         ),
       ),
@@ -279,7 +354,7 @@ class _SLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     text.toUpperCase(),
-    style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 13, letterSpacing: 0.32, color: AppColors.greySecondary),
+    style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 13, letterSpacing: 0.32, color: context.textSecondary),
   );
 }
 
@@ -299,10 +374,9 @@ class _CGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.greyLight, width: 0.62),
-        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 8, offset: Offset(0, 2))],
+        border: Border.all(color: context.borderColor, width: 0.62),
       ),
       child: Column(
         children: [
@@ -313,26 +387,26 @@ class _CGroup extends StatelessWidget {
                 children: [
                   Container(
                     width: 40, height: 40,
-                    decoration: const BoxDecoration(color: AppColors.greyBackground, shape: BoxShape.circle),
-                    child: Icon(items[i].icon, size: 20, color: AppColors.grey364),
+                    decoration: BoxDecoration(color: context.bgSubtle, shape: BoxShape.circle),
+                    child: Icon(items[i].icon, size: 20, color: context.textSecondary),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(items[i].title, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, height: 1.5, color: AppColors.greyDark)),
+                        Text(items[i].title, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, height: 1.5, color: context.textPrimary)),
                         const SizedBox(height: 2),
-                        Text(items[i].subtitle, style: const TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 13, height: 1.5, color: AppColors.greySecondary)),
+                        Text(items[i].subtitle, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 13, height: 1.5, color: context.textSecondary)),
                       ],
                     ),
                   ),
-                  items[i].trailing ?? const Icon(Icons.chevron_right, size: 20, color: AppColors.adminTextMuted),
+                  items[i].trailing ?? Icon(Icons.chevron_right, size: 20, color: context.textHint),
                 ],
               ),
             ),
             if (i < items.length - 1)
-              const Divider(indent: 68, height: 1, thickness: 0.62, color: AppColors.greyLight),
+              Divider(indent: 68, height: 1, thickness: 0.62, color: context.borderColor),
           ],
         ],
       ),
@@ -349,10 +423,9 @@ class _CLogOut extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.bgCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.lightRedBorder, width: 0.62),
-        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 8, offset: Offset(0, 2))],
       ),
       child: InkWell(
         onTap: () async {
