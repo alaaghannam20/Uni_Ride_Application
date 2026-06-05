@@ -69,9 +69,9 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     children: [
                       _buildGoldenCard(trip.pickupLocation, trip.dropoffLocation, trip.departureTime),
                       const SizedBox(height: 16),
-                      _buildDriverInfo(context, l, trip.driverName, trip.profilePicturePath, trip.driverRating, trip.totalDriverTrips, trip.vehicleModel, trip.vehicleType),
+                      _buildDriverInfo(context, l, trip.driverName, trip.profilePicturePath, trip.driverRating, trip.totalDriverTrips, trip.vehicleModel, trip.vehicleType, trip.driverPhone),
                       const SizedBox(height: 16),
-                      _buildTrackTripButton(context, l, trip.driverName, trip.driverRating, trip.vehicleModel, trip.vehicleType),
+                      _buildTrackTripButton(context, l, trip.driverName, trip.driverRating, trip.vehicleModel, trip.vehicleType, trip.tripId, trip.driverUserId, trip.pickupLocation, trip.dropoffLocation),
                       if (trip.stops.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPickupPoints(l, trip.stops),
@@ -230,7 +230,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     );
   }
 
-  Widget _buildTrackTripButton(BuildContext context, AppLocalizations l, String driverName, double driverRating, String vehicleModel, String vehicleType) {
+  Widget _buildTrackTripButton(BuildContext context, AppLocalizations l, String driverName, double driverRating, String vehicleModel, String vehicleType, int tripId, String driverUserId, String pickupLocation, String dropoffLocation) {
     return GestureDetector(
       onTap: () {
         final gpsArgs = TripGpsArgs(
@@ -238,6 +238,10 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           driverRating: driverRating,
           carModel: vehicleModel,
           carColor: vehicleType,
+          tripId: tripId,
+          driverUserId: driverUserId,
+          pickupLocation: pickupLocation,
+          dropoffLocation: dropoffLocation,
         );
         Navigator.push(
           context,
@@ -255,7 +259,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
           border: Border.all(color: const Color(0xFFF3F4F6), width: 1),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFCF8307).withOpacity(0.1),
+              color: const Color(0xFFCF8307).withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

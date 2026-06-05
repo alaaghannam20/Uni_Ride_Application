@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/services/gps_hub_service.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
@@ -250,6 +251,8 @@ class _ScheduledCardState extends State<_ScheduledCard> {
   bool _cancelling  = false;
   bool _publishing  = false;
   bool _completing  = false;
+  bool _sharingGps  = false;
+  final GpsHubService _gpsService = GpsHubService();
 
   String _fmtDuration(int minutes) {
     if (minutes < 60) return '$minutes min';
@@ -322,6 +325,32 @@ class _ScheduledCardState extends State<_ScheduledCard> {
     }
   }
 
+  Future<void> _toggleGps() async {
+    if (_sharingGps) {
+      await _gpsService.stopSending();
+      setState(() => _sharingGps = false);
+    } else {
+      final ok = await _gpsService.startSending(tripId: widget.trip.tripId);
+      if (!mounted) return;
+      if (ok) {
+        setState(() => _sharingGps = true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Location permission denied'),
+            backgroundColor: AppColors.errorRed,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _gpsService.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final trip = widget.trip;
@@ -349,15 +378,15 @@ class _ScheduledCardState extends State<_ScheduledCard> {
                 Expanded(child: Text(trip.pickupLocation, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: context.textPrimary))),
               ]),
               Padding(
-                padding: const EdgeInsets.only(left: 1),
+                padding: const EdgeInsets.only(left: 4.25),
                 child: Row(
                   children: [
-                    _DashedLine(color: context.borderColor, height: 36),
+                    _DashedLine(color: AppColors.orangeprimary.withValues(alpha: 0.4), height: 36),
                     if (trip.estimatedDurationMinutes > 0) ...[
                       const SizedBox(width: 8),
                       Text(
                         _fmtDuration(trip.estimatedDurationMinutes),
-                        style: TextStyle(fontSize: 12, color: context.textHint, fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: 12, color: AppColors.orangeprimary.withValues(alpha: 0.7), fontWeight: FontWeight.w500),
                       ),
                     ],
                   ],
@@ -401,65 +430,111 @@ class _ScheduledCardState extends State<_ScheduledCard> {
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _cancelling ? null : _onCancel,
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: context.bgCard,
-                    foregroundColor: AppColors.errorRed,
-                    side: BorderSide(color: AppColors.errorRed.withValues(alpha: 0.4)),
-                    padding: const EdgeInsets.symmetric(vertical: 11),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: _cancelling
-                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.errorRed))
-                      : Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _publishing ? null : _onPublish,
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: AppColors.orangeprimary,
-                    foregroundColor: Colors.white,
-                    side: BorderSide.none,
-                    padding: const EdgeInsets.symmetric(vertical: 11),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  icon: _publishing
-                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : const Icon(Icons.send_rounded, size: 14, color: Colors.white),
-                  label: Text(AppLocalizations.of(context)!.publish, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Colors.white)),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _completing ? null : _onComplete,
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: context.isDark
-                        ? const Color(0xFF00A63E).withValues(alpha: 0.15)
-                        : const Color(0xFFEFFBF3),
-                    foregroundColor: const Color(0xFF00A63E),
-                    side: BorderSide(
-                      color: context.isDark
-                          ? const Color(0xFF00A63E).withValues(alpha: 0.5)
-                          : const Color(0xFF00A63E),
-                      width: 1.2,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Row(children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _cancelling ? null : _onCancel,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: context.bgCard,
+                      foregroundColor: AppColors.errorRed,
+                      side: BorderSide(color: AppColors.errorRed.withValues(alpha: 0.4)),
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 11),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: _cancelling
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.errorRed))
+                        : Text(AppLocalizations.of(context)!.cancel, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
                   ),
-                  icon: _completing
-                      ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF00A63E)))
-                      : const Icon(Icons.check_circle_outline, size: 14, color: Color(0xFF00A63E)),
-                  label: const Text('Complete', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Color(0xFF00A63E))),
+                ),
+                if (!['published', 'active', 'completed', 'cancelled']
+                    .contains(widget.trip.status.toLowerCase())) ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _publishing ? null : _onPublish,
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: AppColors.orangeprimary,
+                        foregroundColor: Colors.white,
+                        side: BorderSide.none,
+                        padding: const EdgeInsets.symmetric(vertical: 11),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      icon: _publishing
+                          ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Icon(Icons.send_rounded, size: 14, color: Colors.white),
+                      label: Text(AppLocalizations.of(context)!.publish, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Colors.white)),
+                    ),
+                  ),
+                ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _completing ? null : _onComplete,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: context.isDark
+                          ? const Color(0xFF00A63E).withValues(alpha: 0.15)
+                          : const Color(0xFFEFFBF3),
+                      foregroundColor: const Color(0xFF00A63E),
+                      side: BorderSide(
+                        color: context.isDark
+                            ? const Color(0xFF00A63E).withValues(alpha: 0.5)
+                            : const Color(0xFF00A63E),
+                        width: 1.2,
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 11),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    icon: _completing
+                        ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF00A63E)))
+                        : const Icon(Icons.check_circle_outline, size: 14, color: Color(0xFF00A63E)),
+                    label: const Text('Complete', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Color(0xFF00A63E))),
+                  ),
+                ),
+              ]),
+              // ── Share Location button ────────────────────────────────
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: _toggleGps,
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: _sharingGps
+                      ? const Color(0xFF4CAF50).withValues(alpha: 0.1)
+                      : context.bgCard,
+                  foregroundColor: _sharingGps
+                      ? const Color(0xFF4CAF50)
+                      : context.textSecondary,
+                  side: BorderSide(
+                    color: _sharingGps
+                        ? const Color(0xFF4CAF50)
+                        : context.borderColor,
+                    width: 1.2,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                icon: Icon(
+                  _sharingGps
+                      ? Icons.location_on
+                      : Icons.location_off_outlined,
+                  size: 15,
+                  color: _sharingGps
+                      ? const Color(0xFF4CAF50)
+                      : context.textSecondary,
+                ),
+                label: Text(
+                  _sharingGps ? 'Sharing Location (Live)' : 'Share My Location',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: _sharingGps
+                        ? const Color(0xFF4CAF50)
+                        : context.textSecondary,
+                  ),
                 ),
               ),
             ]),
-          ),
+        ),
         ],
       ),
     );

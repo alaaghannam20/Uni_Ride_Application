@@ -5,11 +5,15 @@ import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/provider/booking_provider.dart';
+import 'package:uni_ride_application/core/provider/payment_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
+import 'package:uni_ride_application/core/provider/rating_provider.dart';
+import 'package:uni_ride_application/core/provider/reward_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/app_router.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
+import 'package:uni_ride_application/core/theme/app_theme.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/core/provider/one_signal_service.dart';
 

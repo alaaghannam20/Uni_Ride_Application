@@ -73,6 +73,9 @@ class ApiKeys {
   static const String id             = 'id';
   static const String joined         = 'joined';
 
+  // GPS Keys
+  static const String driverUserId = 'driverUserId';
+
   // Settings Keys
   static const String platformFee = 'platformFee';
 

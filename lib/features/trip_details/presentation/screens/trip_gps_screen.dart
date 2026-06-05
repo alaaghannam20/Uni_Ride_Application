@@ -1,11 +1,16 @@
+import 'dart:convert';
+import 'dart:math';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:uni_ride_application/core/services/gps_hub_service.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
-import 'package:uni_ride_application/l10n/app_localizations.dart';
 
-// ── Checkpoint Data Model ────────────────────────────────────────────────────
+
+// ── Checkpoint Model ─────────────────────────────────────────────────────────
+
 class CheckpointData {
   final String id;
   final String checkpoint;
@@ -23,75 +28,146 @@ class CheckpointData {
     required this.lastUpdated,
   });
 
-  factory CheckpointData.fromJson(Map<String, dynamic> json) {
-    return CheckpointData(
-      id: json['id'] ?? '',
-      checkpoint: json['checkpoint'] ?? '',
-      city: json['city'] ?? '',
-      enteringStatus: json['entering_status'] ?? '',
-      leavingStatus: json['leaving_status'] ?? '',
-      lastUpdated: json['last_updated'] ?? '',
+  factory CheckpointData.fromJson(Map<String, dynamic> json) => CheckpointData(
+        id: json['id'] ?? '',
+        checkpoint: json['checkpoint'] ?? '',
+        city: json['city'] ?? '',
+        enteringStatus: json['entering_status'] ?? '',
+        leavingStatus: json['leaving_status'] ?? '',
+        lastUpdated: json['last_updated'] ?? '',
+      );
+}
+
+// ── Checkpoint Service ────────────────────────────────────────────────────────
+
+class CheckpointService {
+  static const String _apiKey =
+      'arw_25d6362cde01937614b022a8f92e5298fae369989b2da4d8fef2aa4384656947';
+  static const String _baseUrl = 'https://aweenrayeh.com';
+
+  static const Map<String, String> _cityMap = {
+    'رام الله': 'ramallah', 'البيرة': 'ramallah', 'بيتونيا': 'ramallah',
+    'نابلس': 'nablus', 'بلاطة': 'nablus',
+    'الخليل': 'hebron', 'حلحول': 'hebron', 'دورا': 'hebron',
+    'بيت لحم': 'bethlehem', 'بيت جالا': 'bethlehem', 'بيت ساحور': 'bethlehem',
+    'أريحا': 'jericho',
+    'جنين': 'jenin',
+    'طولكرم': 'tulkarm',
+    'قلقيلية': 'qalqilya',
+    'سلفيت': 'salfit',
+    'طوباس': 'tubas',
+    'القدس': 'jerusalem', 'أبو ديس': 'jerusalem', 'العيزرية': 'jerusalem',
+    'ramallah': 'ramallah', 'nablus': 'nablus', 'hebron': 'hebron',
+    'bethlehem': 'bethlehem', 'jericho': 'jericho', 'jenin': 'jenin',
+    'tulkarm': 'tulkarm', 'qalqilya': 'qalqilya', 'salfit': 'salfit',
+    'tubas': 'tubas', 'jerusalem': 'jerusalem',
+  };
+
+  static String? _extractSlug(String location) {
+    final city = location.split(RegExp(r'\s*[-–]\s*')).first.trim();
+    return _cityMap[city] ?? _cityMap[city.toLowerCase()];
+  }
+
+  Future<List<CheckpointData>> _fetchForSlug(String slug) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/v1/checkpoints/city/$slug'),
+        headers: {'X-API-Key': _apiKey, 'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body)['data'] ?? [];
+        return data.map((e) => CheckpointData.fromJson(e)).toList();
+      }
+      return [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<List<CheckpointData>> fetchForTrip(
+      String pickupLocation, String dropoffLocation) async {
+    final slugs = <String>{};
+    final s1 = _extractSlug(pickupLocation);
+    final s2 = _extractSlug(dropoffLocation);
+    if (s1 != null) slugs.add(s1);
+    if (s2 != null) slugs.add(s2);
+    if (slugs.isEmpty) return [];
+    final results = await Future.wait(slugs.map(_fetchForSlug));
+    final seen = <String>{};
+    return results.expand((list) => list).where((cp) => seen.add(cp.id)).toList();
+  }
+}
+
+// ── Notification Service ──────────────────────────────────────────────────────
+
+class CheckpointNotificationService {
+  static final _plugin = FlutterLocalNotificationsPlugin();
+  static bool _initialized = false;
+
+  static Future<void> _ensureInit() async {
+    if (_initialized) return;
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    await _plugin.initialize(const InitializationSettings(android: android));
+    // Request permission on Android 13+
+    await _plugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+    _initialized = true;
+  }
+
+  static Future<void> showCheckpointAlert(
+      List<CheckpointData> checkpoints) async {
+    await _ensureInit();
+    final blocked = checkpoints.where((c) => c.enteringStatus != 'سالك').toList();
+    final title = blocked.isNotEmpty ? '⚠️ حاجز مغلق على طريقك!' : 'ℹ️ حاجز على طريقك';
+    final body = blocked.isNotEmpty
+        ? '${blocked.length} حاجز مغلق - قد يكون هناك تأخير في رحلتك'
+        : '${checkpoints.length} حاجز على الطريق - الطريق سالك حالياً';
+    await _plugin.show(
+      42,
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'checkpoints_channel',
+          'Checkpoint Alerts',
+          channelDescription: 'إشعارات الحواجز على طريقك',
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+        ),
+      ),
     );
   }
 }
 
-// ── Checkpoint Service ───────────────────────────────────────────────────────
-class CheckpointService {
-  static const String apiKey = 'arw_25d6362cde01937614b022a8f92e5298fae369989b2da4d8fef2aa4384656947';
-  static const String baseUrl = 'https://aweenrayeh.com';
+// ── Args ──────────────────────────────────────────────────────────────────────
 
-  Future<List<CheckpointData>> fetchCheckpoints(String city) async {
-    try {
-      final url = '$baseUrl/api/v1/checkpoints/city/$city';
-      
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'X-API-Key': apiKey,
-          'Content-Type': 'application/json',
-        },
-      ).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
-        final jsonData = jsonDecode(response.body);
-        final List<dynamic> data = jsonData['data'] ?? [];
-        
-        return data
-            .map((checkpoint) => CheckpointData.fromJson(checkpoint))
-            .toList();
-      } else if (response.statusCode == 401) {
-        throw Exception('Invalid or missing API key. Please verify your API key is correct.');
-      } else if (response.statusCode == 429) {
-        throw Exception('Rate limit exceeded. Please try again later.');
-      } else if (response.statusCode == 403) {
-        throw Exception('Your IP has been temporarily blocked. Please wait 5 minutes and try again.');
-      } else {
-        throw Exception('Failed to fetch checkpoints: ${response.statusCode} - ${response.body}');
-      }
-    } on http.ClientException catch (e) {
-      throw Exception('Network error: $e');
-    } catch (e) {
-      throw Exception('Error fetching checkpoints: $e');
-    }
-  }
-}
-
-// ── Trip GPS Arguments ───────────────────────────────────────────────────────
 class TripGpsArgs {
   final String driverName;
   final double driverRating;
   final String carModel;
   final String carColor;
+  final int tripId;
+  final String driverUserId;
+  final String pickupLocation;
+  final String dropoffLocation;
 
   const TripGpsArgs({
     required this.driverName,
     required this.driverRating,
     required this.carModel,
     required this.carColor,
+    required this.tripId,
+    required this.driverUserId,
+    required this.pickupLocation,
+    required this.dropoffLocation,
   });
 }
 
-// ── Trip GPS Screen ──────────────────────────────────────────────────────────
+// ── Screen ────────────────────────────────────────────────────────────────────
+
 class TripGpsScreen extends StatefulWidget {
   final TripGpsArgs args;
   const TripGpsScreen({super.key, required this.args});
@@ -101,105 +177,370 @@ class TripGpsScreen extends StatefulWidget {
 }
 
 class _TripGpsScreenState extends State<TripGpsScreen> {
-  late GoogleMapController mapController;
-  final CheckpointService _checkpointService = CheckpointService();
-  
-  static const LatLng ramallahCenter = LatLng(31.9454, 35.2075);
-  static const LatLng driverLocation = LatLng(31.9500, 35.2120);
-  
-  List<CheckpointData> checkpoints = [];
-  bool isLoading = true;
-  bool _isSheetExpanded = false;
+  GoogleMapController? _mapController;
+  final GpsHubService _gpsService = GpsHubService();
+
+  static const LatLng _palestineCenter = LatLng(32.2211, 35.2544);
+
+  LatLng? _driverLatLng;
+  bool _isFirstLocation = true;
+  double _bearing = 0;
+  BitmapDescriptor? _arrowIcon;
+  bool _notificationShown = false;
+
+  List<LatLng> _routePoints = [];
+  LatLng? _pickupLatLng;
+  LatLng? _dropoffLatLng;
+
+  bool _isLive = false;
+  String _statusText = 'Connecting...';
 
   @override
   void initState() {
     super.initState();
-    _fetchCheckpoints();
+    _connectHub();
+    _loadArrowMarker();
+    _checkAndNotify();
+    _fetchRoute();
   }
 
-  Future<void> _fetchCheckpoints() async {
-    try {
-      final data = await _checkpointService.fetchCheckpoints('ramallah');
-      if (mounted) {
-        setState(() {
-          checkpoints = data;
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
+  Future<void> _connectHub() async {
+    await _gpsService.startTracking(
+      tripId: widget.args.tripId,
+      onLocation: _onLocation,
+      onError: (_) {
+        if (mounted) setState(() => _statusText = 'Connection failed');
+      },
+    );
+    if (mounted && !_isLive) {
+      setState(() => _statusText = 'Waiting for driver...');
     }
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+  void _onLocation(DriverGpsLocation loc) {
+    if (!mounted) return;
+    final latLng = LatLng(loc.latitude, loc.longitude);
+    // Calculate bearing from previous position
+    if (_driverLatLng != null) {
+      _bearing = _calcBearing(_driverLatLng!, latLng);
+    }
+    setState(() {
+      _driverLatLng = latLng;
+      _isLive = true;
+      _statusText = 'Live';
+    });
+    if (_isFirstLocation) {
+      _isFirstLocation = false;
+      _mapController?.animateCamera(
+        CameraUpdate.newCameraPosition(
+            CameraPosition(target: latLng, zoom: 15)),
+      );
+    } else {
+      _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+    }
+  }
+
+  double _calcBearing(LatLng from, LatLng to) {
+    final lat1 = from.latitude * pi / 180;
+    final lat2 = to.latitude * pi / 180;
+    final dLon = (to.longitude - from.longitude) * pi / 180;
+    final y = sin(dLon) * cos(lat2);
+    final x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
+    return (atan2(y, x) * 180 / pi + 360) % 360;
+  }
+
+  Future<void> _loadArrowMarker() async {
+    const double size = 80;
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder, Rect.fromLTWH(0, 0, size, size));
+
+    // Orange filled circle
+    canvas.drawCircle(
+      const Offset(size / 2, size / 2),
+      size / 2,
+      Paint()..color = const Color(0xFFCF8307),
+    );
+    // White border ring
+    canvas.drawCircle(
+      const Offset(size / 2, size / 2),
+      size / 2 - 3,
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3,
+    );
+    // White arrow pointing upward (north = 0 bearing)
+    final arrow = Path()
+      ..moveTo(size * 0.50, size * 0.12) // tip
+      ..lineTo(size * 0.76, size * 0.68) // bottom-right
+      ..lineTo(size * 0.50, size * 0.54) // inner bottom
+      ..lineTo(size * 0.24, size * 0.68) // bottom-left
+      ..close();
+    canvas.drawPath(arrow, Paint()..color = Colors.white);
+
+    final picture = recorder.endRecording();
+    final img = await picture.toImage(size.toInt(), size.toInt());
+    final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
+    if (mounted && bytes != null) {
+      setState(() {
+        _arrowIcon =
+            BitmapDescriptor.bytes(bytes.buffer.asUint8List());
+      });
+    }
+  }
+
+  Future<void> _checkAndNotify() async {
+    final checkpoints = await CheckpointService().fetchForTrip(
+      widget.args.pickupLocation,
+      widget.args.dropoffLocation,
+    );
+    if (!mounted || _notificationShown || checkpoints.isEmpty) return;
+    _notificationShown = true;
+    await CheckpointNotificationService.showCheckpointAlert(checkpoints);
+  }
+
+  // PTUK exact coordinates — used whenever location mentions the university
+  static const LatLng _ptukLatLng = LatLng(32.3149, 35.0260);
+
+  static bool _isPtuk(String location) {
+    final l = location.toLowerCase();
+    return l.contains('خضوري') ||
+        l.contains('ptuk') ||
+        l.contains('palestine technical') ||
+        l.contains('فلسطين التقنية');
+  }
+
+  // Returns "lat,lng" string for the API if we know the exact spot,
+  // otherwise returns the location name with country appended.
+  static String _apiAddress(String location) {
+    if (_isPtuk(location)) return '${_ptukLatLng.latitude},${_ptukLatLng.longitude}';
+    return Uri.encodeComponent('$location, فلسطين');
+  }
+
+  Future<void> _fetchRoute() async {
+    const apiKey = 'AIzaSyAmB3o83NlGXBLTR5gsp56KP3OKTF4upIo';
+    final origin = _apiAddress(widget.args.pickupLocation);
+    final dest   = _apiAddress(widget.args.dropoffLocation);
+    try {
+      final res = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/directions/json'
+        '?origin=$origin&destination=$dest&key=$apiKey&language=ar',
+      )).timeout(const Duration(seconds: 10));
+      if (res.statusCode != 200) return;
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final routes = data['routes'] as List?;
+      if (routes == null || routes.isEmpty) return;
+      final leg    = routes[0]['legs'][0];
+      final points = _decodePolyline(routes[0]['overview_polyline']['points'] as String);
+
+      // Use our known coordinates for PTUK instead of API geocode result
+      final startLat = _isPtuk(widget.args.pickupLocation)
+          ? _ptukLatLng.latitude
+          : (leg['start_location']['lat'] as num).toDouble();
+      final startLng = _isPtuk(widget.args.pickupLocation)
+          ? _ptukLatLng.longitude
+          : (leg['start_location']['lng'] as num).toDouble();
+      final endLat = _isPtuk(widget.args.dropoffLocation)
+          ? _ptukLatLng.latitude
+          : (leg['end_location']['lat'] as num).toDouble();
+      final endLng = _isPtuk(widget.args.dropoffLocation)
+          ? _ptukLatLng.longitude
+          : (leg['end_location']['lng'] as num).toDouble();
+
+      if (!mounted) return;
+      setState(() {
+        _routePoints   = points;
+        _pickupLatLng  = LatLng(startLat, startLng);
+        _dropoffLatLng = LatLng(endLat,   endLng);
+      });
+      _fitRoute();
+    } catch (_) {}
+  }
+
+  List<LatLng> _decodePolyline(String encoded) {
+    final points = <LatLng>[];
+    int idx = 0, lat = 0, lng = 0;
+    while (idx < encoded.length) {
+      int b, shift = 0, result = 0;
+      do {
+        b = encoded.codeUnitAt(idx++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      lat += (result & 1) != 0 ? ~(result >> 1) : result >> 1;
+      shift = 0; result = 0;
+      do {
+        b = encoded.codeUnitAt(idx++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      lng += (result & 1) != 0 ? ~(result >> 1) : result >> 1;
+      points.add(LatLng(lat / 1e5, lng / 1e5));
+    }
+    return points;
+  }
+
+  void _fitRoute() {
+    if (_routePoints.isEmpty || _mapController == null) return;
+    final lats = _routePoints.map((p) => p.latitude);
+    final lngs = _routePoints.map((p) => p.longitude);
+    _mapController!.animateCamera(
+      CameraUpdate.newLatLngBounds(
+        LatLngBounds(
+          southwest: LatLng(lats.reduce(min), lngs.reduce(min)),
+          northeast: LatLng(lats.reduce(max), lngs.reduce(max)),
+        ),
+        72,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _gpsService.dispose();
+    _mapController?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    
     return Scaffold(
       body: Stack(
         children: [
-          // Google Map
+          // ── Map ──────────────────────────────────────────────────────────
           GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: const CameraPosition(
-              target: ramallahCenter,
-              zoom: 13.5,
-            ),
+            onMapCreated: (c) {
+              _mapController = c;
+              if (_routePoints.isNotEmpty) _fitRoute();
+            },
+            initialCameraPosition:
+                const CameraPosition(target: _palestineCenter, zoom: 9),
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            polylines: _routePoints.isNotEmpty
+                ? {
+                    Polyline(
+                      polylineId: const PolylineId('route'),
+                      points: _routePoints,
+                      color: AppColors.orangeprimary,
+                      width: 5,
+                      startCap: Cap.roundCap,
+                      endCap: Cap.roundCap,
+                      jointType: JointType.round,
+                    ),
+                  }
+                : {},
             markers: {
-              Marker(
-                markerId: const MarkerId('driver'),
-                position: driverLocation,
-                infoWindow: InfoWindow(title: widget.args.driverName),
-                icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-              ),
+              if (_pickupLatLng != null)
+                Marker(
+                  markerId: const MarkerId('pickup'),
+                  position: _pickupLatLng!,
+                  anchor: const Offset(0.5, 1.0),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueGreen),
+                  infoWindow: InfoWindow(
+                    title: widget.args.pickupLocation
+                        .split(RegExp(r'\s*[-–]\s*'))
+                        .first,
+                  ),
+                ),
+              if (_dropoffLatLng != null)
+                Marker(
+                  markerId: const MarkerId('dropoff'),
+                  position: _dropoffLatLng!,
+                  anchor: const Offset(0.5, 1.0),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueRed),
+                  infoWindow: InfoWindow(
+                    title: widget.args.dropoffLocation
+                        .split(RegExp(r'\s*[-–]\s*'))
+                        .first,
+                  ),
+                ),
+              if (_driverLatLng != null)
+                Marker(
+                  markerId: const MarkerId('driver'),
+                  position: _driverLatLng!,
+                  rotation: _bearing,
+                  flat: true,
+                  anchor: const Offset(0.5, 0.5),
+                  infoWindow: InfoWindow(title: widget.args.driverName),
+                  icon: _arrowIcon ??
+                      BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueOrange),
+                ),
             },
           ),
 
-          // Top bar
+          // ── Top bar ───────────────────────────────────────────────────────
           Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
+            top: 0, left: 0, right: 0,
             child: SafeArea(
               child: Container(
-                color: Colors.white.withOpacity(0.95),
+                color: Colors.white.withValues(alpha: 0.95),
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                 child: Row(
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Container(
-                        width: 36,
-                        height: 36,
+                        width: 36, height: 36,
                         decoration: BoxDecoration(
                           color: const Color(0xFFF5F5F5),
                           shape: BoxShape.circle,
                           border: Border.all(color: const Color(0xFFE8E8E8)),
                         ),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new,
-                          size: 14,
-                          color: Color(0xFF444444),
-                        ),
+                        child: const Icon(Icons.arrow_back_ios_new,
+                            size: 14, color: Color(0xFF444444)),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      'Track Trip',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1A1A1A),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Track Trip',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1A1A1A))),
+                          Text(
+                            '${widget.args.pickupLocation.split(RegExp(r'\s*[-–]\s*')).first} → ${widget.args.dropoffLocation.split(RegExp(r'\s*[-–]\s*')).first}',
+                            style: const TextStyle(
+                                fontSize: 11, color: Color(0xFF888888)),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Live / status badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: _isLive
+                            ? const Color(0xFF4CAF50)
+                            : const Color(0xFFFF9800),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        if (_isLive) ...[
+                          Container(
+                              width: 6, height: 6,
+                              decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle)),
+                          const SizedBox(width: 4),
+                        ],
+                        Text(_statusText,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600)),
+                      ]),
                     ),
                   ],
                 ),
@@ -207,21 +548,41 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
             ),
           ),
 
-          // Driver info card
+          // ── Driver info card ──────────────────────────────────────────────
           Positioned(
-            top: 70,
-            right: 16,
-            left: 16,
+            top: 80, right: 16, left: 16,
             child: _buildDriverCard(),
           ),
 
-          // Bottom sheet (Checkpoints)
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildCheckpointsSheet(l),
-          ),
+          // ── Waiting overlay ───────────────────────────────────────────────
+          if (!_isLive)
+            Positioned(
+              top: 160, left: 0, right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    if (_statusText == 'Connecting...')
+                      const SizedBox(
+                          width: 14, height: 14,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white))
+                    else
+                      const Icon(Icons.location_searching,
+                          color: Colors.white, size: 16),
+                    const SizedBox(width: 10),
+                    Text(_statusText,
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 13)),
+                  ]),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -234,337 +595,74 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 12,
+              offset: const Offset(0, 4))
         ],
       ),
       padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFCF8307).withOpacity(0.15),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                widget.args.driverName.isNotEmpty 
-                  ? widget.args.driverName.substring(0, 1).toUpperCase()
+      child: Row(children: [
+        Container(
+          width: 48, height: 48,
+          decoration: BoxDecoration(
+            color: AppColors.orangeprimary.withValues(alpha: 0.15),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: Text(
+              widget.args.driverName.isNotEmpty
+                  ? widget.args.driverName[0].toUpperCase()
                   : '?',
-                style: const TextStyle(
+              style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFCF8307),
-                ),
-              ),
+                  color: AppColors.orangeprimary),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  widget.args.driverName,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 3),
-                Row(
-                  children: [
-                    const Icon(Icons.star_rounded, size: 13, color: Color(0xFFCF8307)),
-                    const SizedBox(width: 3),
-                    Text(
-                      '${widget.args.driverRating}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFCF8307),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                widget.args.carModel,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 2),
-              Text(
-                widget.args.carColor,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Color(0xFF888888),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(widget.args.driverName,
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+              const SizedBox(height: 3),
+              Row(children: [
+                const Icon(Icons.star_rounded,
+                    size: 13, color: AppColors.orangeprimary),
+                const SizedBox(width: 3),
+                Text('${widget.args.driverRating}',
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.orangeprimary)),
+              ]),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCheckpointsSheet(AppLocalizations l) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 20,
-            offset: Offset(0, -5),
-          ),
-        ],
-      ),
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.5,
-      ),
-      child: Column(
-        children: [
-          // Handle bar
-          Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 16),
-            child: GestureDetector(
-              onTap: () {
-                setState(() => _isSheetExpanded = !_isSheetExpanded);
-              },
-              child: Container(
-                width: 48,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-          ),
-
-          // Title with icon
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.location_on_rounded,
-                  color: Color(0xFFCF8307),
-                  size: 22,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Checkpoint Status',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A1A),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFCF8307).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '${checkpoints.length} Checkpoints',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFCF8307),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          // Checkpoints list
-          Expanded(
-            child: isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(color: Color(0xFFCF8307)),
-                )
-              : checkpoints.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.inbox_rounded,
-                          color: Colors.grey[300],
-                          size: 48,
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'No checkpoints available',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF888888),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: checkpoints.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    itemBuilder: (context, index) {
-                      final checkpoint = checkpoints[index];
-                      return _buildCheckpointItem(checkpoint, index);
-                    },
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCheckpointItem(CheckpointData checkpoint, int index) {
-    final isOpen = checkpoint.enteringStatus == 'سالك';
-    final statusColor = isOpen ? const Color(0xFF4CAF50) : const Color(0xFFFF6B6B);
-    final statusIcon = isOpen ? Icons.check_circle_rounded : Icons.block_rounded;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFAFAFA),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: statusColor.withOpacity(0.2),
-          width: 1,
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Status circle
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Icon(
-                  statusIcon,
-                  color: statusColor,
-                  size: 20,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // Checkpoint info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    checkpoint.checkpoint,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF1A1A1A),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        'In: ',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Color(0xFF888888),
-                        ),
-                      ),
-                      Text(
-                        checkpoint.enteringStatus,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: statusColor,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'Out: ',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Color(0xFF888888),
-                        ),
-                      ),
-                      Text(
-                        checkpoint.leavingStatus,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: checkpoint.leavingStatus == 'سالك'
-                            ? const Color(0xFF4CAF50)
-                            : const Color(0xFFFF6B6B),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // Index badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFFCF8307).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                '${index + 1}/${checkpoints.length}',
+            Text(widget.args.carModel,
                 style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFCF8307),
-                ),
-              ),
-            ),
+                    fontSize: 12, fontWeight: FontWeight.w600),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis),
+            const SizedBox(height: 2),
+            Text(widget.args.carColor,
+                style: const TextStyle(
+                    fontSize: 11, color: Color(0xFF888888)),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis),
           ],
         ),
-      ),
+      ]),
     );
-  }
-
-  @override
-  void dispose() {
-    mapController.dispose();
-    super.dispose();
   }
 }

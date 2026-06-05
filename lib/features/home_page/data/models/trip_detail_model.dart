@@ -41,6 +41,7 @@ class TripDetailModel {
   final String vehicleType;
   final String driverPhone;
   final int platformFee;
+  final String driverUserId;
 
   const TripDetailModel({
     required this.tripId,
@@ -62,6 +63,7 @@ class TripDetailModel {
     required this.vehicleType,
     required this.driverPhone,
     this.platformFee = 0,
+    this.driverUserId = '',
   });
 
   factory TripDetailModel.fromJson(Map<String, dynamic> json) {
@@ -86,6 +88,7 @@ class TripDetailModel {
       vehicleType: json[ApiKeys.vehicleType] ?? '',
       driverPhone: json[ApiKeys.driverPhone] ?? '',
       platformFee: (json[ApiKeys.platformFee] ?? kAppFee).toInt(),
+      driverUserId: json[ApiKeys.driverUserId] ?? '',
     );
   }
 }

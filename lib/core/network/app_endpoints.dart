@@ -57,6 +57,11 @@ class AppEndpoints {
   static String checkoutConfirmTopUp(String sessionId) => 'Checkout/confirm-top-up?session_id=$sessionId';
   static const String checkoutBookTripWallet = 'Checkout/book-trip-wallet';
 
+  // GPS Endpoints
+  static const String gpsUpdate                    = 'Gps/update';
+  static String gpsLocation(String driverUserId)   => 'Gps/location/$driverUserId';
+  static const String gpsHubUrl                    = 'http://uniride.runasp.net/gpsHub';
+
   // Rating Endpoints
   static const String ratingSubmit    = 'Rating/submit';
   static const String ratingMyReviews = 'Rating/my-reviews';

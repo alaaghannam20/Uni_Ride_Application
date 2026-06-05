@@ -141,7 +141,7 @@ class _PaymentPageState extends State<PaymentPage> {
               }
               final uri = Uri.parse(session.checkoutUrl);
               if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
                 if (context.mounted) {
                   Navigator.pushNamed(context, Routes.bookingConfirmed, arguments: session.sessionId);
                 }

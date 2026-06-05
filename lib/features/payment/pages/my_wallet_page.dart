@@ -267,10 +267,14 @@ class _MyWalletPageState extends State<MyWalletPage> {
                 }
                 final uri = Uri.parse(session.checkoutUrl);
                 if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
                   if (context.mounted) {
                     _showReturnDialog(context, session.sessionId);
                   }
+                } else if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not open payment page'), backgroundColor: Colors.red),
+                  );
                 }
               }
             },
