@@ -41,4 +41,5 @@ class Routes {
   static const tripDetails = '/TripDetailsScreen';
   static const bookingConfirmed = '/BookingConfirmedScreen';
   static const topUpConfirmed   = '/TopUpConfirmedScreen';
+  static const notifications    = '/NotificationsScreen';
 }

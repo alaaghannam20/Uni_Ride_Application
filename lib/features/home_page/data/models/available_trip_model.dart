@@ -61,8 +61,8 @@ class AvailableTripModel {
       profilePicturePath: json[ApiKeys.profilePicturePath],
       description: json[ApiKeys.description],
       status: json[ApiKeys.status] ?? '',
-      driverRating: double.tryParse((json[ApiKeys.driverRating] ?? json['rating'] ?? 0).toString()) ?? 0.0,
-      totalDriverTrips: (json[ApiKeys.totalDriverTrips] ?? 0).toInt(),
+      driverRating: double.tryParse((json[ApiKeys.driverRating] ?? json['DriverRating'] ?? json['rating'] ?? json['Rating'] ?? 0).toString()) ?? 0.0,
+      totalDriverTrips: (json[ApiKeys.totalDriverTrips] ?? json['TotalDriverTrips'] ?? json['totalTrips'] ?? json['TotalTrips'] ?? 0).toInt(),
       driverPhone: json[ApiKeys.driverPhone] ?? '',
     );
   }

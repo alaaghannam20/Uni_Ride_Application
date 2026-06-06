@@ -19,6 +19,22 @@ class RatingProvider extends ChangeNotifier {
   DriverReviewsResponse? _reviews;
   DriverReviewsResponse? get reviews => _reviews;
 
+  int _unreadReviewsCount = 0;
+  int get unreadReviewsCount => _unreadReviewsCount;
+
+  Future<void> fetchUnreadReviewsCount() async {
+    _unreadReviewsCount = await _ratingService.fetchUnreadReviewsCount();
+    notifyListeners();
+  }
+
+  Future<void> markReviewsRead() async {
+    try {
+      await _ratingService.markReviewsRead();
+      _unreadReviewsCount = 0;
+      notifyListeners();
+    } catch (_) {}
+  }
+
   Future<void> fetchMyReviews() async {
     _reviewsState = RatingState.loading;
     notifyListeners();

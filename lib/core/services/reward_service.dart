@@ -23,7 +23,10 @@ class RewardService {
         AppEndpoints.redeemReward,
         data: {'rewardType': rewardType},
       );
-      return response.data['success'] == true;
+      final data = (response.data is Map && response.data['data'] != null)
+          ? response.data['data']
+          : response.data;
+      return data['success'] == true;
     } catch (e) {
       throw Exception(_cleanError(e));
     }

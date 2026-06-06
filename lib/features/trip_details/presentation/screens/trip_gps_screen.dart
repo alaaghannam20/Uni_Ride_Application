@@ -7,7 +7,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:uni_ride_application/core/services/gps_hub_service.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
+import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
+enum _GpsStatus { connecting, connectionFailed, waitingForDriver, live }
 
 // ── Checkpoint Model ─────────────────────────────────────────────────────────
 
@@ -193,7 +196,7 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
   LatLng? _dropoffLatLng;
 
   bool _isLive = false;
-  String _statusText = 'Connecting...';
+  _GpsStatus _gpsStatus = _GpsStatus.connecting;
 
   @override
   void initState() {
@@ -209,11 +212,11 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
       tripId: widget.args.tripId,
       onLocation: _onLocation,
       onError: (_) {
-        if (mounted) setState(() => _statusText = 'Connection failed');
+        if (mounted) setState(() => _gpsStatus = _GpsStatus.connectionFailed);
       },
     );
     if (mounted && !_isLive) {
-      setState(() => _statusText = 'Waiting for driver...');
+      setState(() => _gpsStatus = _GpsStatus.waitingForDriver);
     }
   }
 
@@ -227,7 +230,7 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
     setState(() {
       _driverLatLng = latLng;
       _isLive = true;
-      _statusText = 'Live';
+      _gpsStatus = _GpsStatus.live;
     });
     if (_isFirstLocation) {
       _isFirstLocation = false;
@@ -402,8 +405,18 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
     super.dispose();
   }
 
+  String _statusLabel(AppLocalizations l) {
+    switch (_gpsStatus) {
+      case _GpsStatus.connecting:       return l.gpsConnecting;
+      case _GpsStatus.connectionFailed: return l.gpsConnectionFailed;
+      case _GpsStatus.waitingForDriver: return l.gpsWaitingForDriver;
+      case _GpsStatus.live:             return l.gpsLive;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       body: Stack(
         children: [
@@ -477,7 +490,7 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
             top: 0, left: 0, right: 0,
             child: SafeArea(
               child: Container(
-                color: Colors.white.withValues(alpha: 0.95),
+                color: context.appBarBg.withValues(alpha: 0.95),
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                 child: Row(
                   children: [
@@ -486,12 +499,12 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
                       child: Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F5F5),
+                          color: context.borderColor,
                           shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xFFE8E8E8)),
+                          border: Border.all(color: context.borderColor),
                         ),
-                        child: const Icon(Icons.arrow_back_ios_new,
-                            size: 14, color: Color(0xFF444444)),
+                        child: Icon(Icons.arrow_back_ios_new,
+                            size: 14, color: context.textPrimary),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -500,15 +513,15 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('Track Trip',
+                          Text(l.trackTrip,
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1A1A1A))),
+                                  color: context.textPrimary)),
                           Text(
                             '${widget.args.pickupLocation.split(RegExp(r'\s*[-–]\s*')).first} → ${widget.args.dropoffLocation.split(RegExp(r'\s*[-–]\s*')).first}',
-                            style: const TextStyle(
-                                fontSize: 11, color: Color(0xFF888888)),
+                            style: TextStyle(
+                                fontSize: 11, color: context.textSecondary),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -535,7 +548,7 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
                                   shape: BoxShape.circle)),
                           const SizedBox(width: 4),
                         ],
-                        Text(_statusText,
+                        Text(_statusLabel(l),
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 11,
@@ -567,7 +580,7 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    if (_statusText == 'Connecting...')
+                    if (_gpsStatus == _GpsStatus.connecting)
                       const SizedBox(
                           width: 14, height: 14,
                           child: CircularProgressIndicator(
@@ -576,7 +589,7 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
                       const Icon(Icons.location_searching,
                           color: Colors.white, size: 16),
                     const SizedBox(width: 10),
-                    Text(_statusText,
+                    Text(_statusLabel(l),
                         style: const TextStyle(
                             color: Colors.white, fontSize: 13)),
                   ]),
@@ -589,13 +602,14 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
   }
 
   Widget _buildDriverCard() {
+    final ctx = context;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ctx.bgCard,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: AppColors.cardShadow,
               blurRadius: 12,
               offset: const Offset(0, 4))
         ],
@@ -656,8 +670,8 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
                 overflow: TextOverflow.ellipsis),
             const SizedBox(height: 2),
             Text(widget.args.carColor,
-                style: const TextStyle(
-                    fontSize: 11, color: Color(0xFF888888)),
+                style: TextStyle(
+                    fontSize: 11, color: ctx.textSecondary),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis),
           ],

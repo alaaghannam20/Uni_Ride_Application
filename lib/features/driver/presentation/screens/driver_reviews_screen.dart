@@ -4,6 +4,7 @@ import 'package:uni_ride_application/core/models/driver_review_model.dart';
 import 'package:uni_ride_application/core/provider/rating_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
+import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class DriverReviewsScreen extends StatefulWidget {
   const DriverReviewsScreen({super.key});
@@ -18,11 +19,13 @@ class _DriverReviewsScreenState extends State<DriverReviewsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<RatingProvider>().fetchMyReviews();
+      context.read<RatingProvider>().markReviewsRead();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final l        = AppLocalizations.of(context)!;
     final provider = context.watch<RatingProvider>();
     final isLoading = provider.reviewsState == RatingState.loading;
     final isError   = provider.reviewsState == RatingState.error;
@@ -44,7 +47,7 @@ class _DriverReviewsScreenState extends State<DriverReviewsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'My Reviews',
+          l.myReviews,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: context.textPrimary),
         ),
         bottom: PreferredSize(
@@ -81,7 +84,7 @@ class _DriverReviewsScreenState extends State<DriverReviewsScreen> {
         children: [
           Icon(Icons.star_outline_rounded, size: 56, color: context.textHint),
           const SizedBox(height: 12),
-          Text('No reviews yet', style: TextStyle(color: context.textHint, fontSize: 14)),
+          Text(AppLocalizations.of(context)!.noReviewsYet, style: TextStyle(color: context.textHint, fontSize: 14)),
         ],
       ),
     );
@@ -125,7 +128,7 @@ class _DriverReviewsScreenState extends State<DriverReviewsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${data.totalReviews} Reviews',
+                  AppLocalizations.of(context)!.reviewsCount(data.totalReviews),
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: context.textPrimary),
                 ),
                 const SizedBox(height: 8),

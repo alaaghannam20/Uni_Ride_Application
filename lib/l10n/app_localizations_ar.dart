@@ -612,6 +612,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notifications => 'الإشعارات';
 
   @override
+  String get markAllRead => 'قراءة الكل';
+
+  @override
+  String get noNotifications => 'لا توجد إشعارات';
+
+  @override
+  String get notifTypeTrip => 'رحلة';
+
+  @override
+  String get notifTypeBooking => 'حجز';
+
+  @override
+  String get notifTypeAdmin => 'إدارة';
+
+  @override
+  String get notifTypeGeneral => 'إشعار';
+
+  @override
+  String get notifTypeWallet => 'المحفظة';
+
+  @override
+  String get timeJustNow => 'الآن';
+
+  @override
   String get pushNotifications => 'الإشعارات الفورية';
 
   @override
@@ -1437,4 +1461,50 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancelledSuccess => 'تم إلغاء الحجز بنجاح';
+
+  @override
+  String get myReviews => 'مراجعاتي';
+
+  @override
+  String get noReviewsYet => 'لا توجد تقييمات بعد';
+
+  @override
+  String reviewsCount(int count) {
+    return '$count تقييم';
+  }
+
+  @override
+  String get gpsConnecting => 'جارٍ الاتصال...';
+
+  @override
+  String get gpsConnectionFailed => 'فشل الاتصال';
+
+  @override
+  String get gpsWaitingForDriver => 'في انتظار السائق...';
+
+  @override
+  String get gpsLive => 'مباشر';
+
+  @override
+  String get trackTrip => 'تتبع الرحلة';
+
+  @override
+  String timeMinutesAgo(int count) {
+    return 'منذ $count دقيقة';
+  }
+
+  @override
+  String timeHoursAgo(int count) {
+    return 'منذ $count ساعة';
+  }
+
+  @override
+  String timeDaysAgo(int count) {
+    return 'منذ $count يوم';
+  }
+
+  @override
+  String timeWeeksAgo(int count) {
+    return 'منذ $count أسبوع';
+  }
 }

@@ -1,5 +1,6 @@
 class ApiKeys {
   // User Model Keys
+  static const String userId = 'userId';
   static const String fullName = 'fullName';
   static const String email = 'email';
   static const String userType = 'userType';

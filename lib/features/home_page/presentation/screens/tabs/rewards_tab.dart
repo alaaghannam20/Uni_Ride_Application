@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/models/reward_model.dart';
-import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/provider/reward_provider.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
@@ -22,7 +21,6 @@ class _RewardsTabState extends State<RewardsTab> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<RewardProvider>().fetchMyRewards();
-      context.read<BookingProvider>().fetchMyBookings();
     });
   }
 
@@ -39,12 +37,7 @@ class _RewardsTabState extends State<RewardsTab> {
         final data = provider.rewardData;
 
         return RefreshIndicator(
-          onRefresh: () async {
-            await provider.fetchMyRewards();
-            if (context.mounted) {
-              await context.read<BookingProvider>().fetchMyBookings();
-            }
-          },
+          onRefresh: () => provider.fetchMyRewards(),
           color: AppColors.orangeprimary,
           child: ListView(
             padding: const EdgeInsets.all(16),
@@ -130,50 +123,38 @@ class _RewardsTabState extends State<RewardsTab> {
               const SizedBox(height: 32),
 
               // 3. Achievements Section
-              Consumer<BookingProvider>(
-                builder: (context, bookingProvider, _) {
-                  final completedTrips = bookingProvider.myBookings
-                      .where((b) => b.status == 'Completed')
-                      .length;
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l.achievements,
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
+                  const SizedBox(height: 16),
+                  if (data != null && data.achievements.isNotEmpty)
+                    ...data.achievements.map((ach) {
+                      final int current = ach.target > 0 ? ach.current.clamp(0, ach.target) : ach.current;
+                      final bool isCompleted = ach.completed;
+                      final double progress = ach.target > 0 ? current / ach.target : 0.0;
+                      final IconData icon = ach.id == 'first_ride' ? Icons.bolt : Icons.emoji_events_outlined;
+                      final String title = ach.id == 'first_ride' ? l.ach_first_ride_title : (ach.id == 'top_rider' ? l.ach_top_rider_title : ach.id);
+                      final String subtitle = ach.id == 'first_ride' ? l.ach_first_ride_sub : (ach.id == 'top_rider' ? l.ach_top_rider_sub : '');
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(l.achievements,
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
-                      const SizedBox(height: 16),
-                      if (data != null && data.achievements.isNotEmpty)
-                        ...data.achievements.map((ach) {
-                          final int current = ach.id == 'first_ride'
-                              ? completedTrips.clamp(0, 1)
-                              : ach.id == 'top_rider'
-                                  ? completedTrips.clamp(0, ach.target)
-                                  : ach.current;
-                          final bool isCompleted = current >= ach.target && ach.target > 0;
-                          final double progress = ach.target > 0 ? current / ach.target : 0.0;
-                          final IconData icon = ach.id == 'first_ride' ? Icons.bolt : Icons.emoji_events_outlined;
-                          final String title = ach.id == 'first_ride' ? l.ach_first_ride_title : (ach.id == 'top_rider' ? l.ach_top_rider_title : ach.id);
-                          final String subtitle = ach.id == 'first_ride' ? l.ach_first_ride_sub : (ach.id == 'top_rider' ? l.ach_top_rider_sub : '');
-
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: AchievementCard(
-                              title: title,
-                              subtitle: subtitle,
-                              progress: progress,
-                              progressLabel: '$current / ${ach.target}',
-                              points: '+${ach.points}',
-                              icon: icon,
-                              isCompleted: isCompleted,
-                            ),
-                          );
-                        }),
-                      if (data == null || data.achievements.isEmpty)
-                        Center(child: Text(AppLocalizations.of(context)!.noAchievementsFound, style: TextStyle(color: context.textHint))),
-                    ],
-                  );
-                },
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: AchievementCard(
+                          title: title,
+                          subtitle: subtitle,
+                          progress: progress,
+                          progressLabel: '$current / ${ach.target}',
+                          points: '+${ach.points}',
+                          icon: icon,
+                          isCompleted: isCompleted,
+                        ),
+                      );
+                    }),
+                  if (data == null || data.achievements.isEmpty)
+                    Center(child: Text(AppLocalizations.of(context)!.noAchievementsFound, style: TextStyle(color: context.textHint))),
+                ],
               ),
               const SizedBox(height: 32),
 

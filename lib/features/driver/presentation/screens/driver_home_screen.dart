@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/notification_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
@@ -27,6 +28,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       context.read<ProfileProvider>().fetchDriverProfile();
       context.read<TripProvider>().fetchDriverScheduled();
       context.read<TripProvider>().fetchDriverHistory();
+      context.read<NotificationProvider>().fetchNotifications();
     });
   }
 
@@ -59,7 +61,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               _buildHeader(context, l, profile?.fullName ?? l.welcomeBack, profile?.profilePicturePath),
               const SizedBox(height: 20),
               _buildStatsRow(context, l, profile),
-              const SizedBox(height: 48),
+              const SizedBox(height: 28),
               _buildTabBar(context, l, scheduled.length, history.length),
               const SizedBox(height: 20),
               if (isLoading)
@@ -89,50 +91,99 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(children: [
-          Container(
-            width: 48, height: 48,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.orangeprimary.withValues(alpha: 0.15),
+        // Left: avatar + name
+        Expanded(
+          child: Row(children: [
+            Container(
+              width: 56, height: 56,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.orangeprimary.withValues(alpha: 0.15),
+              ),
+              child: imagePath != null
+                  ? Image.network(
+                      'http://uniride.runasp.net/$imagePath',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => Center(child: Text(initial, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: AppColors.orangeprimary))),
+                    )
+                  : Center(child: Text(initial, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: AppColors.orangeprimary))),
             ),
-            child: imagePath != null
-                ? Image.network(
-                    'http://uniride.runasp.net/$imagePath',
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => Center(child: Text(initial, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.orangeprimary))),
-                  )
-                : Center(child: Text(initial, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.orangeprimary))),
-          ),
-          const SizedBox(width: 12),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(l.welcomeBack, style: TextStyle(fontSize: 14, color: context.textSecondary)),
-            Text(name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: context.textPrimary)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(l.welcomeBack, style: TextStyle(fontSize: 15, color: context.textSecondary)),
+                Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: context.textPrimary)),
+              ]),
+            ),
           ]),
-        ]),
-        PopupMenuButton<String>(
-          onSelected: (value) async {
-            if (value == 'profile') {
-              Navigator.pushNamed(context, Routes.driverprofile);
-            } else if (value == 'logout') {
-              await AppPrefs.logout();
-              if (mounted) Navigator.pushNamedAndRemoveUntil(this.context, Routes.signIn, (r) => false);
-            }
-          },
-          color: context.bgCard,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          itemBuilder: (_) => [
-            PopupMenuItem(value: 'profile', child: Row(children: [Icon(Icons.person_outline, size: 18, color: context.textPrimary), const SizedBox(width: 10), Text(AppLocalizations.of(context)!.profileMenuItem, style: TextStyle(color: context.textPrimary))])),
-            PopupMenuItem(value: 'logout', child: Row(children: [const Icon(Icons.logout, size: 18, color: AppColors.errorRed), const SizedBox(width: 10), Text(AppLocalizations.of(context)!.logOut, style: const TextStyle(color: AppColors.errorRed))])),
+        ),
+        const SizedBox(width: 12),
+        // Right: three-dots on top, bell below
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            PopupMenuButton<String>(
+              onSelected: (value) async {
+                if (value == 'profile') {
+                  Navigator.pushNamed(context, Routes.driverprofile);
+                } else if (value == 'logout') {
+                  await AppPrefs.logout();
+                  if (mounted) Navigator.pushNamedAndRemoveUntil(this.context, Routes.signIn, (r) => false);
+                }
+              },
+              color: context.bgCard,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              itemBuilder: (_) => [
+                PopupMenuItem(value: 'profile', child: Row(children: [Icon(Icons.person_outline, size: 18, color: context.textPrimary), const SizedBox(width: 10), Text(AppLocalizations.of(context)!.profileMenuItem, style: TextStyle(color: context.textPrimary))])),
+                PopupMenuItem(value: 'logout', child: Row(children: [const Icon(Icons.logout, size: 18, color: AppColors.errorRed), const SizedBox(width: 10), Text(AppLocalizations.of(context)!.logOut, style: const TextStyle(color: AppColors.errorRed))])),
+              ],
+              child: Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(color: context.bgCard, borderRadius: BorderRadius.circular(10), border: Border.all(color: context.borderColor)),
+                child: Icon(Icons.more_vert, size: 20, color: context.textPrimary),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Consumer<NotificationProvider>(
+              builder: (context, notifProvider, _) {
+                final count = notifProvider.unreadCount;
+                return GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, Routes.notifications),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: 36, height: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: context.borderColor),
+                        ),
+                        child: Icon(Icons.notifications_outlined, size: 18, color: context.textSecondary),
+                      ),
+                      if (count > 0)
+                        Positioned(
+                          top: -2, right: -2,
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: const BoxDecoration(color: AppColors.errorRed, shape: BoxShape.circle),
+                            constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                            child: Text(
+                              count > 9 ? '9+' : '$count',
+                              style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
-          child: Container(
-            width: 36, height: 36,
-            decoration: BoxDecoration(color: context.bgCard, borderRadius: BorderRadius.circular(10), border: Border.all(color: context.borderColor)),
-            child: Icon(Icons.more_vert, size: 20, color: context.textPrimary),
-          ),
         ),
       ],
     );
@@ -251,8 +302,16 @@ class _ScheduledCardState extends State<_ScheduledCard> {
   bool _cancelling  = false;
   bool _publishing  = false;
   bool _completing  = false;
-  bool _sharingGps  = false;
   final GpsHubService _gpsService = GpsHubService();
+
+  @override
+  void initState() {
+    super.initState();
+    final status = widget.trip.status.toLowerCase();
+    if (status == 'published' || status == 'active') {
+      _gpsService.startSending(tripId: widget.trip.tripId);
+    }
+  }
 
   String _fmtDuration(int minutes) {
     if (minutes < 60) return '$minutes min';
@@ -322,26 +381,6 @@ class _ScheduledCardState extends State<_ScheduledCard> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.read<TripProvider>().errorMessage), backgroundColor: AppColors.errorRed),
       );
-    }
-  }
-
-  Future<void> _toggleGps() async {
-    if (_sharingGps) {
-      await _gpsService.stopSending();
-      setState(() => _sharingGps = false);
-    } else {
-      final ok = await _gpsService.startSending(tripId: widget.trip.tripId);
-      if (!mounted) return;
-      if (ok) {
-        setState(() => _sharingGps = true);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Location permission denied'),
-            backgroundColor: AppColors.errorRed,
-          ),
-        );
-      }
     }
   }
 
@@ -492,47 +531,6 @@ class _ScheduledCardState extends State<_ScheduledCard> {
                   ),
                 ),
               ]),
-              // ── Share Location button ────────────────────────────────
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: _toggleGps,
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: _sharingGps
-                      ? const Color(0xFF4CAF50).withValues(alpha: 0.1)
-                      : context.bgCard,
-                  foregroundColor: _sharingGps
-                      ? const Color(0xFF4CAF50)
-                      : context.textSecondary,
-                  side: BorderSide(
-                    color: _sharingGps
-                        ? const Color(0xFF4CAF50)
-                        : context.borderColor,
-                    width: 1.2,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                icon: Icon(
-                  _sharingGps
-                      ? Icons.location_on
-                      : Icons.location_off_outlined,
-                  size: 15,
-                  color: _sharingGps
-                      ? const Color(0xFF4CAF50)
-                      : context.textSecondary,
-                ),
-                label: Text(
-                  _sharingGps ? 'Sharing Location (Live)' : 'Share My Location',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: _sharingGps
-                        ? const Color(0xFF4CAF50)
-                        : context.textSecondary,
-                  ),
-                ),
-              ),
             ]),
         ),
         ],

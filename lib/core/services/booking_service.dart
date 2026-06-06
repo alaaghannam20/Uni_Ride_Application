@@ -49,8 +49,15 @@ class BookingService {
         AppEndpoints.myBookings,
         queryParameters: status != null ? {ApiKeys.status: status} : null,
       );
-      final data = response.data;
-      List<dynamic> list = data is List ? data : [];
+      final raw = response.data;
+      final List<dynamic> list;
+      if (raw is List) {
+        list = raw;
+      } else if (raw is Map && raw['data'] is List) {
+        list = raw['data'] as List;
+      } else {
+        list = [];
+      }
       if (list.isNotEmpty) debugPrint('=== BOOKING KEYS: ${(list.first as Map).keys.toList()}');
       if (list.isNotEmpty) debugPrint('=== BOOKING SAMPLE: ${list.first}');
       return list.map((item) => BookingModel.fromJson(item)).toList();

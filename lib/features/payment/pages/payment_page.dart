@@ -21,6 +21,14 @@ class _PaymentPageState extends State<PaymentPage> {
   int _selectedMethod = 0;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<PaymentProvider>().fetchWalletBalance();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;

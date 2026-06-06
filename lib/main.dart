@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/provider/admin_provider.dart';
@@ -15,16 +16,22 @@ import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_theme.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
+import 'package:uni_ride_application/core/provider/notification_provider.dart';
 import 'package:uni_ride_application/core/provider/one_signal_service.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppPrefs.init();
 
- await OneSignalService().initialize(
-  languageCode: AppPrefs.getLanguageCode() ?? 'en',
-);
+  if (!kIsWeb) {
+    OneSignalService().setNavigatorKey(navigatorKey);
+    await OneSignalService().initialize(
+      languageCode: AppPrefs.getLanguageCode(),
+    );
+  }
 
   runApp(
     MultiProvider(
@@ -40,6 +47,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => PaymentProvider()),
         ChangeNotifierProvider(create: (_) => RatingProvider()),
         ChangeNotifierProvider(create: (_) => RewardProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: const MainApp(),
     ),
@@ -65,14 +73,17 @@ class _MainAppState extends State<MainApp> {
         if (_lastLanguageCode != languageCode) {
           _lastLanguageCode = languageCode;
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            OneSignalService().initialize(
-              languageCode: languageCode,
-            );
-          });
+          if (!kIsWeb) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              OneSignalService().initialize(
+                languageCode: languageCode,
+              );
+            });
+          }
         }
 
         return MaterialApp(
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
           locale: languageProvider.locale,
           themeMode: themeProvider.themeMode,

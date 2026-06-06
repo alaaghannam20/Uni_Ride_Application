@@ -1292,6 +1292,54 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get notifications;
 
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get markAllRead;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotifications;
+
+  /// No description provided for @notifTypeTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip'**
+  String get notifTypeTrip;
+
+  /// No description provided for @notifTypeBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking'**
+  String get notifTypeBooking;
+
+  /// No description provided for @notifTypeAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get notifTypeAdmin;
+
+  /// No description provided for @notifTypeGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification'**
+  String get notifTypeGeneral;
+
+  /// No description provided for @notifTypeWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get notifTypeWallet;
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get timeJustNow;
+
   /// No description provided for @pushNotifications.
   ///
   /// In en, this message translates to:
@@ -2911,6 +2959,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Booking cancelled successfully'**
   String get cancelledSuccess;
+
+  /// No description provided for @myReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'My Reviews'**
+  String get myReviews;
+
+  /// No description provided for @noReviewsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet'**
+  String get noReviewsYet;
+
+  /// No description provided for @reviewsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Reviews'**
+  String reviewsCount(int count);
+
+  /// No description provided for @gpsConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get gpsConnecting;
+
+  /// No description provided for @gpsConnectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get gpsConnectionFailed;
+
+  /// No description provided for @gpsWaitingForDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for driver...'**
+  String get gpsWaitingForDriver;
+
+  /// No description provided for @gpsLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get gpsLive;
+
+  /// No description provided for @trackTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Trip'**
+  String get trackTrip;
+
+  /// No description provided for @timeMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m ago'**
+  String timeMinutesAgo(int count);
+
+  /// No description provided for @timeHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h ago'**
+  String timeHoursAgo(int count);
+
+  /// No description provided for @timeDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d ago'**
+  String timeDaysAgo(int count);
+
+  /// No description provided for @timeWeeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}w ago'**
+  String timeWeeksAgo(int count);
 }
 
 class _AppLocalizationsDelegate

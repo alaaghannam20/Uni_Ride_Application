@@ -613,6 +613,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
+  String get markAllRead => 'Mark all read';
+
+  @override
+  String get noNotifications => 'No notifications yet';
+
+  @override
+  String get notifTypeTrip => 'Trip';
+
+  @override
+  String get notifTypeBooking => 'Booking';
+
+  @override
+  String get notifTypeAdmin => 'Admin';
+
+  @override
+  String get notifTypeGeneral => 'Notification';
+
+  @override
+  String get notifTypeWallet => 'Wallet';
+
+  @override
+  String get timeJustNow => 'Just now';
+
+  @override
   String get pushNotifications => 'Push notifications';
 
   @override
@@ -1445,4 +1469,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancelledSuccess => 'Booking cancelled successfully';
+
+  @override
+  String get myReviews => 'My Reviews';
+
+  @override
+  String get noReviewsYet => 'No reviews yet';
+
+  @override
+  String reviewsCount(int count) {
+    return '$count Reviews';
+  }
+
+  @override
+  String get gpsConnecting => 'Connecting...';
+
+  @override
+  String get gpsConnectionFailed => 'Connection failed';
+
+  @override
+  String get gpsWaitingForDriver => 'Waiting for driver...';
+
+  @override
+  String get gpsLive => 'Live';
+
+  @override
+  String get trackTrip => 'Track Trip';
+
+  @override
+  String timeMinutesAgo(int count) {
+    return '${count}m ago';
+  }
+
+  @override
+  String timeHoursAgo(int count) {
+    return '${count}h ago';
+  }
+
+  @override
+  String timeDaysAgo(int count) {
+    return '${count}d ago';
+  }
+
+  @override
+  String timeWeeksAgo(int count) {
+    return '${count}w ago';
+  }
 }

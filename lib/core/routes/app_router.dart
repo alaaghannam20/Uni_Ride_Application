@@ -38,6 +38,7 @@ import 'package:uni_ride_application/features/driver/presentation/screens/driver
 import 'package:uni_ride_application/features/trip_details/presentation/screens/trip_details_screen.dart';
 import 'package:uni_ride_application/features/trip_details/presentation/screens/booking_confirmed_screen.dart';
 import 'package:uni_ride_application/features/payment/pages/topup_confirmed_screen.dart';
+import 'package:uni_ride_application/features/notifications/presentation/screens/notifications_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -360,6 +361,11 @@ class AppRouter {
         return MaterialPageRoute(
           settings: settings,
           builder: (_) => TopUpConfirmedScreen(sessionId: sessionId),
+        );
+      case Routes.notifications:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const NotificationsScreen(),
         );
       default:
         return MaterialPageRoute(

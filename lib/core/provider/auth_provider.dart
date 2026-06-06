@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ride_application/core/models/user_model.dart';
+import 'package:uni_ride_application/core/provider/one_signal_service.dart';
 import 'package:uni_ride_application/core/services/auth_service.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 
@@ -25,14 +26,16 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void _loadSavedUser() {
-    final token    = AppPrefs.getToken();
-    final fullName = AppPrefs.getFullName();
-    final email    = AppPrefs.getEmail();
-    final userType = AppPrefs.getUserType();
-
+    final token      = AppPrefs.getToken();
+    final fullName   = AppPrefs.getFullName();
+    final email      = AppPrefs.getEmail();
+    final userType   = AppPrefs.getUserType();
     final profileImage = AppPrefs.getProfileImage();
+    final userId     = AppPrefs.getUserId();
+
     if (token != null && fullName != null) {
       _user = UserModel(
+        userId: userId,
         fullName: fullName,
         email: email ?? '',
         userType: userTypeFromString(userType ?? ''),
@@ -41,6 +44,14 @@ class AuthProvider extends ChangeNotifier {
         profileImage: profileImage,
       );
       _userType = _user!.userType;
+
+      if (userId != null) {
+        OneSignalService().initialize(
+          languageCode: AppPrefs.getLanguageCode(),
+          externalUserId: userId.toString(),
+        );
+      }
+
       notifyListeners();
     }
   }
@@ -170,6 +181,13 @@ class AuthProvider extends ChangeNotifier {
       await AppPrefs.setFullName(userResult.fullName);
       await AppPrefs.setEmail(userResult.email);
       await AppPrefs.setProfileImage(userResult.profileImage);
+      if (userResult.userId != null) {
+        await AppPrefs.setUserId(userResult.userId!);
+        await OneSignalService().initialize(
+          languageCode: AppPrefs.getLanguageCode(),
+          externalUserId: userResult.userId.toString(),
+        );
+      }
       _userType = userResult.userType;
       _setState(AuthState.success);
       return true;
@@ -191,6 +209,13 @@ class AuthProvider extends ChangeNotifier {
       await AppPrefs.setFullName(userResult.fullName);
       await AppPrefs.setEmail(userResult.email);
       await AppPrefs.setProfileImage(userResult.profileImage);
+      if (userResult.userId != null) {
+        await AppPrefs.setUserId(userResult.userId!);
+        await OneSignalService().initialize(
+          languageCode: AppPrefs.getLanguageCode(),
+          externalUserId: userResult.userId.toString(),
+        );
+      }
       _userType = userResult.userType;
       _setState(AuthState.success);
       return true;
@@ -273,6 +298,7 @@ class AuthProvider extends ChangeNotifier {
 
   // Logout
   Future<void> logout() async {
+    await OneSignalService().logout();
     await AppPrefs.logout();
     _user = null;
     _userType = UserType.unauthorized;

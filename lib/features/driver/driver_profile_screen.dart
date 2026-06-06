@@ -6,6 +6,7 @@ import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/provider/rating_provider.dart';
 import 'package:uni_ride_application/features/driver/presentation/screens/driver_reviews_screen.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
@@ -23,6 +24,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileProvider>().fetchDriverProfile();
+      context.read<RatingProvider>().fetchUnreadReviewsCount();
     });
   }
 
@@ -174,7 +176,30 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                           ],
                         ),
                       ),
-                      Icon(Icons.chevron_right, size: 20, color: context.textHint),
+                      Consumer<RatingProvider>(
+                        builder: (_, ratingProvider, _) {
+                          final count = ratingProvider.unreadReviewsCount;
+                          if (count == 0) return Icon(Icons.chevron_right, size: 20, color: context.textHint);
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.orangeprimary,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  '$count new',
+                                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Icon(Icons.chevron_right, size: 20, color: context.textHint),
+                            ],
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),

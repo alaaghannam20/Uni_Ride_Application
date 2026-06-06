@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/notification_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'tabs/find_trips_tab.dart';
@@ -31,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileProvider>().fetchMemberProfile();
+      context.read<NotificationProvider>().fetchNotifications();
       final args = ModalRoute.of(context)?.settings.arguments;
       if (args is Map && args['tabIndex'] is int) {
         setState(() => _activeTabIndex = args['tabIndex'] as int);

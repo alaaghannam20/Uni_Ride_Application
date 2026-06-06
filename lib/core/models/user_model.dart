@@ -19,6 +19,7 @@ UserType userTypeFromString(String value) {
 }
 
 class UserModel {
+  final int? userId;
   final String fullName;
   final String email;
   final UserType userType;
@@ -27,6 +28,7 @@ class UserModel {
   final String? profileImage;
 
   const UserModel({
+    this.userId,
     required this.fullName,
     required this.email,
     required this.userType,
@@ -36,7 +38,9 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final rawId = json[ApiKeys.userId] ?? json['id'] ?? json['Id'] ?? json['UserId'];
     return UserModel(
+      userId: rawId is int ? rawId : int.tryParse(rawId?.toString() ?? ''),
       fullName: json[ApiKeys.fullName] ?? '',
       email: json[ApiKeys.email] ?? '',
       userType: userTypeFromString(json[ApiKeys.userType] ?? ''),

@@ -330,15 +330,19 @@ class AvailableTripApiCard extends StatelessWidget {
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(trip.driverName, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 14, color: context.textPrimary)),
               Row(children: [
-                const Icon(Icons.star, size: 13, color: Color(0xFFF5A623)),
-                const SizedBox(width: 3),
-                Text(trip.driverRating.toStringAsFixed(1), style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
-                const SizedBox(width: 6),
-                Container(width: 1, height: 10, color: AppColors.greySecondary),
-                const SizedBox(width: 6),
-                Icon(Icons.directions_car_outlined, size: 12, color: AppColors.orangeprimary),
-                const SizedBox(width: 3),
-                Text('${trip.totalDriverTrips} trips', style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
+                if (trip.driverRating > 0) ...[
+                  const Icon(Icons.star, size: 13, color: Color(0xFFF5A623)),
+                  const SizedBox(width: 3),
+                  Text(trip.driverRating.toStringAsFixed(1), style: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: AppColors.greySecondary)),
+                  const SizedBox(width: 6),
+                  Container(width: 1, height: 10, color: AppColors.greySecondary),
+                  const SizedBox(width: 6),
+                ],
+                if (trip.totalDriverTrips > 0) ...[
+                  Icon(Icons.directions_car_outlined, size: 12, color: AppColors.orangeprimary),
+                  const SizedBox(width: 3),
+                  Text('${trip.totalDriverTrips} trips', style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),
+                ],
               ]),
               const SizedBox(height: 2),
               Text(trip.vehicleModel, style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: context.textSecondary)),

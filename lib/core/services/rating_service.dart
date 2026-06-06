@@ -36,4 +36,18 @@ class RatingService {
       throw Exception(_cleanError(e));
     }
   }
+
+  Future<int> fetchUnreadReviewsCount() async {
+    try {
+      final response = await DioFactory.get(AppEndpoints.ratingUnreadCount);
+      final data = response.data['data'] ?? response.data;
+      return (data['count'] ?? data['Count'] ?? 0) as int;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  Future<void> markReviewsRead() async {
+    await DioFactory.put(AppEndpoints.ratingMarkAllRead);
+  }
 }

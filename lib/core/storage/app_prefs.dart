@@ -36,8 +36,13 @@ class AppPrefs {
   await _prefs.remove(PrefKeys.token);
 }
 
+  static int? getUserId() => _prefs.getInt(PrefKeys.userId);
+  static Future<void> setUserId(int id) async =>
+      _prefs.setInt(PrefKeys.userId, id);
+
   static Future<void> logout() async {
     await _prefs.remove(PrefKeys.token);
+    await _prefs.remove(PrefKeys.userId);
     await _prefs.remove(PrefKeys.userType);
     await _prefs.remove(PrefKeys.userFullName);
     await _prefs.remove(PrefKeys.userEmail);

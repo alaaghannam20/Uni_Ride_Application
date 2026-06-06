@@ -62,9 +62,16 @@ class AppEndpoints {
   static String gpsLocation(String driverUserId)   => 'Gps/location/$driverUserId';
   static const String gpsHubUrl                    = 'http://uniride.runasp.net/gpsHub';
 
+  // Notification Endpoints
+  static const String notifications      = 'Notification';
+  static const String notificationsRead  = 'Notification/read';
+  static String notificationRead(int id) => 'Notification/$id/read';
+
   // Rating Endpoints
-  static const String ratingSubmit    = 'Rating/submit';
-  static const String ratingMyReviews = 'Rating/my-reviews';
+  static const String ratingSubmit        = 'Rating/submit';
+  static const String ratingMyReviews     = 'Rating/my-reviews';
+  static const String ratingUnreadCount   = 'Rating/unread-count';
+  static const String ratingMarkAllRead   = 'Rating/mark-read';
 
   // Reward Endpoints
   static const String myRewards = 'Reward/my-rewards';

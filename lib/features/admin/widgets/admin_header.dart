@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:uni_ride_application/core/provider/notification_provider.dart';
+import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -72,6 +75,42 @@ class AdminHeader extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              Consumer<NotificationProvider>(
+                builder: (context, notifProvider, _) {
+                  final count = notifProvider.unreadCount;
+                  return GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, Routes.notifications),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: 36, height: 36,
+                          decoration: BoxDecoration(
+                            color: context.bgSubtle,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: context.borderColor),
+                          ),
+                          child: Icon(Icons.notifications_outlined, size: 18, color: context.textSecondary),
+                        ),
+                        if (count > 0)
+                          Positioned(
+                            top: -2, right: -2,
+                            child: Container(
+                              padding: const EdgeInsets.all(3),
+                              decoration: const BoxDecoration(color: AppColors.errorRed, shape: BoxShape.circle),
+                              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                              child: Text(
+                                count > 9 ? '9+' : '$count',
+                                style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ],
           ),
