@@ -186,6 +186,18 @@ class OneSignalService {
     }
   }
 
+  bool get isSubscribed => OneSignal.User.pushSubscription.optedIn ?? false;
+
+  Future<void> setSubscribed(bool enabled) async {
+    try {
+      if (enabled) {
+        await OneSignal.User.pushSubscription.optIn();
+      } else {
+        await OneSignal.User.pushSubscription.optOut();
+      }
+    } catch (_) {}
+  }
+
   Future<void> initializeWithContext(
     BuildContext context, {
     String? externalUserId,

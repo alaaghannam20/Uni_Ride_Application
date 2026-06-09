@@ -9,6 +9,7 @@ import 'package:uni_ride_application/core/storage/app_prefs.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/features/carpool/carpool_reviews_screen.dart';
+import 'package:uni_ride_application/core/provider/one_signal_service.dart';
 
 class CarpoolProfileScreen extends StatefulWidget {
   const CarpoolProfileScreen({super.key});
@@ -18,12 +19,21 @@ class CarpoolProfileScreen extends StatefulWidget {
 }
 
 class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
+  final _oneSignal = OneSignalService();
+  bool _notificationsEnabled = true;
+
   @override
   void initState() {
     super.initState();
+    _notificationsEnabled = _oneSignal.isSubscribed;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileProvider>().fetchCarpoolProfile();
     });
+  }
+
+  Future<void> _toggleNotifications(bool val) async {
+    await _oneSignal.setSubscribed(val);
+    if (mounted) setState(() => _notificationsEnabled = val);
   }
 
   @override
@@ -160,7 +170,19 @@ class _CarpoolProfileScreenState extends State<CarpoolProfileScreen> {
                   _SLabel(text: l.appSettings),
                   const SizedBox(height: 8),
                   _CGroup(items: [
-                    _IItem(icon: Icons.notifications_outlined, title: l.notifications,   subtitle: l.manageYourAlerts),
+                    _IItem(
+                      icon:     Icons.notifications_outlined,
+                      title:    l.notifications,
+                      subtitle: l.manageYourAlerts,
+                      trailing: Switch(
+                        value:              _notificationsEnabled,
+                        onChanged:          _toggleNotifications,
+                        activeThumbColor:   Colors.white,
+                        activeTrackColor:   AppColors.orangeprimary,
+                        inactiveThumbColor: Colors.white,
+                        inactiveTrackColor: AppColors.borderadmincolor,
+                      ),
+                    ),
                     _IItem(icon: Icons.shield_outlined,        title: l.privacySecurity, subtitle: l.controlYourData),
                     _IItem(
                       icon:     Icons.language,

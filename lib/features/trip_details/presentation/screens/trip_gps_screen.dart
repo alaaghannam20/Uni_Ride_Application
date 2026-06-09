@@ -149,6 +149,7 @@ class CheckpointNotificationService {
 
 class TripGpsArgs {
   final String driverName;
+  final String? driverPhotoUrl;
   final double driverRating;
   final String carModel;
   final String carColor;
@@ -159,6 +160,7 @@ class TripGpsArgs {
 
   const TripGpsArgs({
     required this.driverName,
+    this.driverPhotoUrl,
     required this.driverRating,
     required this.carModel,
     required this.carColor,
@@ -567,39 +569,24 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
             child: _buildDriverCard(),
           ),
 
-          // ── Waiting overlay ───────────────────────────────────────────────
-          if (!_isLive)
-            Positioned(
-              top: 160, left: 0, right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    if (_gpsStatus == _GpsStatus.connecting)
-                      const SizedBox(
-                          width: 14, height: 14,
-                          child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white))
-                    else
-                      const Icon(Icons.location_searching,
-                          color: Colors.white, size: 16),
-                    const SizedBox(width: 10),
-                    Text(_statusLabel(l),
-                        style: const TextStyle(
-                            color: Colors.white, fontSize: 13)),
-                  ]),
-                ),
-              ),
-            ),
         ],
       ),
     );
   }
+
+  Widget _driverInitialAvatar() => Container(
+        color: AppColors.orangeprimary.withValues(alpha: 0.15),
+        alignment: Alignment.center,
+        child: Text(
+          widget.args.driverName.isNotEmpty
+              ? widget.args.driverName[0].toUpperCase()
+              : '?',
+          style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.orangeprimary),
+        ),
+      );
 
   Widget _buildDriverCard() {
     final ctx = context;
@@ -618,21 +605,15 @@ class _TripGpsScreenState extends State<TripGpsScreen> {
       child: Row(children: [
         Container(
           width: 48, height: 48,
-          decoration: BoxDecoration(
-            color: AppColors.orangeprimary.withValues(alpha: 0.15),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              widget.args.driverName.isNotEmpty
-                  ? widget.args.driverName[0].toUpperCase()
-                  : '?',
-              style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.orangeprimary),
-            ),
-          ),
+          decoration: const BoxDecoration(shape: BoxShape.circle),
+          clipBehavior: Clip.antiAlias,
+          child: widget.args.driverPhotoUrl != null
+              ? Image.network(
+                  'http://uniride.runasp.net/${widget.args.driverPhotoUrl}',
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, _) => _driverInitialAvatar(),
+                )
+              : _driverInitialAvatar(),
         ),
         const SizedBox(width: 12),
         Expanded(

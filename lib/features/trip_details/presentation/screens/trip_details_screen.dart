@@ -71,7 +71,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                       const SizedBox(height: 16),
                       _buildDriverInfo(context, l, trip.driverName, trip.profilePicturePath, trip.driverRating, trip.totalDriverTrips, trip.vehicleModel, trip.vehicleType, trip.driverPhone),
                       const SizedBox(height: 16),
-                      _buildTrackTripButton(context, l, trip.driverName, trip.driverRating, trip.vehicleModel, trip.vehicleType, trip.tripId, trip.driverUserId, trip.pickupLocation, trip.dropoffLocation),
+                      _buildTrackTripButton(context, l, trip.driverName, trip.profilePicturePath, trip.driverRating, trip.vehicleModel, trip.vehicleType, trip.tripId, trip.driverUserId, trip.pickupLocation, trip.dropoffLocation),
                       if (trip.stops.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         _buildPickupPoints(l, trip.stops),
@@ -230,11 +230,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     );
   }
 
-  Widget _buildTrackTripButton(BuildContext context, AppLocalizations l, String driverName, double driverRating, String vehicleModel, String vehicleType, int tripId, String driverUserId, String pickupLocation, String dropoffLocation) {
+  Widget _buildTrackTripButton(BuildContext context, AppLocalizations l, String driverName, String? driverPhoto, double driverRating, String vehicleModel, String vehicleType, int tripId, String driverUserId, String pickupLocation, String dropoffLocation) {
     return GestureDetector(
       onTap: () {
         final gpsArgs = TripGpsArgs(
           driverName: driverName,
+          driverPhotoUrl: driverPhoto,
           driverRating: driverRating,
           carModel: vehicleModel,
           carColor: vehicleType,

@@ -9,6 +9,7 @@ import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/provider/rating_provider.dart';
 import 'package:uni_ride_application/features/driver/presentation/screens/driver_reviews_screen.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
+import 'package:uni_ride_application/core/provider/one_signal_service.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 
 class DriverProfileScreen extends StatefulWidget {
@@ -19,13 +20,22 @@ class DriverProfileScreen extends StatefulWidget {
 }
 
 class _DriverProfileScreenState extends State<DriverProfileScreen> {
+  final _oneSignal = OneSignalService();
+  bool _notificationsEnabled = true;
+
   @override
   void initState() {
     super.initState();
+    _notificationsEnabled = _oneSignal.isSubscribed;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileProvider>().fetchDriverProfile();
       context.read<RatingProvider>().fetchUnreadReviewsCount();
     });
+  }
+
+  Future<void> _toggleNotifications(bool val) async {
+    await _oneSignal.setSubscribed(val);
+    if (mounted) setState(() => _notificationsEnabled = val);
   }
 
   @override
@@ -238,7 +248,19 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   _SectionLabel(text: l.appSettings),
                   const SizedBox(height: 8),
                   _CardGroup(items: [
-                    _InfoItem(icon: Icons.notifications_outlined, title: l.notifications, subtitle: l.manageYourAlerts),
+                    _InfoItem(
+                      icon:     Icons.notifications_outlined,
+                      title:    l.notifications,
+                      subtitle: l.manageYourAlerts,
+                      trailing: Switch(
+                        value:              _notificationsEnabled,
+                        onChanged:          _toggleNotifications,
+                        activeThumbColor:   Colors.white,
+                        activeTrackColor:   AppColors.orangeprimary,
+                        inactiveThumbColor: Colors.white,
+                        inactiveTrackColor: AppColors.borderadmincolor,
+                      ),
+                    ),
                     _InfoItem(
                       icon:     Icons.language,
                       title:    l.languageLabel,
@@ -258,7 +280,6 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         inactiveTrackColor: AppColors.borderadmincolor,
                       ),
                     ),
-                    _InfoItem(icon: Icons.credit_card_outlined,   title: l.paymentMethods,  subtitle: l.manageWithdrawals),
                     _InfoItem(icon: Icons.shield_outlined,        title: l.privacySecurity, subtitle: l.controlYourData),
                   ]),
 
