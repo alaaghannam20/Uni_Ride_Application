@@ -121,7 +121,7 @@ class _AdminSidebarState extends State<AdminSidebar> {
                     const SizedBox(height: 4),
                     _buildMenuItem(
                       context,
-                      title: locale.students,
+                      title: locale.universityMembers,
                       icon: Icons.people_outline,
                       route: '/AdminStudents',
                       isActive: widget.activeRoute == '/AdminStudents',

@@ -390,6 +390,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get student => 'الطالب';
 
   @override
+  String get universityMemberManagement => 'إدارة أعضاء الجامعة';
+
+  @override
+  String get universityMembers => 'أعضاء الجامعة';
+
+  @override
   String get joined => 'تاريخ الانضمام';
 
   @override
@@ -1324,6 +1330,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noStudentsFound => 'لا يوجد طلاب';
 
   @override
+  String get noUniversityMembersFound => 'لا يوجد أعضاء جامعة';
+
+  @override
   String get noDriversFound => 'لا يوجد سائقون';
 
   @override
@@ -1358,6 +1367,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get publish => 'نشر';
+
+  @override
+  String get start_trip => 'بدء الرحلة';
+
+  @override
+  String get start_trip_confirm_title => 'بدء هذه الرحلة؟';
+
+  @override
+  String get start_trip_confirm_body =>
+      'سيتم مشاركة موقعك الحالي مع الركاب حتى تقوم بوضع علامة على الرحلة كمكتملة.';
+
+  @override
+  String get start_trip_action => 'بدء';
+
+  @override
+  String get live => 'مباشر';
 
   @override
   String get selectDate => 'اختر التاريخ';

@@ -51,7 +51,7 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
       child: Column(
         children: [
           AdminHeader(
-            title: locale.studentManagement,
+            title: locale.universityMemberManagement,
             showSearchAndFilter: true,
             searchHint: 'Search students...',
             onSearch: (val) => setState(() => _query = val.trim().toLowerCase()),
@@ -92,7 +92,7 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
                             ),
                             child: Row(
                               children: [
-                                Expanded(flex: 3, child: Text(locale.student.toUpperCase(),     style: AppStyle.adminCardSection(context))),
+                                Expanded(flex: 3, child: Text(locale.universityMember.toUpperCase(),     style: AppStyle.adminCardSection(context))),
                                 Expanded(flex: 3, child: Text(locale.emailAddress.toUpperCase(), style: AppStyle.adminCardSection(context))),
                                 Expanded(flex: 2, child: Text(locale.totalTrips.toUpperCase(),   style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
                                 Expanded(flex: 2, child: Text(locale.joined.toUpperCase(),       style: AppStyle.adminCardSection(context), textAlign: TextAlign.center)),
@@ -104,7 +104,7 @@ class _AdminStudentsPageState extends State<AdminStudentsPage> {
                         if (students.isEmpty)
                           Padding(
                             padding: const EdgeInsets.all(32),
-                            child: Center(child: Text(locale.noStudentsFound, style: const TextStyle(color: AppColors.greyHint))),
+                            child: Center(child: Text(locale.noUniversityMembersFound, style: const TextStyle(color: AppColors.greyHint))),
                           )
                         else
                           ListView.builder(

@@ -226,6 +226,22 @@ class TripProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> startTrip(int tripId) async {
+    _actionState = TripState.loading;
+    notifyListeners();
+    try {
+      await _tripService.startTrip(tripId);
+      _actionState = TripState.success;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _actionState  = TripState.error;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<void> fetchMyTrips() async {
     _myTripsState = TripState.loading;
     notifyListeners();

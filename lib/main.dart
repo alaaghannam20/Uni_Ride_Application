@@ -6,6 +6,7 @@ import 'package:uni_ride_application/core/provider/app_language_provider.dart';
 import 'package:uni_ride_application/core/provider/app_theme_provider.dart';
 import 'package:uni_ride_application/core/provider/auth_provider.dart';
 import 'package:uni_ride_application/core/provider/booking_provider.dart';
+import 'package:uni_ride_application/core/provider/gps_provider.dart';
 import 'package:uni_ride_application/core/provider/payment_provider.dart';
 import 'package:uni_ride_application/core/provider/profile_provider.dart';
 import 'package:uni_ride_application/core/provider/rating_provider.dart';
@@ -42,6 +43,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => TripProvider()),
+        ChangeNotifierProvider(create: (_) => GpsProvider()),
         ChangeNotifierProvider(create: (_) => BookingProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => PaymentProvider()),

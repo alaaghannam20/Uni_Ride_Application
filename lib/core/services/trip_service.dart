@@ -129,6 +129,14 @@ class TripService {
     }
   }
 
+  Future<void> startTrip(int tripId) async {
+    try {
+      await DioFactory.post(AppEndpoints.startTrip(tripId));
+    } catch (e) {
+      throw Exception(_cleanError(e));
+    }
+  }
+
   Future<void> cancelTrip(int tripId) async {
     try {
       await DioFactory.put(AppEndpoints.cancelTrip(tripId));

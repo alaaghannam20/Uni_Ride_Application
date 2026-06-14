@@ -854,6 +854,18 @@ abstract class AppLocalizations {
   /// **'Student'**
   String get student;
 
+  /// No description provided for @universityMemberManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'University Member Management'**
+  String get universityMemberManagement;
+
+  /// No description provided for @universityMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'University Members'**
+  String get universityMembers;
+
   /// No description provided for @joined.
   ///
   /// In en, this message translates to:
@@ -2690,6 +2702,12 @@ abstract class AppLocalizations {
   /// **'No students found'**
   String get noStudentsFound;
 
+  /// No description provided for @noUniversityMembersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No university members found'**
+  String get noUniversityMembersFound;
+
   /// No description provided for @noDriversFound.
   ///
   /// In en, this message translates to:
@@ -2761,6 +2779,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Publish'**
   String get publish;
+
+  /// No description provided for @start_trip.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Trip'**
+  String get start_trip;
+
+  /// No description provided for @start_trip_confirm_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Start this trip?'**
+  String get start_trip_confirm_title;
+
+  /// No description provided for @start_trip_confirm_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your live location will be shared with passengers until you mark the trip as complete.'**
+  String get start_trip_confirm_body;
+
+  /// No description provided for @start_trip_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start_trip_action;
+
+  /// No description provided for @live.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get live;
 
   /// No description provided for @selectDate.
   ///

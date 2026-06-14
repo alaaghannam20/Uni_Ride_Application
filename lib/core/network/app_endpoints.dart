@@ -36,6 +36,7 @@ class AppEndpoints {
   static String cancelTrip(int id)   => 'Trip/$id/cancel';
   static String completeTrip(int id) => 'Trip/$id/complete';
   static String publishTrip(int id)  => 'Trip/$id/publish';
+  static String startTrip(int id)    => 'Trip/$id/start';
 
   // Booking Endpoints
   static const String bookingCreate = 'booking/create';

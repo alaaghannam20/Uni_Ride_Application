@@ -392,6 +392,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get student => 'Student';
 
   @override
+  String get universityMemberManagement => 'University Member Management';
+
+  @override
+  String get universityMembers => 'University Members';
+
+  @override
   String get joined => 'Joined';
 
   @override
@@ -1330,6 +1336,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noStudentsFound => 'No students found';
 
   @override
+  String get noUniversityMembersFound => 'No university members found';
+
+  @override
   String get noDriversFound => 'No drivers found';
 
   @override
@@ -1364,6 +1373,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get publish => 'Publish';
+
+  @override
+  String get start_trip => 'Start Trip';
+
+  @override
+  String get start_trip_confirm_title => 'Start this trip?';
+
+  @override
+  String get start_trip_confirm_body =>
+      'Your live location will be shared with passengers until you mark the trip as complete.';
+
+  @override
+  String get start_trip_action => 'Start';
+
+  @override
+  String get live => 'Live';
 
   @override
   String get selectDate => 'Select Date';

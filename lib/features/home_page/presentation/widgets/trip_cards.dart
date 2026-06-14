@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_ride_application/core/constants/app_fee.dart';
+import 'package:uni_ride_application/core/provider/gps_provider.dart';
 import 'package:uni_ride_application/core/provider/trip_provider.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
+import 'package:uni_ride_application/core/services/checkpoint_service.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
+import 'package:uni_ride_application/features/driver/presentation/widgets/start_trip_sheet.dart';
 import 'package:uni_ride_application/features/home_page/data/models/available_trip_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/my_trip_model.dart';
 import 'package:uni_ride_application/features/home_page/data/models/trip_model.dart';
@@ -408,6 +411,35 @@ class MyTripApiCard extends StatefulWidget {
 
 class _MyTripApiCardState extends State<MyTripApiCard> {
   bool _completing = false;
+  bool _publishing = false;
+  bool _starting = false;
+  bool _checkpointChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.trip.status.toLowerCase() == 'active') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final gps = context.read<GpsProvider>();
+        if (gps.activeTripId != widget.trip.tripId) {
+          gps.startTracking(widget.trip.tripId);
+        }
+        _checkCheckpoints();
+      });
+    }
+  }
+
+  Future<void> _checkCheckpoints() async {
+    if (_checkpointChecked) return;
+    _checkpointChecked = true;
+    final checkpoints = await CheckpointService().fetchForTrip(
+      widget.trip.pickupLocation,
+      widget.trip.dropoffLocation,
+    );
+    if (!mounted || checkpoints.isEmpty) return;
+    await CheckpointNotificationService.showCheckpointAlert(checkpoints);
+  }
 
   String _formatDate(String iso) {
     try {
@@ -415,6 +447,46 @@ class _MyTripApiCardState extends State<MyTripApiCard> {
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       return '${dt.day} ${months[dt.month - 1]}, ${dt.year}';
     } catch (_) { return iso; }
+  }
+
+  Future<void> _onPublish() async {
+    setState(() => _publishing = true);
+    final success = await context.read<TripProvider>().publishTrip(widget.trip.tripId);
+    if (!mounted) return;
+    setState(() => _publishing = false);
+    if (success) {
+      context.read<TripProvider>().fetchDriverScheduled();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.read<TripProvider>().errorMessage), backgroundColor: Colors.red),
+      );
+    }
+  }
+
+  Future<void> _onStartTrip() async {
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const StartTripSheet(),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _starting = true);
+    final success = await context.read<TripProvider>().startTrip(widget.trip.tripId);
+    if (!mounted) return;
+    setState(() => _starting = false);
+
+    if (success) {
+      await context.read<GpsProvider>().startTracking(widget.trip.tripId);
+      if (!mounted) return;
+      _checkCheckpoints();
+      context.read<TripProvider>().fetchDriverScheduled();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.read<TripProvider>().errorMessage), backgroundColor: Colors.red),
+      );
+    }
   }
 
   Future<void> _onComplete() async {
@@ -443,6 +515,11 @@ class _MyTripApiCardState extends State<MyTripApiCard> {
     if (!mounted) return;
     setState(() => _completing = false);
     if (success) {
+      final gps = context.read<GpsProvider>();
+      if (gps.activeTripId == widget.trip.tripId) {
+        await gps.stopTracking();
+      }
+      if (!mounted) return;
       context.read<TripProvider>().fetchDriverScheduled();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -491,7 +568,28 @@ class _MyTripApiCardState extends State<MyTripApiCard> {
                 Text(statusLabel, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: statusColor)),
               ]),
             ),
-            Icon(Icons.chevron_right, size: 18, color: context.textHint),
+            Row(children: [
+              if (statusLower == 'inprogress')
+                Consumer<GpsProvider>(
+                  builder: (context, gps, _) {
+                    if (gps.activeTripId != trip.tripId) return const SizedBox.shrink();
+                    return Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF00A63E).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Container(width: 6, height: 6, decoration: const BoxDecoration(color: Color(0xFF00A63E), shape: BoxShape.circle)),
+                        const SizedBox(width: 4),
+                        Text(l.live, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF00A63E))),
+                      ]),
+                    );
+                  },
+                ),
+              Icon(Icons.chevron_right, size: 18, color: context.textHint),
+            ]),
           ]),
           const SizedBox(height: 16),
           Row(children: [
@@ -579,6 +677,46 @@ class _MyTripApiCardState extends State<MyTripApiCard> {
                   ),
                 ),
               ),
+              if (!['scheduled', 'inprogress', 'completed', 'cancelled'].contains(statusLower)) ...[
+                const SizedBox(width: 8),
+                // ── Publish ──
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _publishing ? null : _onPublish,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: AppColors.orangeprimary,
+                      foregroundColor: Colors.white,
+                      side: BorderSide.none,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    icon: _publishing
+                        ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : const Icon(Icons.send_rounded, size: 14, color: Colors.white),
+                    label: Text(l.publish, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Colors.white)),
+                  ),
+                ),
+              ],
+              if (statusLower == 'scheduled') ...[
+                const SizedBox(width: 8),
+                // ── Start Trip ──
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _starting ? null : _onStartTrip,
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: AppColors.orangeprimary,
+                      foregroundColor: Colors.white,
+                      side: BorderSide.none,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    icon: _starting
+                        ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : const Icon(Icons.play_circle_fill_rounded, size: 14, color: Colors.white),
+                    label: Text(l.start_trip, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Colors.white)),
+                  ),
+                ),
+              ],
               const SizedBox(width: 8),
               // ── Complete ──
               Expanded(
