@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/one_signal_service.dart';
 import 'package:uni_ride_application/core/services/auth_service.dart';
@@ -49,7 +49,11 @@ class AuthProvider extends ChangeNotifier {
         OneSignalService().initialize(
           languageCode: AppPrefs.getLanguageCode(),
           externalUserId: userId.toString(),
-        );
+        ).then((_) {
+          if (kDebugMode) {
+            debugPrint('OneSignal: external_id linked for saved user $userId');
+          }
+        });
       }
 
       notifyListeners();

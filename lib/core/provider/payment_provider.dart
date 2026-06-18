@@ -43,8 +43,8 @@ class PaymentProvider extends ChangeNotifier {
   Future<CheckoutSessionModel?> startBookTrip({
     required int tripId,
     required int seatCount,
-    String successUrl = 'https://google.com',
-    String cancelUrl = 'https://google.com',
+    String successUrl = 'uniride://payment/success',
+    String cancelUrl = 'uniride://payment/cancel',
   }) async {
     _checkoutState = PaymentState.loading;
     notifyListeners();
@@ -84,8 +84,8 @@ class PaymentProvider extends ChangeNotifier {
 
   Future<CheckoutSessionModel?> startTopUp({
     required double amount,
-    String successUrl = 'https://google.com',
-    String cancelUrl = 'https://google.com',
+    String successUrl = 'uniride://payment/success',
+    String cancelUrl = 'uniride://payment/cancel',
   }) async {
     _checkoutState = PaymentState.loading;
     notifyListeners();

@@ -110,14 +110,17 @@ class _CarpoolTabState extends State<CarpoolTab> {
                     if (provider.availableTripsState == TripState.error) {
                       return Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red)));
                     }
-                    if (provider.availableTrips.isEmpty) {
+                    final carpoolTrips = provider.availableTrips
+                        .where((t) => t.driverType.toLowerCase() == 'carpool')
+                        .toList();
+                    if (carpoolTrips.isEmpty) {
                       return Center(child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 40),
                         child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint)),
                       ));
                     }
                     return Column(
-                      children: provider.availableTrips
+                      children: carpoolTrips
                           .map((trip) => AvailableTripApiCard(trip: trip))
                           .toList(),
                     );

@@ -71,13 +71,19 @@ class OneSignalService {
   void _handleNotificationTap(Map<String, dynamic>? data) {
     if (_navigatorKey == null) return;
 
-    final type = data?['type'] as String?;
+    final rawType = data?['type'] as String?;
+    final type = rawType?.toLowerCase();
     final rawTripId = data?['tripId'];
     final tripId = rawTripId is int
         ? rawTripId
         : int.tryParse(rawTripId?.toString() ?? '');
 
+    final userType = AppPrefs.getUserType() ?? '';
+    final isDriver = userType == 'driver' || userType == 'carpool';
+
     switch (type) {
+      // backend: "trip" / "Trip"  →  trip started or updated
+      case 'trip':
       case 'trip_start':
       case 'trip_update':
         if (tripId != null) {
@@ -85,19 +91,34 @@ class OneSignalService {
             Routes.tripDetails,
             arguments: tripId,
           );
+        } else {
+          _navigatorKey!.currentState?.pushNamedAndRemoveUntil(
+            isDriver ? Routes.driverhome : Routes.home,
+            (route) => false,
+          );
         }
         break;
 
+      // backend: "booking"  →  driver gets new booking / passenger booking confirmed
+      case 'booking':
       case 'booking_confirmed':
       case 'trip_cancelled':
-        // روّح لشاشة رحلاتي (tab index 1)
-        _navigatorKey!.currentState?.pushNamedAndRemoveUntil(
-          Routes.home,
-          (route) => false,
-          arguments: {'tabIndex': 1},
-        );
+        if (isDriver) {
+          _navigatorKey!.currentState?.pushNamedAndRemoveUntil(
+            Routes.driverhome,
+            (route) => false,
+          );
+        } else {
+          _navigatorKey!.currentState?.pushNamedAndRemoveUntil(
+            Routes.home,
+            (route) => false,
+            arguments: {'tabIndex': 1},
+          );
+        }
         break;
 
+      // backend: "admin"  →  admin approved driver account
+      case 'admin':
       case 'admin_approved':
       case 'new_booking':
         _navigatorKey!.currentState?.pushNamedAndRemoveUntil(
@@ -107,12 +128,8 @@ class OneSignalService {
         break;
 
       default:
-        final userType = AppPrefs.getUserType() ?? '';
-        final homeRoute = userType == 'driver' || userType == 'carpool'
-            ? Routes.driverhome
-            : Routes.home;
         _navigatorKey!.currentState?.pushNamedAndRemoveUntil(
-          homeRoute,
+          isDriver ? Routes.driverhome : Routes.home,
           (route) => false,
         );
     }
@@ -127,15 +144,6 @@ class OneSignalService {
   Future<void> _ensureLogin(String externalUserId) async {
     try {
       if (_loggedExternalUserId == externalUserId) return;
-
-      final hasPermission = OneSignal.Notifications.permission;
-
-      if (!hasPermission) {
-        if (kDebugMode) {
-          debugPrint('OneSignal: Cannot login without permission');
-        }
-        return;
-      }
 
       await OneSignal.login(externalUserId);
 

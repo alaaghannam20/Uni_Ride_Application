@@ -69,7 +69,7 @@ class HomeHeader extends StatelessWidget {
                         size: 14, color: AppColors.orangeprimary),
                     const SizedBox(width: 4),
                     Text(
-                      'Tulkarm, Kadori St',
+                      'Tulkarm, Kadoorie St',
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w500,

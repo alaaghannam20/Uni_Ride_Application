@@ -218,7 +218,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               iconBgColor: AppColors.adminInfoBG,
                               label: l10n.email,
                               value: profile?.email ?? '...',
-                              showChevron: true,
                             ),
                             Divider(height: 1, color: context.borderColor),
                             _buildInfoTile(
@@ -239,7 +238,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               iconBgColor: AppColors.amberWarningBg,
                               label: l10n.universityMember,
                               value: profile?.memberType ?? '...',
-                              showChevron: true,
                             ),
                           ],
                         ),
@@ -345,7 +343,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           iconBgColor: AppColors.adminErrorBG,
                           label: l10n.privacySecurity,
                           value: l10n.managePrivacySettings,
-                          showChevron: true,
                         ),
                         Divider(
                           height: 1,
@@ -358,7 +355,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           iconBgColor: AppColors.adminInfoBG,
                           label: l10n.helpSupport,
                           value: l10n.getHelpOrContact,
-                          showChevron: true,
                         ),
                       ],
                     ),

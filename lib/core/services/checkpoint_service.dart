@@ -97,10 +97,17 @@ class CheckpointNotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
   static bool _initialized = false;
 
-  static Future<void> _ensureInit() async {
+  static Future<void> initNotification() async {
     if (_initialized) return;
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    await _plugin.initialize(const InitializationSettings(android: android));
+    const ios = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    await _plugin.initialize(
+      const InitializationSettings(android: android, iOS: ios),
+    );
     // Request permission on Android 13+
     await _plugin
         .resolvePlatformSpecificImplementation<
@@ -109,9 +116,32 @@ class CheckpointNotificationService {
     _initialized = true;
   }
 
+  static Future<void> showNotification({
+    int id = 0,
+    String? title,
+    String? body,
+  }) async {
+    await initNotification();
+    await _plugin.show(
+      id,
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_channel_id',
+          'Daily Notifications',
+          channelDescription: 'Daily Notification Channel',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+    );
+  }
+
   static Future<void> showCheckpointAlert(
       List<CheckpointData> checkpoints) async {
-    await _ensureInit();
+    await initNotification();
     final blocked = checkpoints.where((c) => c.enteringStatus != 'سالك').toList();
     final title = blocked.isNotEmpty ? '⚠️ حاجز مغلق على طريقك!' : 'ℹ️ حاجز على طريقك';
     final body = blocked.isNotEmpty

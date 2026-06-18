@@ -19,6 +19,7 @@ import 'package:uni_ride_application/core/theme/app_theme.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/core/provider/notification_provider.dart';
 import 'package:uni_ride_application/core/provider/one_signal_service.dart';
+import 'package:uni_ride_application/core/services/checkpoint_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -26,6 +27,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppPrefs.init();
+
+  await CheckpointNotificationService.initNotification();
 
   if (!kIsWeb) {
     OneSignalService().setNavigatorKey(navigatorKey);

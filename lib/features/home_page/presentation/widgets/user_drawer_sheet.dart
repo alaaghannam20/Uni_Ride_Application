@@ -138,54 +138,12 @@ class UserDrawerSheet extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // ─── Wallet Balance ────────────────────────────────────────
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, Routes.myWallet);
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: context.isDark ? context.bgSubtle : AppColors.walletCardBg,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: context.isDark ? context.borderColor : AppColors.walletCardBorder),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.orangeprimary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.account_balance_wallet_outlined, color: AppColors.orangeprimary, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:[
-                        Text(l.walletBalance, style: TextStyle(fontSize: 12, color: context.textSecondary)),
-                        const SizedBox(height: 2),
-                        Text('₪${profile?.walletBalance.toStringAsFixed(2) ?? '0.00'}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: context.textPrimary)),
-                      ],
-                    ),
-                  ),
-                  Icon(Icons.chevron_right, color: context.textHint),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
           // ─── Menu Items ────────────────────────────────────────────
           _menuItem(
             context,
             icon: Icons.person_outline,
-            iconColor: AppColors.adminInfoText,
-            iconBg: context.isDark ? context.bgSubtle : AppColors.adminInfoBG,
+            iconColor: AppColors.orangeprimary,
+            iconBg: context.isDark ? context.bgSubtle : const Color(0xFFFFF7ED),
             title: l.myProfile,
             subtitle: l.viewAndEditProfile,
             onTap: () {
@@ -195,9 +153,21 @@ class UserDrawerSheet extends StatelessWidget {
           ),
           _menuItem(
             context,
+            icon: Icons.account_balance_wallet_outlined,
+            iconColor: const Color(0xFF059669),
+            iconBg: context.isDark ? context.bgSubtle : const Color(0xFFECFDF5),
+            title: l.walletBalance,
+            subtitle: '₪${profile?.walletBalance.toStringAsFixed(2) ?? '0.00'}',
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, Routes.myWallet);
+            },
+          ),
+          _menuItem(
+            context,
             icon: Icons.access_time,
-            iconColor: AppColors.emeraldGreen,
-            iconBg: context.isDark ? context.bgSubtle : AppColors.emeraldGreenBg,
+            iconColor: AppColors.adminInfoText,
+            iconBg: context.isDark ? context.bgSubtle : AppColors.adminInfoBG,
             title: l.my_trips,
             subtitle: l.viewTripHistory,
             onTap: () {
