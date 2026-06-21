@@ -55,7 +55,18 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         label: Text(l.scheduleTrip, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: RefreshIndicator(
+          onRefresh: () {
+            final tripProv = context.read<TripProvider>();
+            return Future.wait([
+              context.read<ProfileProvider>().fetchDriverProfile(),
+              tripProv.fetchDriverScheduled(),
+              tripProv.fetchDriverHistory(),
+            ]);
+          },
+          color: AppColors.orangeprimary,
+          child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,6 +94,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     : _HistoryCard(trip: t)),
               const SizedBox(height: 100),
             ],
+          ),
           ),
         ),
       ),

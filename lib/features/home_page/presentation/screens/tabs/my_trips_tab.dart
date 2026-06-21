@@ -6,6 +6,7 @@ import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/l10n/app_localizations.dart';
 import 'package:uni_ride_application/core/routes/routes.dart';
+
 class MyTripsTab extends StatefulWidget {
   const MyTripsTab({super.key});
 
@@ -14,7 +15,7 @@ class MyTripsTab extends StatefulWidget {
 }
 
 class _MyTripsTabState extends State<MyTripsTab> {
-  int _filterIndex = 0; // 0: All, 1: Upcoming, 2: Completed, 3: Cancelled
+  int _filterIndex = 0;
 
   @override
   void initState() {
@@ -73,19 +74,28 @@ class _MyTripsTabState extends State<MyTripsTab> {
   }
 
   Widget _buildBody(BookingProvider provider, List<BookingModel> bookings, AppLocalizations l) {
-    if (provider.listState == BookingState.loading) {
+    if (provider.listState == BookingState.loading && bookings.isEmpty) {
       return const Center(child: CircularProgressIndicator(color: AppColors.orangeprimary));
     }
-    if (provider.listState == BookingState.error) {
-      return Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red, fontSize: 14), textAlign: TextAlign.center));
-    }
-    if (bookings.isEmpty) {
-      return Center(child: Text(l.noTripsFound, style: const TextStyle(color: AppColors.greyHint)));
-    }
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: bookings.length,
-      itemBuilder: (context, index) => _MyBookingCard(booking: bookings[index]),
+
+    return RefreshIndicator(
+      onRefresh: () => provider.fetchMyBookings(),
+      color: AppColors.orangeprimary,
+      child: provider.listState == BookingState.error
+          ? ListView(children: [
+              const SizedBox(height: 100),
+              Center(child: Text(provider.errorMessage, style: const TextStyle(color: Colors.red, fontSize: 14), textAlign: TextAlign.center)),
+            ])
+          : bookings.isEmpty
+              ? ListView(children: [
+                  const SizedBox(height: 100),
+                  Center(child: Text(l.noTripsFound, style: const TextStyle(color: AppColors.greyHint))),
+                ])
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: bookings.length,
+                  itemBuilder: (context, index) => _MyBookingCard(booking: bookings[index]),
+                ),
     );
   }
 

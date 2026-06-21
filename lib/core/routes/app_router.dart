@@ -368,6 +368,15 @@ class AppRouter {
           builder: (_) => const NotificationsScreen(),
         );
       default:
+        // Handle Stripe deep-link: uniride://success?session_id=...
+        final routeName = settings.name ?? '';
+        if (routeName.startsWith('/success') || routeName.startsWith('/payment/success')) {
+          final uri = Uri.tryParse(routeName);
+          final sessionId = uri?.queryParameters['session_id'] ?? '';
+          return MaterialPageRoute(
+            builder: (_) => TopUpConfirmedScreen(sessionId: sessionId),
+          );
+        }
         return MaterialPageRoute(
           builder: (_) => Scaffold(
             body: Center(child: Text("Route Not Found: ${settings.name}")),

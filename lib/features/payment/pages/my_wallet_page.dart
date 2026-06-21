@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uni_ride_application/core/provider/payment_provider.dart';
-import 'package:uni_ride_application/core/routes/routes.dart';
 import 'package:uni_ride_application/core/theme/app_colors.dart';
 import 'package:uni_ride_application/core/theme/app_theme_colors.dart';
 import 'package:uni_ride_application/core/theme/app_style.dart';
@@ -202,37 +201,6 @@ class _MyWalletPageState extends State<MyWalletPage> {
     );
   }
 
-  void _showReturnDialog(BuildContext context, String sessionId) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: context.bgCard,
-        title: Text(
-          AppLocalizations.of(context)!.topUpSuccess,
-          style: TextStyle(color: context.textPrimary),
-        ),
-        content: Text(
-          AppLocalizations.of(context)!.walletHasBeenCharged,
-          style: TextStyle(color: context.textSecondary),
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              Navigator.pushNamed(context, Routes.topUpConfirmed, arguments: sessionId);
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.orangeprimary),
-            child: Text(
-              AppLocalizations.of(context)!.continu,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showTopUpDialog(BuildContext context) {
     final controller = TextEditingController();
     showDialog(
@@ -267,10 +235,7 @@ class _MyWalletPageState extends State<MyWalletPage> {
                 }
                 final uri = Uri.parse(session.checkoutUrl);
                 if (await canLaunchUrl(uri)) {
-                  await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
-                  if (context.mounted) {
-                    _showReturnDialog(context, session.sessionId);
-                  }
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
                 } else if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Could not open payment page'), backgroundColor: Colors.red),

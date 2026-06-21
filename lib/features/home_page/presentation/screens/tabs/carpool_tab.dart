@@ -90,7 +90,17 @@ class _CarpoolTabState extends State<CarpoolTab> {
         ),
         Divider(height: 1, thickness: 1, color: context.borderColor),
         Expanded(
-          child: ListView(
+          child: RefreshIndicator(
+            onRefresh: () {
+              final tripProv = context.read<TripProvider>();
+              final userType = context.read<AuthProvider>().userType;
+              return Future.wait([
+                tripProv.fetchAvailableTrips(),
+                if (userType == UserType.carpool) tripProv.fetchDriverScheduled(),
+              ]);
+            },
+            color: AppColors.orangeprimary,
+            child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
               const SizedBox(height: 24),
@@ -142,6 +152,7 @@ class _CarpoolTabState extends State<CarpoolTab> {
                 ),
               ],
             ],
+            ),
           ),
         ),
       ],

@@ -333,6 +333,7 @@ class _InputSettingRow extends StatelessWidget {
         const SizedBox(height: 8),
         TextField(
           controller: controller,
+          style: const TextStyle(color: AppColors.adminTextDark),
           decoration: InputDecoration(
             filled: true,
             fillColor:  AppColors.adminBackground,

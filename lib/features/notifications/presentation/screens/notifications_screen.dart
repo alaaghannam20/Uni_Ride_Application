@@ -113,17 +113,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             );
           }
 
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            itemCount: provider.notifications.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              final notif = provider.notifications[index];
-              return _NotificationCard(
-                notification: notif,
-                onTap: () => _onTap(context, notif),
-              );
-            },
+          return RefreshIndicator(
+            onRefresh: provider.fetchNotifications,
+            color: AppColors.orangeprimary,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              itemCount: provider.notifications.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 10),
+              itemBuilder: (context, index) {
+                final notif = provider.notifications[index];
+                return _NotificationCard(
+                  notification: notif,
+                  onTap: () => _onTap(context, notif),
+                );
+              },
+            ),
           );
         },
       ),
@@ -148,6 +152,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           context, Routes.home, (route) => false,
           arguments: {'tabIndex': 1},
         );
+        break;
+      case 'admin':
+        Navigator.pushNamed(context, Routes.adminPendingApprovals);
         break;
       default:
         break;

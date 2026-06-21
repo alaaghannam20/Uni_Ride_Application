@@ -36,7 +36,10 @@ class _FindTripsTabState extends State<FindTripsTab> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
 
-    return ListView(
+    return RefreshIndicator(
+      onRefresh: () => context.read<TripProvider>().fetchAvailableTrips(),
+      color: AppColors.orangeprimary,
+      child: ListView(
       padding: const EdgeInsets.all(16),
       children: [
         // ── Search Bar ──
@@ -147,6 +150,7 @@ class _FindTripsTabState extends State<FindTripsTab> {
           },
         ),
       ],
+      ),
     );
   }
 }

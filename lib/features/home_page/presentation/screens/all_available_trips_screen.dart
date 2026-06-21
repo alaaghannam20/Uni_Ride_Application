@@ -80,13 +80,20 @@ class _AllAvailableTripsScreenState extends State<AllAvailableTripsScreen> {
                 ),
               ),
               Expanded(
-                child: trips.isEmpty
-                    ? Center(child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint)))
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: trips.length,
-                        itemBuilder: (context, index) => AvailableTripApiCard(trip: trips[index]),
-                      ),
+                child: RefreshIndicator(
+                  onRefresh: () => provider.fetchAvailableTrips(),
+                  color: AppColors.orangeprimary,
+                  child: trips.isEmpty
+                      ? ListView(children: [
+                          const SizedBox(height: 100),
+                          Center(child: Text(l.noTripsAvailable, style: const TextStyle(color: AppColors.greyHint))),
+                        ])
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: trips.length,
+                          itemBuilder: (context, index) => AvailableTripApiCard(trip: trips[index]),
+                        ),
+                ),
               ),
             ],
           );

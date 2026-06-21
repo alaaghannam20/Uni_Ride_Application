@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:signalr_netcore/signalr_client.dart';
+import 'package:uni_ride_application/core/provider/booking_provider.dart';
 import 'package:uni_ride_application/core/provider/notification_provider.dart';
 import 'package:uni_ride_application/core/services/checkpoint_service.dart';
 
@@ -90,6 +91,19 @@ class SignalRNotificationService {
             .addSignalRNotification(data);
       } catch (e) {
         debugPrint('[SignalR] Failed to update NotificationProvider: $e');
+      }
+
+      final type = (data['type'] ?? data['Type'] ?? '').toString().toLowerCase();
+      const bookingRelatedTypes = {
+        'trip', 'trip_start', 'trip_update', 'trip_complete', 'trip_completed',
+        'booking', 'booking_confirmed', 'trip_cancelled', 'new_booking',
+      };
+      if (bookingRelatedTypes.contains(type)) {
+        try {
+          Provider.of<BookingProvider>(context, listen: false).fetchMyBookings();
+        } catch (e) {
+          debugPrint('[SignalR] Failed to refresh bookings: $e');
+        }
       }
     }
   }
