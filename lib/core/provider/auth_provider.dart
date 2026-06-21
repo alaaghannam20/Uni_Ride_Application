@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:uni_ride_application/core/models/user_model.dart';
 import 'package:uni_ride_application/core/provider/one_signal_service.dart';
 import 'package:uni_ride_application/core/services/auth_service.dart';
+import 'package:uni_ride_application/core/services/signalr_notification_service.dart';
 import 'package:uni_ride_application/core/storage/app_prefs.dart';
 
 enum AuthState { idle, loading, success, error }
@@ -55,6 +56,8 @@ class AuthProvider extends ChangeNotifier {
           }
         });
       }
+
+      SignalRNotificationService().connect(token);
 
       notifyListeners();
     }
@@ -192,6 +195,7 @@ class AuthProvider extends ChangeNotifier {
           externalUserId: userResult.userId.toString(),
         );
       }
+      SignalRNotificationService().connect(userResult.token);
       _userType = userResult.userType;
       _setState(AuthState.success);
       return true;
@@ -220,6 +224,7 @@ class AuthProvider extends ChangeNotifier {
           externalUserId: userResult.userId.toString(),
         );
       }
+      SignalRNotificationService().connect(userResult.token);
       _userType = userResult.userType;
       _setState(AuthState.success);
       return true;
@@ -302,6 +307,7 @@ class AuthProvider extends ChangeNotifier {
 
   // Logout
   Future<void> logout() async {
+    await SignalRNotificationService().disconnect();
     await OneSignalService().logout();
     await AppPrefs.logout();
     _user = null;

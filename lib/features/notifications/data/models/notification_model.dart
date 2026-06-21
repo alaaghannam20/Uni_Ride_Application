@@ -28,11 +28,21 @@ class NotificationModel {
       message:       json['message']       ?? json['Message']       ?? json['body'] ?? json['Body'] ?? '',
       type:          json['type']          ?? json['Type']          ?? '',
       referenceId:   (json['referenceId']  ?? json['ReferenceId']  ?? json['tripId'] ?? json['TripId'])?.toString(),
-      createdAt:     (DateTime.tryParse((json['createdAt'] ?? json['CreatedAt'] ?? json['created_at'] ?? '').toString())?.toLocal()) ?? DateTime.now(),
+      createdAt:     _parseUtcDate(json['createdAt'] ?? json['CreatedAt'] ?? json['created_at']),
       isRead:        json['isRead']        ?? json['IsRead']        ?? json['is_read'] ?? false,
       senderName:          (json['senderName']         ?? json['SenderName'])?.toString(),
       senderProfilePicture:(json['senderProfilePicture']?? json['SenderProfilePicture'] ?? json['profilePicture'])?.toString(),
     );
+  }
+
+  static DateTime _parseUtcDate(dynamic raw) {
+    if (raw == null) return DateTime.now();
+    String s = raw.toString();
+    if (s.isEmpty) return DateTime.now();
+    // If no timezone info, the server is sending UTC — add Z to force correct parsing
+    final hasTimezone = s.endsWith('Z') || s.contains('+') || (s.length > 10 && s.substring(10).contains('-'));
+    if (!hasTimezone) s = '${s}Z';
+    return DateTime.tryParse(s)?.toLocal() ?? DateTime.now();
   }
 
   NotificationModel copyWith({bool? isRead}) {

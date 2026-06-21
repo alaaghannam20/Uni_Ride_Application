@@ -30,7 +30,7 @@ dependencies:
   url_launcher: ^6.3.2
   image_cropper: ^12.2.1
   image_cropper_for_web: ^7.0.0
-  signalr_netcore: ^1.3.5
+  signalr_netcore: ^1.4.4
   geolocator: ^13.0.1
   flutter_local_notifications: ^18.0.0
 

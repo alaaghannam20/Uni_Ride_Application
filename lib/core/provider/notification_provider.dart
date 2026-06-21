@@ -50,4 +50,14 @@ class NotificationProvider extends ChangeNotifier {
       notifyListeners();
     } catch (_) {}
   }
+
+  void addSignalRNotification(Map<String, dynamic> data) {
+    try {
+      final notification = NotificationModel.fromJson(data);
+      _notifications = [notification, ..._notifications];
+      notifyListeners();
+    } catch (e) {
+      debugPrint('[SignalR] Notification parse error: $e');
+    }
+  }
 }
